@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:gravity="center"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <androidx.cardview.widget.CardView
+        android:layout_width="160dp"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="10dp"
+        android:maxHeight="160dp"
+        app:cardBackgroundColor="@color/tooltip_card_bg_color">
+        <LinearLayout
+            android:layout_width="160dp"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:background="@color/tooltip_card_bg_color"
+            android:padding="5dp">
+            <TextView
+                android:id="@+id/facebookPage"
+                android:layout_width="160dp"
+                android:layout_height="30dp"
+                style="@style/Widget.AppCompat.ActionButton"
+                android:drawableStart="@drawable/ic_facebook_icon"
+                android:drawableLeft="@drawable/ic_facebook_icon"
+                android:drawablePadding="10dp"
+                android:fontFamily="@font/hind_siliguri_font"
+                android:gravity="start|center_vertical"
+                android:paddingLeft="10dp"
+                android:paddingTop="2dp"
+                android:paddingRight="10dp"
+                android:paddingBottom="2dp"
+                android:text="ফেসবুক পেজ"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:layout_marginTop="2dp"
+                android:layout_marginBottom="2dp"
+                android:background="@color/white" />
+            <TextView
+                android:id="@+id/email"
+                android:layout_width="160dp"
+                android:layout_height="30dp"
+                style="@style/Widget.AppCompat.ActionButton"
+                android:drawableStart="@drawable/ic_e_mail_icon"
+                android:drawableLeft="@drawable/ic_e_mail_icon"
+                android:drawablePadding="10dp"
+                android:fontFamily="@font/hind_siliguri_font"
+                android:gravity="start|center_vertical"
+                android:paddingLeft="10dp"
+                android:paddingTop="2dp"
+                android:paddingRight="10dp"
+                android:paddingBottom="2dp"
+                android:text="ই-মেইল"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:layout_marginTop="2dp"
+                android:layout_marginBottom="2dp"
+                android:background="@color/white" />
+            <TextView
+                android:id="@+id/clientBe"
+                android:layout_width="160dp"
+                android:layout_height="30dp"
+                style="@style/Widget.AppCompat.ActionButton"
+                android:drawableStart="@drawable/ic_client_icon"
+                android:drawableLeft="@drawable/ic_client_icon"
+                android:drawablePadding="10dp"
+                android:fontFamily="@font/hind_siliguri_font"
+                android:gravity="start|center_vertical"
+                android:paddingLeft="10dp"
+                android:paddingTop="2dp"
+                android:paddingRight="10dp"
+                android:paddingBottom="2dp"
+                android:text="ক্লায়েন্ট হতে চাই"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:layout_marginTop="2dp"
+                android:layout_marginBottom="2dp"
+                android:background="@color/white" />
+            <TextView
+                android:id="@+id/aboutArpon"
+                android:layout_width="160dp"
+                android:layout_height="30dp"
+                style="@style/Widget.AppCompat.ActionButton"
+                android:drawableStart="@drawable/ic_info_icon"
+                android:drawableLeft="@drawable/ic_info_icon"
+                android:drawablePadding="10dp"
+                android:fontFamily="@font/hind_siliguri_font"
+                android:gravity="start|center_vertical"
+                android:paddingLeft="10dp"
+                android:paddingTop="2dp"
+                android:paddingRight="10dp"
+                android:paddingBottom="2dp"
+                android:text="অর্পণ সম্পর্কে জানুন"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:translationY="-2dp"
+        android:src="@drawable/ic_mini_triangle"
+        app:tint="@color/blue_normal" />
+</LinearLayout>

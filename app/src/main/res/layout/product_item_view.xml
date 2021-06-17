@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:id="@+id/mainCardView"
+    android:gravity="center"
+    android:padding="1px"
+    android:layout_margin="1px"
+    android:background="@color/divider_bg_color_1">
+    <LinearLayout
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:orientation="vertical"
+        android:visibility="gone"
+        android:background="#EFEFEF"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/shop_card_bg_color"
+        android:orientation="horizontal">
+        <LinearLayout
+            android:id="@+id/linearLayout2"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:padding="2dp"
+            android:background="@color/shop_card_bg_color"
+            android:layout_marginLeft="5dp"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/titleTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/hind_siliguri_font"
+                android:gravity="left"
+                android:text="রেড লিকার প্রিমিয়াম ক্লোন টি(ব্ল্যাক টি) ২০০ গ্রাম"
+                android:textColor="@color/shop_card_text_color_1"
+                android:textSize="14sp"
+                android:textStyle="bold"/>
+
+
+            <TextView
+                android:id="@+id/descTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/hind_siliguri_font"
+                android:gravity="left"
+                android:paddingStart="1dp"
+                android:text="রেড লিকার প্রিমিয়াম ক্লোন টি(ব্ল্যাক টি) ২০০ গ্রাম"
+                android:textColor="@color/shop_card_text_color_1"
+                android:textSize="12sp"
+                android:textStyle="bold"/>
+            <TextView
+                android:id="@+id/specialOfferTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/hind_siliguri_font"
+                android:gravity="center"
+                android:visibility="gone"
+                android:padding="2dp"
+                android:text="BUY ONE GET ONE FREE"
+                android:textColor="@color/red_normal"
+                android:textSize="12sp"
+                android:textStyle="bold"/>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_gravity="left"
+                android:orientation="horizontal"
+                android:layout_marginTop="5dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/hind_siliguri_font"
+                    android:gravity="center"
+                    android:paddingTop="3dp"
+                    android:text=" ৳"
+                    android:textColor="@color/shop_card_text_color_1"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+                <TextView
+                    android:id="@+id/priceTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:fontFamily="@font/hind_siliguri_font"
+                    android:gravity="center"
+                    android:text=" 145"
+                    android:paddingTop="3dp"
+                    android:visibility="gone"
+                    android:textColor="@color/shop_card_text_color_1"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+                <TextView
+                    android:id="@+id/offerPriceTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/hind_siliguri_font"
+                    android:gravity="center"
+                    android:paddingEnd="4dp"
+                    android:paddingTop="3dp"
+                    android:paddingStart="2dp"
+                    android:text="145"
+                    android:textColor="@color/shop_card_text_color_1"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/materialCardView"
+            android:layout_width="wrap_content"
+            android:layout_height="100dp"
+            app:cardElevation="0dp"
+            android:layout_margin="5dp"
+            android:visibility="gone"
+            app:cardCornerRadius="5dp">
+
+            <com.lid.lib.LabelImageView
+                android:id="@+id/shopImageItem"
+                app:label_orientation="RIGHT_TOP"
+                app:label_text="SPECIAL"
+                app:label_backgroundColor="@color/red_normal"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_centerVertical="true"
+                android:src="@drawable/loading_image_glide"
+                android:scaleType="centerCrop"/>
+
+        </com.google.android.material.card.MaterialCardView>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:layout_marginEnd="5dp"
+            android:orientation="vertical">
+            <ImageView
+                android:id="@+id/addToCartTextView"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:gravity="center"
+                android:padding="5dp"
+                android:src="@drawable/ic_round_add_24"
+                android:background="@drawable/button_bg"
+                android:layout_margin="10dp"
+                app:tint="@color/white" />
+        </LinearLayout>
+
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/dividerBottom"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:orientation="vertical"
+        android:visibility="gone"
+        android:background="#EFEFEF"/>
+</LinearLayout>

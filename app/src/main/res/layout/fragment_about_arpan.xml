@@ -1,0 +1,338 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_color"
+    tools:context=".ui.home.HomeActivity">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        app:cardBackgroundColor="@color/bg_color"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:src="@drawable/ic_logo_with_tag"
+                android:background="#333333"
+                android:padding="30dp"
+                android:adjustViewBounds="true"
+                android:scaleType="fitCenter"/>
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scrollbars="none">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/hind_siliguri_font"
+                        android:gravity="center"
+                        android:padding="10dp"
+                        android:text="আস্সালামু আলাইকুম"
+                        android:textColor="@color/text_color_general_pages"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toStartOf="@+id/materialCardView"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <com.pouriahemati.phjustifiedtextview.PHJustifiedTextView
+                        android:id="@+id/arpanNiyeNanaKotha"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:fontFamily="@font/hind_siliguri_font"
+                        android:gravity="center"
+                        android:paddingLeft="10dp"
+                        android:paddingTop="2dp"
+                        android:paddingRight="10dp"
+                        android:paddingBottom="4dp"
+                        android:text="@string/arpan_niye_nana_kotha"
+                        android:textColor="@color/text_color_general_pages"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:fontFamily="@font/hind_siliguri_font"
+                        android:gravity="center"
+                        android:paddingLeft="10dp"
+                        android:paddingTop="10dp"
+                        android:paddingRight="10dp"
+                        android:paddingBottom="2dp"
+                        android:text="(১) অর্পণ কি এবং কেন?"
+                        android:textColor="@color/text_color_general_pages"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toStartOf="@+id/materialCardView"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <com.pouriahemati.phjustifiedtextview.PHJustifiedTextView
+                        android:id="@+id/phjustifiedTextView1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="5dp"
+                        android:fontFamily="@font/hind_siliguri_font"
+                        android:gravity="left"
+                        android:paddingLeft="10dp"
+                        android:paddingTop="2dp"
+                        android:paddingRight="10dp"
+                        android:paddingBottom="4dp"
+                        android:text="@string/arpan_ki_and_kno_1"
+                        android:textColor="@color/text_color_general_pages"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toStartOf="@+id/materialCardView"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:fontFamily="@font/hind_siliguri_font"
+                        android:gravity="center"
+                        android:paddingLeft="10dp"
+                        android:paddingTop="10dp"
+                        android:paddingRight="10dp"
+                        android:paddingBottom="2dp"
+                        android:text="(২) আপনাদের সেবা কোথায় কোথায় চালু থাকবে? "
+                        android:textColor="@color/text_color_general_pages"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toStartOf="@+id/materialCardView"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <com.pouriahemati.phjustifiedtextview.PHJustifiedTextView
+                        android:id="@+id/phjustifiedTextView2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="5dp"
+                        android:fontFamily="@font/hind_siliguri_font"
+                        android:gravity="left"
+                        android:paddingLeft="10dp"
+                        android:paddingTop="2dp"
+                        android:paddingRight="10dp"
+                        android:paddingBottom="4dp"
+                        android:text="@string/arpan_ki_and_kno_2"
+                        android:textColor="@color/text_color_general_pages"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toStartOf="@+id/materialCardView"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:fontFamily="@font/hind_siliguri_font"
+                        android:gravity="center"
+                        android:paddingLeft="10dp"
+                        android:paddingTop="10dp"
+                        android:paddingRight="10dp"
+                        android:paddingBottom="2dp"
+                        android:text="(৩) পণ্য কিভাবে খুঁজব এবং কিভাবে অর্ডার করবো?"
+                        android:textColor="@color/text_color_general_pages"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toStartOf="@+id/materialCardView"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <com.pouriahemati.phjustifiedtextview.PHJustifiedTextView
+                        android:id="@+id/phjustifiedTextView3"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="5dp"
+                        android:fontFamily="@font/hind_siliguri_font"
+                        android:gravity="left"
+                        android:paddingLeft="10dp"
+                        android:paddingTop="2dp"
+                        android:paddingRight="10dp"
+                        android:paddingBottom="4dp"
+                        android:text="@string/arpan_ki_and_kno_3"
+                        android:textColor="@color/text_color_general_pages"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:fontFamily="@font/hind_siliguri_font"
+                        android:gravity="center"
+                        android:paddingLeft="10dp"
+                        android:paddingTop="10dp"
+                        android:paddingRight="10dp"
+                        android:paddingBottom="2dp"
+                        android:text="(৪) কিভাবে পেমেন্ট করব?"
+                        android:textColor="@color/text_color_general_pages"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toStartOf="@+id/materialCardView"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <com.pouriahemati.phjustifiedtextview.PHJustifiedTextView
+                        android:id="@+id/phjustifiedTextView4"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="5dp"
+                        android:fontFamily="@font/hind_siliguri_font"
+                        android:gravity="left"
+                        android:paddingLeft="10dp"
+                        android:paddingTop="2dp"
+                        android:paddingRight="10dp"
+                        android:paddingBottom="4dp"
+                        android:text="@string/arpan_ki_and_kno_6"
+                        android:textColor="@color/text_color_general_pages"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:fontFamily="@font/hind_siliguri_font"
+                        android:gravity="center"
+                        android:paddingLeft="10dp"
+                        android:paddingTop="10dp"
+                        android:paddingRight="10dp"
+                        android:paddingBottom="2dp"
+                        android:text="(৫) কিভাবে ডেলিভারি করা হয় এবং খরচ কত?"
+                        android:textColor="@color/text_color_general_pages"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toStartOf="@+id/materialCardView"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <com.pouriahemati.phjustifiedtextview.PHJustifiedTextView
+                        android:id="@+id/phjustifiedTextView5"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="5dp"
+                        android:fontFamily="@font/hind_siliguri_font"
+                        android:gravity="left"
+                        android:paddingLeft="10dp"
+                        android:paddingTop="2dp"
+                        android:paddingRight="10dp"
+                        android:paddingBottom="4dp"
+                        android:text="@string/arpan_ki_and_kno_4"
+                        android:textColor="@color/text_color_general_pages"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toStartOf="@+id/materialCardView"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:fontFamily="@font/hind_siliguri_font"
+                        android:gravity="center"
+                        android:paddingLeft="10dp"
+                        android:paddingTop="10dp"
+                        android:paddingRight="10dp"
+                        android:paddingBottom="2dp"
+                        android:text="(৬) অর্পণের নিজস্ব পণ্য অর্ডারের ক্ষেত্রে কি কোন শর্তাবলি রয়েছে?"
+                        android:textColor="@color/text_color_general_pages"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toStartOf="@+id/materialCardView"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <com.pouriahemati.phjustifiedtextview.PHJustifiedTextView
+                        android:id="@+id/phjustifiedTextView6"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="5dp"
+                        android:fontFamily="@font/hind_siliguri_font"
+                        android:gravity="left"
+                        android:paddingLeft="10dp"
+                        android:paddingTop="2dp"
+                        android:paddingRight="10dp"
+                        android:paddingBottom="4dp"
+                        android:text="@string/arpan_ki_and_kno_5"
+                        android:textColor="@color/text_color_general_pages"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toStartOf="@+id/materialCardView"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/hind_siliguri_font"
+                        android:gravity="center"
+                        android:padding="10dp"
+                        android:text="আপনাদের আস্থাই অর্পণের অর্জন"
+                        android:textColor="@color/text_color_general_pages"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toStartOf="@+id/materialCardView"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:paddingBottom="40dp"
+                        android:gravity="center">
+
+                        <Button
+                            android:id="@+id/call_now"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="10dp"
+                            android:fontFamily="@font/hind_siliguri_font"
+                            android:gravity="center"
+                            android:padding="10dp"
+                            android:text="  কল করুন  "
+                            android:textColor="@color/white"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:onClick="callNowButtonClicked"
+                            app:backgroundTint="@color/btn_bg_color_phone_auth_page" />
+
+                        <Button
+                            android:id="@+id/message_now"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="10dp"
+                            android:fontFamily="@font/hind_siliguri_font"
+                            android:gravity="center"
+                            android:padding="10dp"
+                            android:onClick="messageNowButtonClicked"
+                            android:text="  ইনবক্স করুন  "
+                            android:textColor="@color/white"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            app:backgroundTint="@color/btn_bg_color_phone_auth_page" />
+                    </LinearLayout>
+                </LinearLayout>
+            </ScrollView>
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:background="@color/bg_color"
+    android:gravity="center_horizontal">
+    <LinearLayout
+        android:id="@+id/topLinearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:background="@color/blue_normal"
+        android:padding="5dp">
+        <TextView
+            android:id="@+id/title_text_view"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:fontFamily="@font/hind_siliguri_font"
+            android:gravity="center"
+            android:padding="5dp"
+            android:text="ফিডব্যাক দিন      "
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:textStyle="bold"
+            android:drawableStart="@drawable/ic_round_arrow_back_24"
+            android:drawableTint="@color/white"
+            android:textColor="@color/white"
+            android:textSize="18sp" />
+    </LinearLayout>
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:hint="মতামত/পরামর্শ/অ‌ভি‌যোগ"
+        android:layout_margin="10dp"
+        app:hintTextColor="@color/text_color_edit_custom"
+        android:textColorHint="@color/text_color_edit_custom"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <EditText
+            android:id="@+id/edt_shop_name"
+            android:fontFamily="@font/hind_siliguri_font"
+            android:layout_width="match_parent"
+            android:gravity="top"
+            android:textColor="@color/text_color_edit_custom"
+            android:layout_height="match_parent"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <Button
+        android:id="@+id/addProductCategoriesButton"
+        android:layout_width="wrap_content"
+        android:fontFamily="@font/hind_siliguri_font"
+        android:layout_height="wrap_content"
+        android:text="   সাবমিট করুন   "
+        android:textColor="@color/alert_dialog_btn_text_color"
+        android:backgroundTint="@color/blue_normal"
+        android:layout_margin="2dp"/>
+
+</LinearLayout>

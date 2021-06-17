@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:padding="10dp"
+    android:background="@color/alert_dialog_bg_color"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/titleTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="সাবধান!!"
+        android:textColor="@color/alert_dialog_text_color"
+        android:textSize="20sp"/>
+
+    <TextView
+        android:id="@+id/messageTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="আপনি এই কাজটি করতে যাচ্ছেন আপনি কি নিশ্চিত ?!!"
+        android:textColor="@color/alert_dialog_text_color"
+        android:textSize="16sp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/btnNoDialogAlertMain"
+            android:text="দ্বিতীয় লেখা"
+            android:textSize="16sp"
+            android:backgroundTint="@color/alert_dialog_btn_bg_color"
+            android:padding="10dp"
+            android:textColor="@color/alert_dialog_btn_text_color"
+            android:layout_weight="1"
+            android:layout_marginEnd="10dp"
+            android:layout_marginTop="8dp"/>
+        <Button
+            android:id="@+id/btnYesDialogAlertMain"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textColor="@color/alert_dialog_btn_text_color"
+            android:text="প্রথম লেখা"
+            android:backgroundTint="@color/alert_dialog_btn_bg_color"
+            android:textSize="16sp"
+            android:padding="10dp"
+            android:layout_weight="1"
+            android:layout_marginTop="8dp"/>
+    </LinearLayout>
+</LinearLayout>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:background="@color/bg_color">
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/linearLayout6"
+        android:layout_margin="2dp"
+        app:cardElevation="5dp"
+        android:visibility="visible"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:orientation="vertical"
+        android:gravity="center"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout8">
+        <TextView
+            android:id="@+id/specialOfferTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/hind_siliguri_font"
+            android:gravity="center"
+            android:background="@color/green_normal"
+            android:text="শুধু মাত্র আজকে পাচ্ছেন যেকোনো প্রোডাক্টে ১০% ডিস্কাউন্ট"
+            android:padding="11dp"
+            android:layout_gravity="center"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+    </com.google.android.material.card.MaterialCardView>
+
+</LinearLayout>

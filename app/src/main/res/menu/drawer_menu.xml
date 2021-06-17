@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <group
+        android:id="@+id/grp1">
+        <item
+            android:id="@id/profileFragment"
+            android:title="@string/my_profile"
+            android:icon="@drawable/ic_round_person_24"/>
+        <item
+            android:id="@id/oldOrderListFragment"
+            android:title="@string/my_orders"
+            android:icon="@drawable/ic_baseline_shop_two_24"/>
+    </group>
+    <group android:id="@+id/grp2">
+        <item
+            android:id="@id/offersFragment"
+            android:title="@string/offers"
+            android:icon="@drawable/ic_offer_icon"/>
+    </group>
+    <group android:id="@+id/grp3">
+        <item
+            android:id="@id/customOrderFragment"
+            android:title="@string/custom_order"
+            android:icon="@drawable/ic_custom_order_icon" />
+        <item
+            android:id="@id/medicineFragment"
+            android:title="@string/medicine"
+            android:icon="@drawable/ic_medicine_icon" />
+        <item
+            android:id="@id/parcelFragment"
+            android:title="@string/parcel"
+            android:icon="@drawable/ic_parcel_icon"/>
+        <item
+            android:id="@id/pickUpDropFragment"
+            android:title="@string/pick_up_and_drop"
+            android:icon="@drawable/ic_pickup_and_drop_icon"/>
+    </group>
+    <group android:id="@+id/grp4">
+        <item
+            android:id="@id/aboutArpan"
+            android:title="@string/about_arpan"
+            android:icon="@drawable/ic_info_icon"/>
+        <item
+            android:id="@id/beClient"
+            android:title="@string/become_client"
+            android:icon="@drawable/ic_client_icon"/>
+    </group>
+    <group android:id="@+id/grp5">
+        <item
+            android:id="@+id/shareTheApp"
+            android:title= "@string/share_the_app"
+            android:icon="@drawable/ic_app_share_icon" />
+        <item
+            android:id="@+id/rateTheApp"
+            android:title="@string/rate_the_app"
+            android:icon="@drawable/ic_rating_icon" />
+    </group>
+    <group android:id="@+id/grp6">
+        <item
+            android:id="@+id/changeThemeMenuItem"
+            android:actionLayout="@layout/theme_change_button"
+            android:title="@string/dark_mode"
+            android:icon="@drawable/ic_baseline_color_lens_24"
+            app:actionViewClass="com.google.android.material.switchmaterial.SwitchMaterial"/>
+        <item
+            android:id="@+id/logoutNowItem"
+            android:title="@string/logout"
+            android:icon="@drawable/ic_baseline_login_24" />
+    </group>
+</menu>

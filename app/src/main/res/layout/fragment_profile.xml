@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/bg_color_profile_page"
+    tools:context=".ui.home.HomeActivity">
+
+    <LinearLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:orientation="vertical">
+        <ImageView
+            android:id="@+id/icon_arpan_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="130dp"
+            android:layout_marginBottom="15dp"
+            android:padding="15dp"
+            android:src="@drawable/ic_user"
+            app:tint="@color/bg_color_deep_card" />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/mainLinearView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:cardBackgroundColor="@color/bg_color_deep_card"
+            app:cardCornerRadius="10dp">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="15dp"
+                android:padding="18dp"
+                android:gravity="center">
+                <EditText
+                    android:id="@+id/edt_phone_number"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="phone"
+                    android:gravity="center"
+                    android:padding="12dp"
+                    android:hint="@string/enter_phone_number_string"
+                    android:maxLength="11"
+                    android:backgroundTint="@color/edt_text_color_phone_auth_page_white"
+                    android:textColor="@color/edt_text_color_phone_auth_page_white"
+                    android:textColorHint="@color/edt_text_color_phone_auth_page_white"
+                    android:textSize="16sp" />
+                <Button
+                    android:id="@+id/floating_action_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/register_now_text"
+                    android:textSize="14sp"
+                    android:paddingStart="15dp"
+                    android:paddingEnd="15dp"
+                    android:textColor="@color/btn_text_color_phone_auth_page"
+                    android:backgroundTint="@color/btn_bg_color_phone_auth_page"
+                    android:layout_marginTop="8dp"/>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:background="@color/bg_color_profile_page"
+        android:orientation="vertical"
+        android:padding="50dp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/registerImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="30dp"
+            app:cardBackgroundColor="@color/bg_color_profile_page"
+            app:cardElevation="0dp">
+            <ImageView
+                android:id="@+id/registerImageView"
+                android:layout_width="140dp"
+                android:layout_height="140dp"
+                android:src="@drawable/ic_user_photo"/>
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="wrap_content"
+            app:cardBackgroundColor="@color/bg_color_deep_card"
+            app:cardCornerRadius="10dp"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="15dp"
+                android:gravity="center">
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/nameTextField"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="240dp"
+                    android:layout_height="wrap_content"
+                    android:textColorHint="#8A8A8A"
+                    app:boxStrokeColor="@color/text_outline_color"
+                    app:boxStrokeWidthFocused="1.3dp"
+                    app:helperTextTextColor="#FFFFFF"
+                    app:hintTextColor="#7A7A7A"
+                    android:hint="Name">
+
+                    <EditText
+                        android:id="@+id/editTextTextPersonName"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ems="10"
+                        android:inputType="textPersonName"
+                        android:padding="8dp"
+                        android:textColor="@color/edt_text_color_phone_auth_page_white"
+                        android:textColorHint="#8A8A8A" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/phoneNumberTextField"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="240dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:textColorHint="#8A8A8A"
+                    app:boxStrokeColor="#7A7A7A"
+                    app:boxStrokeWidthFocused="1.3dp"
+                    app:helperTextTextColor="#FFFFFF"
+                    android:enabled="false"
+                    app:hintTextColor="#7A7A7A"
+                    android:hint="Phone Number">
+
+                    <EditText
+                        android:id="@+id/editTextTextPhone"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ems="10"
+                        android:inputType="phone"
+                        android:padding="8dp"
+                        android:enabled="false"
+                        android:textColor="@color/edt_text_color_phone_auth_page_white"
+                        android:textColorHint="#8A8A8A" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/addressTextField"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="240dp"
+                    android:layout_height="100dp"
+                    android:textColorHint="#8A8A8A"
+                    app:boxStrokeColor="#7A7A7A"
+                    app:boxStrokeWidthFocused="1.3dp"
+                    app:helperTextTextColor="#FFFFFF"
+                    app:hintTextColor="#7A7A7A"
+                    android:layout_marginTop="10dp"
+                    android:hint="Address">
+
+                    <EditText
+                        android:id="@+id/editTextTextAddress"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:ems="10"
+                        android:gravity="top"
+                        android:inputType="textPostalAddress"
+                        android:padding="8dp"
+                        android:textColor="@color/edt_text_color_phone_auth_page_white"
+                        android:textColorHint="#8A8A8A" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/saveButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:backgroundTint="@color/btn_bg_color_phone_auth_page"
+                    android:enabled="false"
+                    android:textColor="@color/white"
+                    android:text="Save" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+    </LinearLayout>
+
+
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/logoutbutton"
+        android:layout_width="wrap_content"
+        app:backgroundTint="@color/red_normal"
+        android:layout_height="wrap_content"
+        android:text="@string/logout"
+        android:paddingStart="30dp"
+        android:textColor="@color/white"
+        android:onClick="logOutNow"
+        android:fontFamily="@font/hind_siliguri_font"
+        android:drawableEnd="@drawable/ic_baseline_login_24"
+        android:drawableTint="@color/white"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="30dp"/>
+
+</RelativeLayout>

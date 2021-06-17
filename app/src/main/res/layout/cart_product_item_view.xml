@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_height="wrap_content"
+    android:gravity="center">
+    <TextView
+        android:id="@+id/productsTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/hind_siliguri_font"
+        android:gravity="center"
+        android:background="@color/divider_bg_color_1"
+        android:text=""
+        android:textColor="@color/divider_text_color_1"
+        android:textSize="14sp"
+        android:padding="4dp"
+        android:textStyle="bold"/>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/productsRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:nestedScrollingEnabled="false"/>
+    <TextView
+        android:visibility="gone"
+        android:id="@+id/priceTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/hind_siliguri_font"
+        android:gravity="center"
+        android:background="@color/divider_bg_color_1"
+        android:text=""
+        android:textColor="@color/divider_text_color_1"
+        android:textSize="14sp"
+        android:padding="4dp"
+        android:layout_marginBottom="1px"
+        android:textStyle="bold"/>
+</LinearLayout>

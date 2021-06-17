@@ -1,0 +1,122 @@
+{
+  "project_info": {
+    "project_number": "943541700401",
+    "firebase_url": "https://arpon-app-default-rtdb.firebaseio.com",
+    "project_id": "arpon-app",
+    "storage_bucket": "arpon-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:943541700401:android:c11657cb01de8e11d25210",
+        "android_client_info": {
+          "package_name": "arpan.delivery"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "943541700401-tn8fid6pflal02c7ofaolnp0059rusht.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "arpan.delivery",
+            "certificate_hash": "c7649be65b46d890bce20bcdc02879d2947a2c63"
+          }
+        },
+        {
+          "client_id": "943541700401-orq74v66mut6bji2gpcik45iol3va2li.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC8HJYT4cC79BdSPy--27waFwLsGRrUtio"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "943541700401-orq74v66mut6bji2gpcik45iol3va2li.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:943541700401:android:375cf9755f261832d25210",
+        "android_client_info": {
+          "package_name": "com.dubd.adminarpon"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "943541700401-fbj2cqql6gj8fj2dbogndfq1vsi886ik.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.dubd.adminarpon",
+            "certificate_hash": "c7649be65b46d890bce20bcdc02879d2947a2c63"
+          }
+        },
+        {
+          "client_id": "943541700401-orq74v66mut6bji2gpcik45iol3va2li.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC8HJYT4cC79BdSPy--27waFwLsGRrUtio"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "943541700401-orq74v66mut6bji2gpcik45iol3va2li.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:943541700401:android:e6537bda82178531d25210",
+        "android_client_info": {
+          "package_name": "com.dubd.arponapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "943541700401-73m9ml1ve1ukc5eo0c3vgpkin7t6cbvv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.dubd.arponapp",
+            "certificate_hash": "c7649be65b46d890bce20bcdc02879d2947a2c63"
+          }
+        },
+        {
+          "client_id": "943541700401-orq74v66mut6bji2gpcik45iol3va2li.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC8HJYT4cC79BdSPy--27waFwLsGRrUtio"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "943541700401-orq74v66mut6bji2gpcik45iol3va2li.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
