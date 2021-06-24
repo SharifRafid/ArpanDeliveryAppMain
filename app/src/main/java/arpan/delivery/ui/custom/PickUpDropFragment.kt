@@ -53,6 +53,7 @@ class PickUpDropFragment : Fragment() {
     private lateinit var v : View
     private lateinit var contextMain: Context
     private var allPrice = 0
+    private var daCharge = 0
     private var deliveryLocations = ArrayList<String>()
     private var deliveryCharges = ArrayList<Int>()
     private var imagePath : Uri = Uri.parse("")
@@ -240,9 +241,11 @@ class PickUpDropFragment : Fragment() {
 
                 if(pos1 == 0 || pos2 == 0){
                     allPrice = calculatePrice(pos1, pos2)
+
                     v.txt_price.text = "মোটঃ $allPrice টাকা"
                 }else{
                     allPrice = 0
+                    daCharge = 0
                     v.txt_price.text = "মূল্য ফোন কলের মাধ্যমে নিশ্চিত করা হবে"
                 }
 
@@ -278,6 +281,7 @@ class PickUpDropFragment : Fragment() {
                     v.txt_price.text = "মোটঃ "+" "+allPrice+" "+"টাকা"
                 }else{
                     allPrice = 0
+                    daCharge = 0
                     v.txt_price.text = getString(R.string.mullo_phone_call_er_maddhome)
                 }
 
@@ -360,6 +364,7 @@ class PickUpDropFragment : Fragment() {
         }
         orderItemMain.totalPrice = 0
         orderItemMain.deliveryCharge = allPrice
+        orderItemMain.daCharge = daCharge
         orderItemMain.orderPlacingTimeStamp = System.currentTimeMillis()
         orderItemMain.lastTouchedTimeStamp = System.currentTimeMillis()
         val firebaseStorage = FirebaseStorage.getInstance().reference.child("ORDER_IMAGES")
@@ -445,6 +450,8 @@ class PickUpDropFragment : Fragment() {
         }else{
             pos2
         }
+        daCharge = (activity as HomeActivity).homeViewModel.getLocationArrayPickDrop()[selectedItemId]
+            .daCharge
         return deliveryCharges[selectedItemId]
     }
 

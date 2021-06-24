@@ -222,9 +222,9 @@ class HomeActivity : AppCompatActivity() {
         supportActionBar!!.setDisplayShowTitleEnabled(false)
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration)
         NavigationUI.setupWithNavController(navigationView, navController)
-        (navigationView.menu.findItem(R.id.changeThemeMenuItem).actionView as SwitchMaterial).isClickable = false
-        (navigationView.menu.findItem(R.id.changeThemeMenuItem).actionView as SwitchMaterial).isChecked =
-                AppCompatDelegate.getDefaultNightMode()==AppCompatDelegate.MODE_NIGHT_YES
+//        (navigationView.menu.findItem(R.id.changeThemeMenuItem).actionView as SwitchMaterial).isClickable = false
+//        (navigationView.menu.findItem(R.id.changeThemeMenuItem).actionView as SwitchMaterial).isChecked =
+//                AppCompatDelegate.getDefaultNightMode()==AppCompatDelegate.MODE_NIGHT_YES
         navigationView.setNavigationItemSelectedListener{ menuItem ->
             val id = menuItem.itemId
             //it's possible to do more actions on several items, if there is a large amount of items I prefer switch(){case} instead of if()
@@ -261,15 +261,16 @@ class HomeActivity : AppCompatActivity() {
                             )
                     )
                 }
-            }else if(id == R.id.changeThemeMenuItem){
-                if(AppCompatDelegate.getDefaultNightMode()!=AppCompatDelegate.MODE_NIGHT_YES){
-                    (menuItem.actionView as SwitchMaterial).isChecked = true
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-                }else{
-                    (menuItem.actionView as SwitchMaterial).isChecked = false
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-                }
             }
+//            else if(id == R.id.changeThemeMenuItem){
+//                if(AppCompatDelegate.getDefaultNightMode()!=AppCompatDelegate.MODE_NIGHT_YES){
+//                    (menuItem.actionView as SwitchMaterial).isChecked = true
+//                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+//                }else{
+//                    (menuItem.actionView as SwitchMaterial).isChecked = false
+//                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+//                }
+//            }
             NavigationUI.onNavDestinationSelected(menuItem, navController)
             drawerMainHome.closeDrawer(GravityCompat.START)
             true
@@ -452,6 +453,11 @@ class HomeActivity : AppCompatActivity() {
                                 Long::class.java
                             )!!.toInt()
                         )
+                        homeViewModel.setDAChargeExtra(
+                            snapshot.child("da_charge_extra").getValue(
+                                Long::class.java
+                            )!!.toInt()
+                        )
                         homeViewModel.setAllowMoreShops(snapshot.child("allow_more").value as Boolean)
                     }
 
@@ -501,8 +507,10 @@ class HomeActivity : AppCompatActivity() {
                     for (snap in snapshot.children) {
                         arrayList.add(
                             LocationItem(
-                                locationName = snap.key.toString(),
-                                deliveryCharge = snap.value.toString().toInt()
+                                key = snap.key.toString(),
+                                locationName = snap.child("name").value.toString(),
+                                deliveryCharge = snap.child("deliveryCharge").value.toString().toInt(),
+                                daCharge = snap.child("daCharge").value.toString().toInt(),
                             )
                         )
                     }
@@ -527,8 +535,10 @@ class HomeActivity : AppCompatActivity() {
                     for (snap in snapshot.children) {
                         arrayList.add(
                             LocationItem(
-                                locationName = snap.key.toString(),
-                                deliveryCharge = snap.value.toString().toInt()
+                                key = snap.key.toString(),
+                                locationName = snap.child("name").value.toString(),
+                                deliveryCharge = snap.child("deliveryCharge").value.toString().toInt(),
+                                daCharge = snap.child("daCharge").value.toString().toInt(),
                             )
                         )
                     }

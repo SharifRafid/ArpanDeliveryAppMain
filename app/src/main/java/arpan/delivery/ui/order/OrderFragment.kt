@@ -61,6 +61,7 @@ class OrderFragment : Fragment() {
     private var deliveryLocations = ArrayList<String>()
     private var priceTotal = 0
     private var deliveryCharge = 0
+    private var daCharge = 0
 
     private var singleShopMode = false
     private var promoCodeActive = false
@@ -157,6 +158,7 @@ class OrderFragment : Fragment() {
         orderItemMain.totalPrice = priceTotal
         orderItemMain.locationItem = homeViewModel.getLocationArray()[view.spinner_1.selectedItemPosition]
         orderItemMain.deliveryCharge = deliveryCharge
+        orderItemMain.daCharge = daCharge
         orderItemMain.orderPlacingTimeStamp = System.currentTimeMillis()
         orderItemMain.lastTouchedTimeStamp = System.currentTimeMillis()
         val firebaseStorage = FirebaseStorage.getInstance().reference.child("ORDER_IMAGES")
@@ -545,6 +547,8 @@ class OrderFragment : Fragment() {
                 singleShopMode = false
                 priceTotal = 0
                 deliveryCharge = deliveryCharges[view.spinner_1.selectedItemPosition]
+                daCharge = (view.context as HomeActivity).homeViewModel
+                    .getLocationArray()[view.spinner_1.selectedItemPosition].daCharge
                 for(shop in mainShopItemHashMap){
                     for (pdct in shop.cart_products){
                         priceTotal += (pdct.product_item_price * pdct.product_item_amount)
@@ -556,6 +560,7 @@ class OrderFragment : Fragment() {
                     singleShopMode = true
                     priceTotal = 0
                     deliveryCharge = mainShopItemHashMap[0].shop_details.deliver_charge.toInt()
+                    daCharge = mainShopItemHashMap[0].shop_details.da_charge.toInt()
                     for (pdct in mainShopItemHashMap[0].cart_products){
                         priceTotal += (pdct.product_item_price * pdct.product_item_amount)
                     }
@@ -564,6 +569,8 @@ class OrderFragment : Fragment() {
                     singleShopMode = false
                     priceTotal = 0
                     deliveryCharge = deliveryCharges[view.spinner_1.selectedItemPosition]
+                    daCharge = (view.context as HomeActivity).homeViewModel
+                        .getLocationArray()[view.spinner_1.selectedItemPosition].daCharge
                     for(shop in mainShopItemHashMap){
                         for (pdct in shop.cart_products){
                             priceTotal += (pdct.product_item_price * pdct.product_item_amount)
@@ -579,20 +586,30 @@ class OrderFragment : Fragment() {
         val position = view.spinner_1.selectedItemPosition
         if(position==0){
             view.text_address_container.visibility = View.VISIBLE
-            deliveryCharge = if(singleShopMode){
-                mainShopItemHashMap[0].shop_details.deliver_charge.toInt()
+            if(singleShopMode){
+                deliveryCharge = mainShopItemHashMap[0].shop_details.deliver_charge.toInt()
+                daCharge = mainShopItemHashMap[0].shop_details.da_charge.toInt()
             }else{
                 if(mainShopItemHashMap.size <= homeViewModel.getMaxShops().value!!){
-                    deliveryCharges[view.spinner_1.selectedItemPosition]
+                    deliveryCharge = deliveryCharges[view.spinner_1.selectedItemPosition]
+                    daCharge = (view.context as HomeActivity).homeViewModel
+                        .getLocationArray()[view.spinner_1.selectedItemPosition].daCharge
                 }else{
-                    deliveryCharges[view.spinner_1.selectedItemPosition] +
+                    deliveryCharge = deliveryCharges[view.spinner_1.selectedItemPosition] +
                             ((mainShopItemHashMap.size-
                                     homeViewModel.getMaxShops().value!!)*
                                     homeViewModel.getDeliveryChargeExtra().value!!)
+                    daCharge = (view.context as HomeActivity).homeViewModel
+                        .getLocationArray()[view.spinner_1.selectedItemPosition].daCharge +
+                            ((mainShopItemHashMap.size-
+                                    homeViewModel.getMaxShops().value!!)*
+                                    homeViewModel.getDAChargeExtra().value!!)
                 }
             }
         }else{
             deliveryCharge = deliveryCharges[view.spinner_1.selectedItemPosition]
+            daCharge = (view.context as HomeActivity).homeViewModel
+                .getLocationArray()[view.spinner_1.selectedItemPosition].daCharge
             view.text_address_container.visibility = View.GONE
         }
         view.txtAllPrice.text = getString(R.string.total_total_text)+" "+"${priceTotal}+${deliveryCharge} " +

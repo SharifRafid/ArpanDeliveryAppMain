@@ -140,8 +140,13 @@ class OrderHistoryFragment : Fragment() {
                                 promoCode = orderItemMain.promoCode
                                 setPriceTotalOnView(view)
                                 view.orderIDText.text = orderItemMain.orderId
-                                view.orderStatusText2.text = orderItemMain.orderStatus
-                                view.button.text = orderItemMain.orderStatus
+                                if(orderItemMain.orderCompletedStatus == "CANCELLED") {
+                                    view.orderStatusText2.text = "CANCELLED"
+                                    view.button.text = "CANCELLED"
+                                }else{
+                                    view.orderStatusText2.text = orderItemMain.orderStatus
+                                    view.button.text = orderItemMain.orderStatus
+                                }
                                 view.txt_name.setText(orderItemMain.userName)
                                 view.txt_number.setText(orderItemMain.userNumber)
                                 if(orderItemMain.userAddress.isEmpty()){
@@ -289,19 +294,35 @@ class OrderHistoryFragment : Fragment() {
                 .document(mainShopItemHashMap[currentCalc].shop_doc_id)
                 .get().addOnSuccessListener { document ->
                     mainShopItemHashMap[currentCalc].shop_details =
+                        if(document.data == null){
                             ShopItem(
-                                    key = document.id,
-                                    name = document.getString(Constants.FIELD_FD_SM_NAME).toString(),
-                                    categories = document.getString(Constants.FIELD_FD_SM_CATEGORY).toString(),
-                                    image = document.getString(Constants.FIELD_FD_SM_ICON).toString(),
-                                    cover_image = document.getString(Constants.FIELD_FD_SM_COVER).toString(),
-                                    da_charge = document.getString(Constants.FIELD_FD_SM_DA_CHARGE).toString(),
-                                    deliver_charge = document.getString(Constants.FIELD_FD_SM_DELIVERY).toString(),
-                                    location = document.getString(Constants.FIELD_FD_SM_LOCATION).toString(),
-                                    username = document.getString(Constants.FIELD_FD_SM_USERNAME).toString(),
-                                    password = document.getString(Constants.FIELD_FD_SM_PASSWORD).toString(),
-                                    order = document.getString(Constants.FIELD_FD_SM_ORDER).toString().toInt()
+                                key = "",
+                                name = "SHOP DELETED",
+                                categories = "",
+                                image = "",
+                                cover_image = "",
+                                da_charge = "",
+                                deliver_charge = "",
+                                location = "",
+                                username = "",
+                                password = "",
+                                order = 0
                             )
+                        } else {
+                            ShopItem(
+                                key = document.id,
+                                name = document.getString(Constants.FIELD_FD_SM_NAME).toString(),
+                                categories = document.getString(Constants.FIELD_FD_SM_CATEGORY).toString(),
+                                image = document.getString(Constants.FIELD_FD_SM_ICON).toString(),
+                                cover_image = document.getString(Constants.FIELD_FD_SM_COVER).toString(),
+                                da_charge = document.getString(Constants.FIELD_FD_SM_DA_CHARGE).toString(),
+                                deliver_charge = document.getString(Constants.FIELD_FD_SM_DELIVERY).toString(),
+                                location = document.getString(Constants.FIELD_FD_SM_LOCATION).toString(),
+                                username = document.getString(Constants.FIELD_FD_SM_USERNAME).toString(),
+                                password = document.getString(Constants.FIELD_FD_SM_PASSWORD).toString(),
+                                order = document.getString(Constants.FIELD_FD_SM_ORDER).toString().toInt()
+                            )
+                        }
                     if(currentCalc+1 >= mainShopItemHashMap.size){
                         // The data is downloaded all of those
                         view.productsRecyclerView.layoutManager = LinearLayoutManager(view.context)

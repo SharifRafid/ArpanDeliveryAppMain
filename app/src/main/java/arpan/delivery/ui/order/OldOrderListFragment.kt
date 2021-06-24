@@ -30,6 +30,9 @@ class OldOrderListFragment : Fragment() {
     private var ordersMainHashMap = HashMap<String, ArrayList<OrderItemMain>>()
     private var ordersMainOldItemsArrayList = ArrayList<OrderOldItems>()
     private lateinit var mainView : View
+    private var startTimeMonthMillis = 0L
+    private var endTimeMonthMillis = 0L
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -53,6 +56,16 @@ class OldOrderListFragment : Fragment() {
         firebaseFirestore = FirebaseFirestore.getInstance()
         firebaseStorage = FirebaseStorage.getInstance()
         mainView = view
+        val c = Calendar.getInstance() // this takes current date
+        c[Calendar.DAY_OF_MONTH] = 1
+        c[Calendar.HOUR_OF_DAY] = 0
+
+        val d = Calendar.getInstance() // this takes current date
+        d[Calendar.DAY_OF_MONTH] = c.getActualMaximum(Calendar.DAY_OF_MONTH)
+        d[Calendar.HOUR_OF_DAY] = 0
+
+        startTimeMonthMillis = c.timeInMillis
+        endTimeMonthMillis = d.timeInMillis
     }
 
     private fun loadDataFirstTime(view: View) {
@@ -61,12 +74,12 @@ class OldOrderListFragment : Fragment() {
             view.noProductsTextView.text = getString(R.string.you_are_not_logged_i)
             view.progressBar.visibility = View.GONE
             view.recyclerView.visibility = View.GONE
-            view.radioGroup.visibility = View.GONE
         }else{
             firebaseFirestore.collection("users")
                     .document(FirebaseAuth.getInstance().currentUser!!.uid)
                     .collection("users_order_collection")
-                    .whereEqualTo("orderStatus","PENDING")
+                    .whereGreaterThanOrEqualTo("orderPlacingTimeStamp", startTimeMonthMillis)
+                    .whereLessThanOrEqualTo("orderPlacingTimeStamp", endTimeMonthMillis)
                     .orderBy("orderPlacingTimeStamp")
                     .get()
                     .addOnCompleteListener {
@@ -83,14 +96,12 @@ class OldOrderListFragment : Fragment() {
                                 view.noProductsTextView.text = getString(R.string.you_have_no_orders)
                                 view.progressBar.visibility = View.GONE
                                 view.recyclerView.visibility = View.GONE
-                                view.radioGroup.visibility = View.GONE
                             }
                         }else{
                             view.noProductsText.visibility = View.VISIBLE
                             view.noProductsTextView.text = getString(R.string.you_have_no_orders)
                             view.progressBar.visibility = View.GONE
                             view.recyclerView.visibility = View.GONE
-                            view.radioGroup.visibility = View.GONE
                             it.exception!!.printStackTrace()
                         }
                     }
@@ -127,38 +138,36 @@ class OldOrderListFragment : Fragment() {
         view.noProductsText.visibility = View.GONE
         view.progressBar.visibility = View.GONE
         view.recyclerView.visibility = View.VISIBLE
-        view.radioGroup.visibility = View.VISIBLE
-        enableRadioGroupLogic(view)
     }
 
-    private fun enableRadioGroupLogic(view: View) {
-        view.radioGroup.setOnCheckedChangeListener { group, checkedId ->
-            when(checkedId){
-                R.id.pendingRadio -> {
-                    loadSecondData(view, "PENDING")
-                }
-                R.id.approvedRadio -> {
-                    loadSecondData(view, "APPROVED")
-                }
-                R.id.onDeliveryRadio -> {
-                    loadSecondData(view, "DELIVERY")
-                }
-                R.id.completedRadio -> {
-                    loadSecondData(view, "COMPLETED")
-                }
-            }
-        }
-    }
+//    private fun enableRadioGroupLogic(view: View) {
+//        view.radioGroup.setOnCheckedChangeListener { group, checkedId ->
+//            when(checkedId){
+//                R.id.pendingRadio -> {
+//                    loadSecondData(view, "PENDING")
+//                }
+//                R.id.approvedRadio -> {
+//                    loadSecondData(view, "APPROVED")
+//                }
+//                R.id.onDeliveryRadio -> {
+//                    loadSecondData(view, "DELIVERY")
+//                }
+//                R.id.completedRadio -> {
+//                    loadSecondData(view, "COMPLETED")
+//                }
+//            }
+//        }
+//    }
 
     private fun loadSecondData(view: View, s: String) {
         view.noProductsText.visibility = View.GONE
         view.progressBar.visibility = View.VISIBLE
         view.recyclerView.visibility = View.GONE
-        view.radioGroup.visibility = View.VISIBLE
         firebaseFirestore.collection("users")
                 .document(FirebaseAuth.getInstance().currentUser!!.uid)
                 .collection("users_order_collection")
-                .whereEqualTo("orderStatus",s)
+                .whereGreaterThanOrEqualTo("orderPlacingTimeStamp", startTimeMonthMillis)
+                .whereLessThanOrEqualTo("orderPlacingTimeStamp", endTimeMonthMillis)
                 .orderBy("orderPlacingTimeStamp")
                 .get()
                 .addOnCompleteListener {
@@ -176,14 +185,12 @@ class OldOrderListFragment : Fragment() {
                             view.noProductsTextView.text = getString(R.string.you_have_no_orders)
                             view.progressBar.visibility = View.GONE
                             view.recyclerView.visibility = View.GONE
-                            view.radioGroup.visibility = View.VISIBLE
                         }
                     }else{
                         view.noProductsText.visibility = View.VISIBLE
                         view.noProductsTextView.text = getString(R.string.you_have_no_orders)
                         view.progressBar.visibility = View.GONE
                         view.recyclerView.visibility = View.GONE
-                        view.radioGroup.visibility = View.VISIBLE
                         it.exception!!.printStackTrace()
                     }
                 }

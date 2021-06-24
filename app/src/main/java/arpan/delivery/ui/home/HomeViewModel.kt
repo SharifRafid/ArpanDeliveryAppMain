@@ -30,6 +30,7 @@ class HomeViewModel : ViewModel() {
     private var maxShops = MutableLiveData(1)
     private var allowMoreShops = MutableLiveData(false)
     private var deliveryChargeExtra = MutableLiveData(20)
+    private var daChargeExtra = MutableLiveData(10)
 
     fun setMaxShops(i : Int){
         maxShops = MutableLiveData(i)
@@ -40,6 +41,9 @@ class HomeViewModel : ViewModel() {
     fun setDeliveryChargeExtra(i : Int){
         deliveryChargeExtra = MutableLiveData(i)
     }
+    fun setDAChargeExtra(i : Int){
+        daChargeExtra = MutableLiveData(i)
+    }
 
     fun getMaxShops() : MutableLiveData<Int>{
         return maxShops
@@ -49,6 +53,9 @@ class HomeViewModel : ViewModel() {
     }
     fun getDeliveryChargeExtra() : MutableLiveData<Int>{
         return deliveryChargeExtra
+    }
+    fun getDAChargeExtra() : MutableLiveData<Int>{
+        return daChargeExtra
     }
 
     private lateinit var offersDocumentSnapshotMain : MutableLiveData<Task<DocumentSnapshot>>

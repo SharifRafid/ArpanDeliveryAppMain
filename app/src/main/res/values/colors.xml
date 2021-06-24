@@ -50,5 +50,6 @@
     <color name="switch_track_tint">#AAC7DF</color>
     <color name="bg_color_first_page">#333333</color>
     <color name="bg_color_profile_page">#F6F6F6</color>
-    <color name="bg_color_deep_card">#202020</color>
+    <color name="bg_color_deep_card">#FFFFFF</color>
+    <color name="edit_text_color_profile_page_">#737373</color>
 </resources>

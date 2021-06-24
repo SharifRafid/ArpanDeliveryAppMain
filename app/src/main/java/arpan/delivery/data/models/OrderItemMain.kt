@@ -27,4 +27,6 @@ data class OrderItemMain(
     var pickDropOrderItem : PickDropOrderItem = PickDropOrderItem(),
     var lattitude : String = "",
     var longtitude : String = "",
+    var orderCompletedStatus : String = "",
+    var daCharge : Int = 0,
 )

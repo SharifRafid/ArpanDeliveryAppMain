@@ -57,12 +57,13 @@
             android:icon="@drawable/ic_rating_icon" />
     </group>
     <group android:id="@+id/grp6">
+        <!--
         <item
             android:id="@+id/changeThemeMenuItem"
             android:actionLayout="@layout/theme_change_button"
             android:title="@string/dark_mode"
             android:icon="@drawable/ic_baseline_color_lens_24"
-            app:actionViewClass="com.google.android.material.switchmaterial.SwitchMaterial"/>
+            app:actionViewClass="com.google.android.material.switchmaterial.SwitchMaterial"/> -->
         <item
             android:id="@+id/logoutNowItem"
             android:title="@string/logout"
