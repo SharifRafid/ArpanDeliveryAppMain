@@ -24,10 +24,12 @@ import arpan.delivery.data.models.SlidingTextItem
 import arpan.delivery.utils.Constants
 import arpan.delivery.utils.showToast
 import com.google.android.material.tabs.TabLayout
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.shashank.sony.fancytoastlib.FancyToast
+import com.smarteist.autoimageslider.IndicatorView.animation.type.IndicatorAnimationType
 import com.smarteist.autoimageslider.SliderView
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.fragment_home.*
@@ -45,6 +47,7 @@ private const val ARG_PARAM2 = "param2"
  * A simple [Fragment] subclass.
  * Use the [HomeFragment.newInstance] factory method to
  * create an instance of this fragment.
+ *
  */
 class HomeFragment : Fragment() {
     // TODO: Rename and change types of parameters
@@ -65,6 +68,8 @@ class HomeFragment : Fragment() {
     private lateinit var linearLayoutManager : LinearLayoutManager
     private var loadingNewData = false
     private lateinit var homeViewModel: HomeViewModel
+
+    val mainArrayListWithData = ArrayList<ShopItem>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -129,19 +134,15 @@ class HomeFragment : Fragment() {
 
     private fun initViewPagerOfferImagesStatusCheck(context: Context, imageSlider: SliderView) {
         homeViewModel.getOffersDocumentSnapshotData().observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            if(it.isSuccessful){
-                if(it.result!!.contains(Constants.FIELD_FD_OFFERS_OIS)){
-                    if(it.result!!.getBoolean(Constants.FIELD_FD_OFFERS_OIS) == true){
-                        mainView.imageSlider.visibility = View.VISIBLE
-                        initViewPagerOfferImages(context, imageSlider)
-                    }else{
-                        mainView.imageSlider.visibility = View.GONE
-                    }
+            if(it.contains(Constants.FIELD_FD_OFFERS_OIS)){
+                if(it.getBoolean(Constants.FIELD_FD_OFFERS_OIS) == true){
+                    mainView.imageSlider.visibility = View.VISIBLE
+                    initViewPagerOfferImages(context, imageSlider)
                 }else{
                     mainView.imageSlider.visibility = View.GONE
                 }
             }else{
-                it.exception!!.printStackTrace()
+                mainView.imageSlider.visibility = View.GONE
             }
         })
     }
@@ -149,69 +150,65 @@ class HomeFragment : Fragment() {
     private fun initViewPagerTimebasedNotificationItems(context: Context, viewpager: SliderView) {
         homeViewModel.getTimeBasedNotificationsDocumentSnapshotMainData().observe(viewLifecycleOwner,
                 androidx.lifecycle.Observer {
-                    if (it.isSuccessful) {
-                        if (it.result!!.data!!.entries.isNotEmpty()) {
-                            val imagesList = ArrayList<SlidingTextItem>()
-                            val map = it.result!!.data!! as HashMap<String, HashMap<String, Any>>
-                            for (docField in map.entries) {
-                                val d = SlidingTextItem()
-                                d.key = docField.key
-                                d.enabled = docField.value["enabled"] as Boolean
-                                d.textTitle = docField.value["textTitle"] as String
-                                d.textDescription = docField.value["textDescription"] as String
-                                d.timeBased = docField.value["timeBased"] as Boolean
-                                d.startTime = docField.value["startTime"] as Long
-                                d.endTime = docField.value["endTime"] as Long
-                                d.backgroundColorHex = docField.value["backgroundColorHex"] as String
-                                d.textColorHex = docField.value["textColorHex"] as String
-                                d.order = docField.value["order"] as Long
-                                d.startTimeString = docField.value["startTimeString"] as String
-                                d.endTimeString = docField.value["endTimeString"] as String
-                                try {
-                                    val string1 = "${d.startTimeString}:00"
-                                    val time1 = SimpleDateFormat("HH:mm:ss", Locale.ENGLISH).parse(string1)
-                                    val calendar1 = Calendar.getInstance()
-                                    calendar1.time = time1
-                                    calendar1.add(Calendar.DATE, 1)
-                                    val string2 = "${d.endTimeString}:00"
-                                    val time2 = SimpleDateFormat("HH:mm:ss", Locale.ENGLISH).parse(string2)
-                                    val calendar2 = Calendar.getInstance()
-                                    calendar2.time = time2
-                                    calendar2.add(Calendar.DATE, 1)
-                                    val someRandomTime = SimpleDateFormat("HH:mm:ss", Locale.ENGLISH).format(Calendar.getInstance().time)
-                                    val date = SimpleDateFormat("HH:mm:ss", Locale.ENGLISH).parse(someRandomTime)
-                                    val calendar3 = Calendar.getInstance()
-                                    calendar3.time = date
-                                    calendar3.add(Calendar.DATE, 1)
-                                    Log.e("C3", date.toString())
-                                    Log.e("C2", time2.toString())
-                                    Log.e("C1", time1.toString())
-                                    val x = calendar3.time
-                                    if (d.timeBased && d.enabled) {
-                                        if(x.after(calendar1.time) && x.before(calendar2.time)) {
-                                            imagesList.add(d)
-                                        }
+                    if (it.data!!.entries.isNotEmpty()) {
+                        val imagesList = ArrayList<SlidingTextItem>()
+                        val map = it.data!! as HashMap<String, HashMap<String, Any>>
+                        for (docField in map.entries) {
+                            val d = SlidingTextItem()
+                            d.key = docField.key
+                            d.enabled = docField.value["enabled"] as Boolean
+                            d.textTitle = docField.value["textTitle"] as String
+                            d.textDescription = docField.value["textDescription"] as String
+                            d.timeBased = docField.value["timeBased"] as Boolean
+                            d.startTime = docField.value["startTime"] as Long
+                            d.endTime = docField.value["endTime"] as Long
+                            d.backgroundColorHex = docField.value["backgroundColorHex"] as String
+                            d.textColorHex = docField.value["textColorHex"] as String
+                            d.order = docField.value["order"] as Long
+                            d.startTimeString = docField.value["startTimeString"] as String
+                            d.endTimeString = docField.value["endTimeString"] as String
+                            try {
+                                val string1 = "${d.startTimeString}:00"
+                                val time1 = SimpleDateFormat("HH:mm:ss", Locale.ENGLISH).parse(string1)
+                                val calendar1 = Calendar.getInstance()
+                                calendar1.time = time1
+                                calendar1.add(Calendar.DATE, 1)
+                                val string2 = "${d.endTimeString}:00"
+                                val time2 = SimpleDateFormat("HH:mm:ss", Locale.ENGLISH).parse(string2)
+                                val calendar2 = Calendar.getInstance()
+                                calendar2.time = time2
+                                calendar2.add(Calendar.DATE, 1)
+                                val someRandomTime = SimpleDateFormat("HH:mm:ss", Locale.ENGLISH).format(Calendar.getInstance().time)
+                                val date = SimpleDateFormat("HH:mm:ss", Locale.ENGLISH).parse(someRandomTime)
+                                val calendar3 = Calendar.getInstance()
+                                calendar3.time = date
+                                calendar3.add(Calendar.DATE, 1)
+                                Log.e("C3", date.toString())
+                                Log.e("C2", time2.toString())
+                                Log.e("C1", time1.toString())
+                                val x = calendar3.time
+                                if (d.timeBased && d.enabled) {
+                                    if(x.after(calendar1.time) && x.before(calendar2.time)) {
+                                        imagesList.add(d)
                                     }
-                                } catch (e: ParseException) {
-                                    e.printStackTrace()
-                                    continue
                                 }
+                            } catch (e: ParseException) {
+                                e.printStackTrace()
+                                continue
                             }
-                            if (imagesList.isEmpty()) {
-                                viewpager.visibility = View.GONE
-                            } else {
-                                Collections.sort(imagesList, kotlin.Comparator { o1, o2 ->
-                                    (o1.order).compareTo(o2.order)
-                                })
-                                val sliderAdapter = SliderAdapterExampleTB(context)
-                                sliderAdapter.renewItems(imagesList)
-                                viewpager.setSliderAdapter(sliderAdapter)
-                            }
-                        } else {
+                        }
+                        if (imagesList.isEmpty()) {
                             viewpager.visibility = View.GONE
+                        } else {
+                            Collections.sort(imagesList, kotlin.Comparator { o1, o2 ->
+                                (o1.order).compareTo(o2.order)
+                            })
+                            val sliderAdapter = SliderAdapterExampleTB(context)
+                            sliderAdapter.renewItems(imagesList)
+                            viewpager.setSliderAdapter(sliderAdapter)
                         }
                     } else {
-                        it.exception!!.printStackTrace()
+                        viewpager.visibility = View.GONE
                     }
                 })
     }
@@ -219,70 +216,62 @@ class HomeFragment : Fragment() {
     private fun initViewPagerNormalNotificationItems(context: Context, viewpager: SliderView) {
         homeViewModel.getNormalNotificationsDocumentSnapshotMainData().observe(viewLifecycleOwner,
                 androidx.lifecycle.Observer {
-                    if(it.isSuccessful){
-                        if(it.result!!.data!!.entries.isNotEmpty()){
-                            val imagesList = ArrayList<SlidingTextItem>()
-                            val map = it.result!!.data!! as HashMap<String, HashMap<String,Any>>
-                            for(docField in map.entries) {
-                                val d = SlidingTextItem()
-                                d.key = docField.key
-                                d.enabled = docField.value["enabled"] as Boolean
-                                d.textTitle = docField.value["textTitle"] as String
-                                d.textDescription = docField.value["textDescription"] as String
-                                d.timeBased = docField.value["timeBased"] as Boolean
-                                d.startTime = docField.value["startTime"] as Long
-                                d.endTime = docField.value["endTime"] as Long
-                                d.backgroundColorHex = docField.value["backgroundColorHex"] as String
-                                d.textColorHex = docField.value["textColorHex"] as String
-                                d.order = docField.value["order"] as Long
-                                if(d.enabled && !d.timeBased){
-                                    imagesList.add(d)
-                                }
+                    if(it.data!!.entries.isNotEmpty()){
+                        val imagesList = ArrayList<SlidingTextItem>()
+                        val map = it.data!! as HashMap<String, HashMap<String,Any>>
+                        for(docField in map.entries) {
+                            val d = SlidingTextItem()
+                            d.key = docField.key
+                            d.enabled = docField.value["enabled"] as Boolean
+                            d.textTitle = docField.value["textTitle"] as String
+                            d.textDescription = docField.value["textDescription"] as String
+                            d.timeBased = docField.value["timeBased"] as Boolean
+                            d.startTime = docField.value["startTime"] as Long
+                            d.endTime = docField.value["endTime"] as Long
+                            d.backgroundColorHex = docField.value["backgroundColorHex"] as String
+                            d.textColorHex = docField.value["textColorHex"] as String
+                            d.order = docField.value["order"] as Long
+                            if(d.enabled && !d.timeBased){
+                                imagesList.add(d)
                             }
-                            if(imagesList.isEmpty()){
-                                viewpager.visibility = View.GONE
-                            }else{
-                                Collections.sort(imagesList, kotlin.Comparator { o1, o2 ->
-                                    (o1.order).compareTo(o2.order)
-                                })
-                                val sliderAdapter = SliderAdapterExampleTB(context)
-                                sliderAdapter.renewItems(imagesList)
-                                viewpager.setSliderAdapter(sliderAdapter)
-                            }
-                        }else{
+                        }
+                        if(imagesList.isEmpty()){
                             viewpager.visibility = View.GONE
+                        }else{
+                            Collections.sort(imagesList, kotlin.Comparator { o1, o2 ->
+                                (o1.order).compareTo(o2.order)
+                            })
+                            val sliderAdapter = SliderAdapterExampleTB(context)
+                            sliderAdapter.renewItems(imagesList)
+                            viewpager.setSliderAdapter(sliderAdapter)
                         }
                     }else{
-                        it.exception!!.printStackTrace()
+                        viewpager.visibility = View.GONE
                     }
                 })
     }
 
     private fun initViewPagerOfferImages(context: Context, viewpagerGalleryImages: SliderView) {
         homeViewModel.getOffersDocumentSnapshotMainData().observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            if(it.isSuccessful){
-                if(it.result!!.data!!.entries.isNotEmpty()){
-                    val imagesList = ArrayList<OfferImage>()
-                    val map = it.result!!.data!! as Map<String, Map<String, String>>
-                    for(docField in map.entries){
-                        imagesList.add(
-                                OfferImage(
-                                        key = docField.key,
-                                        imageLocation = docField.value[Constants.FIELD_FD_OFFERS_OID_LOCATION].toString(),
-                                        imageDescription = docField.value[Constants.FIELD_FD_OFFERS_OID_DESCRIPTION].toString(),
-                                        order = docField.value[Constants.FIELD_FD_OFFERS_OID_ORDER].toString().toInt()
-                                ))
-                    }
-                    Collections.sort(imagesList, kotlin.Comparator { o1, o2 ->
-                        (o1.order).compareTo(o2.order)
-                    })
-                    val sliderAdapter = SliderAdapterExample(context)
-                    sliderAdapter.renewItems(imagesList)
-                    viewpagerGalleryImages.setSliderAdapter(sliderAdapter)
-                    viewpagerGalleryImages.startAutoCycle()
+            if(it.data!!.entries.isNotEmpty()){
+                val imagesList = ArrayList<OfferImage>()
+                val map = it.data!! as Map<String, Map<String, String>>
+                for(docField in map.entries){
+                    imagesList.add(
+                        OfferImage(
+                            key = docField.key,
+                            imageLocation = docField.value[Constants.FIELD_FD_OFFERS_OID_LOCATION].toString(),
+                            imageDescription = docField.value[Constants.FIELD_FD_OFFERS_OID_DESCRIPTION].toString(),
+                            order = docField.value[Constants.FIELD_FD_OFFERS_OID_ORDER].toString().toInt()
+                        ))
                 }
-            }else{
-                it.exception!!.printStackTrace()
+                Collections.sort(imagesList, kotlin.Comparator { o1, o2 ->
+                    (o1.order).compareTo(o2.order)
+                })
+                val sliderAdapter = SliderAdapterExample(context)
+                sliderAdapter.renewItems(imagesList)
+                viewpagerGalleryImages.setSliderAdapter(sliderAdapter)
+                viewpagerGalleryImages.startAutoCycle()
             }
         })
     }
@@ -290,79 +279,76 @@ class HomeFragment : Fragment() {
     private fun initMainShopsLoadingAndPlacingProcess(context: Context) {
         homeViewModel.getCategoriesDocumentSnapshotData().observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             task ->
-            if(task.isSuccessful){
-                val categoryItemsArray = ArrayList<ShopCategoryItem>()
-                val map = task.result!!.data as Map<String, Map<String, String>>
-                for(category_field in map.entries){
-                    categoryItemsArray.add(
-                            ShopCategoryItem(
-                                    key = category_field.key,
-                                    name = category_field.value[Constants.FIELD_FD_SHOPS_MAIN_CATEGORY_NAME].toString(),
-                                    category_key = category_field.value[Constants.FIELD_FD_SHOPS_MAIN_CATEGORY_KEY].toString(),
-                                    order = category_field.value[Constants.FIELD_FD_SHOPS_MAIN_CATEGORY_ORDER].toString().toInt()
-                            )
+            val categoryItemsArray = ArrayList<ShopCategoryItem>()
+            val map = task.data as Map<String, Map<String, String>>
+            for(category_field in map.entries){
+                categoryItemsArray.add(
+                    ShopCategoryItem(
+                        key = category_field.key,
+                        name = category_field.value[Constants.FIELD_FD_SHOPS_MAIN_CATEGORY_NAME].toString(),
+                        category_key = category_field.value[Constants.FIELD_FD_SHOPS_MAIN_CATEGORY_KEY].toString(),
+                        order = category_field.value[Constants.FIELD_FD_SHOPS_MAIN_CATEGORY_ORDER].toString().toInt()
                     )
-                }
-                Collections.sort(categoryItemsArray, kotlin.Comparator { o1, o2 -> o1.order.compareTo(o2.order) })
-                tabLayout.addTab(tabLayout.newTab().setText("All"))
-                for(item in categoryItemsArray){
-                    tabLayout.addTab(tabLayout.newTab().setText(item.name))
-                }
-                tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-                    override fun onTabSelected(tab: TabLayout.Tab?) {
-                        if(tab!!.text=="All"){
-                            firebaseQuery = FirebaseFirestore.getInstance()
-                                    .collection(Constants.FC_SHOPS_MAIN)
-                                    .whereEqualTo(Constants.FIELD_FD_SM_STATUS, "open")
-                                    .orderBy(Constants.FIELD_FD_SM_CATEGORY)
-                                    .orderBy(Constants.FIELD_FD_SM_ORDER)
-                                    .limit(Constants.MAIN_SHOPS_PAGING_ARRAYLIST_SIZE.toLong())
-                            runFirstQuery()
-                        }else{
-                            filter_cat_word = categoryItemsArray[tabLayout.selectedTabPosition-1].category_key
-                            firebaseQuery = FirebaseFirestore.getInstance()
-                                    .collection(Constants.FC_SHOPS_MAIN)
-                                    .whereEqualTo(Constants.FIELD_FD_SM_STATUS, "open")
-                                    .whereEqualTo(Constants.FIELD_FD_SM_CATEGORY, filter_cat_word)
-                                    .orderBy(Constants.FIELD_FD_SM_ORDER)
-                                    .limit(Constants.MAIN_SHOPS_PAGING_ARRAYLIST_SIZE.toLong())
-                            runFirstQuery()
-                        }
-                    }
-
-                    override fun onTabUnselected(tab: TabLayout.Tab?) {
-
-                    }
-
-                    override fun onTabReselected(tab: TabLayout.Tab?) {
-                        if(tab!!.text=="All"){
-                            firebaseQuery = FirebaseFirestore.getInstance()
-                                    .collection(Constants.FC_SHOPS_MAIN)
-                                    .whereEqualTo(Constants.FIELD_FD_SM_STATUS, "open")
-                                    .orderBy(Constants.FIELD_FD_SM_CATEGORY)
-                                    .orderBy(Constants.FIELD_FD_SM_ORDER)
-                                    .limit(Constants.MAIN_SHOPS_PAGING_ARRAYLIST_SIZE.toLong())
-                            runFirstQuery()
-                        }else{
-                            filter_cat_word = categoryItemsArray[tabLayout.selectedTabPosition-1].category_key
-                            firebaseQuery = FirebaseFirestore.getInstance()
-                                    .collection(Constants.FC_SHOPS_MAIN)
-                                    .whereEqualTo(Constants.FIELD_FD_SM_STATUS, "open")
-                                    .whereEqualTo(Constants.FIELD_FD_SM_CATEGORY, filter_cat_word)
-                                    .orderBy(Constants.FIELD_FD_SM_ORDER)
-                                    .limit(Constants.MAIN_SHOPS_PAGING_ARRAYLIST_SIZE.toLong())
-                            runFirstQuery()
-                        }
-                    }
-
-                })
-                tabLayout.selectTab(tabLayout.getTabAt(0))
+                )
+            }
+            Collections.sort(categoryItemsArray, kotlin.Comparator { o1, o2 -> o1.order.compareTo(o2.order) })
+            tabLayout.addTab(tabLayout.newTab().setText("All"))
+            for(item in categoryItemsArray){
+                tabLayout.addTab(tabLayout.newTab().setText(item.name))
+            }
+            runTheWholeQueryAtOnceWithoutPagination(categoryItemsArray)
+//                tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+//                    override fun onTabSelected(tab: TabLayout.Tab?) {
+//                        if(tab!!.text=="All"){
+//                            firebaseQuery = FirebaseFirestore.getInstance()
+//                                    .collection(Constants.FC_SHOPS_MAIN)
+//                                    .whereEqualTo(Constants.FIELD_FD_SM_STATUS, "open")
+//                                    .orderBy(Constants.FIELD_FD_SM_CATEGORY)
+//                                    .orderBy(Constants.FIELD_FD_SM_ORDER)
+//                                    .limit(Constants.MAIN_SHOPS_PAGING_ARRAYLIST_SIZE.toLong())
+//                            runFirstQuery()
+//                        }else{
+//                            filter_cat_word = categoryItemsArray[tabLayout.selectedTabPosition-1].category_key
+//                            firebaseQuery = FirebaseFirestore.getInstance()
+//                                    .collection(Constants.FC_SHOPS_MAIN)
+//                                    .whereEqualTo(Constants.FIELD_FD_SM_STATUS, "open")
+//                                    .whereEqualTo(Constants.FIELD_FD_SM_CATEGORY, filter_cat_word)
+//                                    .orderBy(Constants.FIELD_FD_SM_ORDER)
+//                                    .limit(Constants.MAIN_SHOPS_PAGING_ARRAYLIST_SIZE.toLong())
+//                            runFirstQuery()
+//                        }
+//                    }
+//
+//                    override fun onTabUnselected(tab: TabLayout.Tab?) {
+//
+//                    }
+//
+//                    override fun onTabReselected(tab: TabLayout.Tab?) {
+//                        if(tab!!.text=="All"){
+//                            firebaseQuery = FirebaseFirestore.getInstance()
+//                                    .collection(Constants.FC_SHOPS_MAIN)
+//                                    .whereEqualTo(Constants.FIELD_FD_SM_STATUS, "open")
+//                                    .orderBy(Constants.FIELD_FD_SM_CATEGORY)
+//                                    .orderBy(Constants.FIELD_FD_SM_ORDER)
+//                                    .limit(Constants.MAIN_SHOPS_PAGING_ARRAYLIST_SIZE.toLong())
+//                            runFirstQuery()
+//                        }else{
+//                            filter_cat_word = categoryItemsArray[tabLayout.selectedTabPosition-1].category_key
+//                            firebaseQuery = FirebaseFirestore.getInstance()
+//                                    .collection(Constants.FC_SHOPS_MAIN)
+//                                    .whereEqualTo(Constants.FIELD_FD_SM_STATUS, "open")
+//                                    .whereEqualTo(Constants.FIELD_FD_SM_CATEGORY, filter_cat_word)
+//                                    .orderBy(Constants.FIELD_FD_SM_ORDER)
+//                                    .limit(Constants.MAIN_SHOPS_PAGING_ARRAYLIST_SIZE.toLong())
+//                            runFirstQuery()
+//                        }
+//                    }
+//
+//                })
+//                tabLayout.selectTab(tabLayout.getTabAt(0))
 //                    Collections.sort(categoryItemsArray, kotlin.Comparator { o1, o2 ->
 //                        (o1.order).compareTo(o2.order)
 //                    })
-            }else{
-                task.exception!!.printStackTrace()
-            }
         })
     }
 
@@ -380,6 +366,129 @@ class HomeFragment : Fragment() {
         lm.orientation = GridLayoutManager.VERTICAL
         topRecyclerView.layoutManager = lm
         topRecyclerView.isNestedScrollingEnabled = false
+
+        cardView1.setOnClickListener {
+            if(FirebaseAuth.getInstance().currentUser!=null){
+                (context as HomeActivity).navController.navigate(R.id.customOrderNewFragment)
+            }else{
+                context.showToast("অর্ডার করার জন্য লগ ইন করতে হবে ।", FancyToast.ERROR)
+            }
+        }
+        cardView2.setOnClickListener {
+            if(FirebaseAuth.getInstance().currentUser!=null){
+                (context as HomeActivity).navController.navigate(R.id.medicineNewFragment)
+            }else{
+                context.showToast("অর্ডার করার জন্য লগ ইন করতে হবে ।", FancyToast.ERROR)
+            }
+        }
+        cardView3.setOnClickListener {
+            if(FirebaseAuth.getInstance().currentUser!=null){
+                (context as HomeActivity).navController.navigate(R.id.parcelNewFragment)
+            }else{
+                context.showToast("অর্ডার করার জন্য লগ ইন করতে হবে ।", FancyToast.ERROR)
+            }
+        }
+        cardView4.setOnClickListener {
+            if(FirebaseAuth.getInstance().currentUser!=null){
+                (context as HomeActivity).navController.navigate(R.id.pickUpDropFragment)
+            }else{
+                context.showToast("অর্ডার করার জন্য লগ ইন করতে হবে ।", FancyToast.ERROR)
+            }
+        }
+    }
+
+    private fun runTheWholeQueryAtOnceWithoutPagination(categoryItemsArray: ArrayList<ShopCategoryItem>) {
+        // Trying the whole query with snapshot listener to check how it performs or if it
+        // does better than paging or not.....
+        mainView.mainRecyclerViewShopsHome.visibility = View.GONE
+        mainView.mainRecyclerViewShopsHomeProgress.visibility = View.VISIBLE
+        val value = homeViewModel.getMainShopsDocumentSnapshot()
+        if(value!=null){
+            arrayList.clear()
+            mainArrayListWithData.clear()
+            (activity as HomeActivity).mainShopsArrayList.clear()
+            for(document in value.documents){
+                val shopItem = ShopItem(
+                    key = document.id,
+                    name = document.getString(Constants.FIELD_FD_SM_NAME).toString(),
+                    categories = document.getString(Constants.FIELD_FD_SM_CATEGORY).toString(),
+                    image = document.getString(Constants.FIELD_FD_SM_ICON).toString(),
+                    cover_image = document.getString(Constants.FIELD_FD_SM_COVER).toString(),
+                    da_charge = document.getString(Constants.FIELD_FD_SM_DA_CHARGE).toString(),
+                    deliver_charge = document.getString(Constants.FIELD_FD_SM_DELIVERY).toString(),
+                    location = document.getString(Constants.FIELD_FD_SM_LOCATION).toString(),
+                    username = document.getString(Constants.FIELD_FD_SM_USERNAME).toString(),
+                    password = document.getString(Constants.FIELD_FD_SM_PASSWORD).toString(),
+                    order = document.getString(Constants.FIELD_FD_SM_ORDER).toString().toInt()
+                )
+                if(document.contains("shopNotice")){
+                    shopItem.shopNotice = document.getString("shopNotice").toString()
+                }
+                if(document.contains("shopNoticeColor")){
+                    shopItem.shopNoticeColor = document.getString("shopNoticeColor").toString()
+                }
+                if(document.contains("shopNoticeColorBg")){
+                    shopItem.shopNoticeColorBg = document.getString("shopNoticeColorBg").toString()
+                }
+                arrayList.add(shopItem)
+                mainArrayListWithData.add(shopItem)
+                (activity as HomeActivity).mainShopsArrayList.add(shopItem)
+            }
+            Collections.sort(arrayList, kotlin.Comparator { o1, o2 ->
+                o1.order.compareTo(o2.order)
+            })
+            Collections.sort(mainArrayListWithData, kotlin.Comparator { o1, o2 ->
+                o1.order.compareTo(o2.order)
+            })
+            Collections.sort((activity as HomeActivity).mainShopsArrayList, kotlin.Comparator { o1, o2 ->
+                o1.order.compareTo(o2.order)
+            })
+            (activity as HomeActivity).checkDynamicLinkStatus()
+            recyclerAdapterMainShops.notifyDataSetChanged()
+            mainRecyclerViewShopsHome.visibility = View.VISIBLE
+            mainRecyclerViewShopsHomeProgress.visibility = View.GONE
+            tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+                override fun onTabSelected(tab: TabLayout.Tab?) {
+                    if(tab!!.text=="All"){
+                        arrayList.clear()
+                        arrayList.addAll(mainArrayListWithData)
+                        recyclerAdapterMainShops.notifyDataSetChanged()
+                    }else{
+                        arrayList.clear()
+                        filter_cat_word = categoryItemsArray[tabLayout.selectedTabPosition-1].category_key
+                        mainArrayListWithData.forEach {shopItem ->
+                            if(shopItem.categories.contains(filter_cat_word)){
+                                arrayList.add(shopItem)
+                            }
+                        }
+                        recyclerAdapterMainShops.notifyDataSetChanged()
+                    }
+                }
+
+                override fun onTabUnselected(tab: TabLayout.Tab?) {
+
+                }
+
+                override fun onTabReselected(tab: TabLayout.Tab?) {
+                    if(tab!!.text=="All"){
+                        arrayList.clear()
+                        arrayList.addAll(mainArrayListWithData)
+                        recyclerAdapterMainShops.notifyDataSetChanged()
+                    }else{
+                        arrayList.clear()
+                        filter_cat_word = categoryItemsArray[tabLayout.selectedTabPosition-1].category_key
+                        mainArrayListWithData.forEach {shopItem ->
+                            if(shopItem.categories.contains(filter_cat_word)){
+                                arrayList.add(shopItem)
+                            }
+                        }
+                        recyclerAdapterMainShops.notifyDataSetChanged()
+                    }
+                }
+
+            })
+            tabLayout.selectTab(tabLayout.getTabAt(0))
+        }
     }
 
     private fun runFirstQuery() {

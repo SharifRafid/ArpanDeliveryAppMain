@@ -1,21 +1,18 @@
 package arpan.delivery.ui.home
 
 import android.content.Context
+import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import arpan.delivery.R
 import arpan.delivery.data.adapters.ViewPagerAdapterProducts
-import arpan.delivery.data.adapters.ViewPagerAdapterShops
 import arpan.delivery.data.models.ProductCategoryItem
-import arpan.delivery.data.models.ShopCategoryItem
 import arpan.delivery.utils.Constants
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.firebase.firestore.FirebaseFirestore
@@ -43,8 +40,12 @@ class ProductsFragment : Fragment() {
     private var shop_name : String? = null
     private var shop_location : String? = null
     private var cover_image : String? = null
+    private var image : String? = null
     private var deliver_charge : String? = null
     private var da_charge : String? = null
+    private var shopNotice : String? = null
+    private var shopNoticeColor : String? = null
+    private var shopNoticeColorBg : String? = null
 
     private lateinit var firebaseFirestore : FirebaseFirestore
     private lateinit var tabLayout : TabLayout
@@ -58,8 +59,12 @@ class ProductsFragment : Fragment() {
             shop_name = it.getString("shop_name")
             shop_location = it.getString("shop_location")
             cover_image = it.getString("cover_image")
+            image = it.getString("image")
             deliver_charge = it.getString("deliver_charge")
             da_charge = it.getString("da_charge")
+            shopNotice = it.getString("shopNotice")
+            shopNoticeColor = it.getString("shopNoticeColor")
+            shopNoticeColorBg = it.getString("shopNoticeColorBg")
         }
     }
 
@@ -98,8 +103,20 @@ class ProductsFragment : Fragment() {
 
             Glide.with(view.context)
                     .load(storageReference)
-                    .override(720,680)
+                    .centerCrop()
                     .placeholder(R.drawable.loading_image_glide).into(view.coverImageView)
+        }
+        if(image != ""){
+            val storageReference = FirebaseStorage.getInstance()
+                    .getReference(Constants.FS_SHOPS_MAIN)
+                    .child(shop_key.toString())
+                    .child(image.toString())
+
+            Glide.with(view.context)
+                    .load(storageReference)
+                    .override(512,512)
+                    .placeholder(R.drawable.loading_image_glide)
+                .into(view.shopImageItem)
         }
 
         (view.context as HomeActivity).titleActionBarTextView.text = shop_name
@@ -112,38 +129,33 @@ class ProductsFragment : Fragment() {
                 .document(Constants.FD_PRODUCTS_MAIN_CATEGORY)
                 .collection(Constants.FD_PRODUCTS_MAIN_CATEGORY)
                 .document(shop_key.toString())
-                .get().addOnCompleteListener { task ->
-                dismissDialogProgress(context)
-                    if(task.isSuccessful){
-                        if(task.result!!.data!=null){
-                            val categoryItemsArray = ArrayList<ProductCategoryItem>()
-                            val map = task.result!!.data as Map<String, Map<String,String>>
-                            for(category_field in map.entries){
-                                categoryItemsArray.add(
-                                    ProductCategoryItem(
-                                        key = category_field.key,
-                                        name = category_field.value[Constants.FIELD_FD_PRODUCTS_MAIN_CATEGORY_NAME].toString(),
-                                        category_key = category_field.value[Constants.FIELD_FD_PRODUCTS_MAIN_CATEGORY_KEY].toString(),
-                                        order = category_field.value[Constants.FIELD_FD_PRODUCTS_MAIN_CATEGORY_ORDER].toString().toInt(),
-                                    )
-                                )
-                            }
-                            Collections.sort(categoryItemsArray, kotlin.Comparator { o1, o2 ->
-                                (o1.order).compareTo(o2.order) })
-                            viewPagerMainProducts.adapter =
-                                activity?.let {
-                                    ViewPagerAdapterProducts(
-                                        it,
-                                        categoryItemsArray, shop_key.toString())
-                                }
-                            TabLayoutMediator(tabLayout, viewPagerMainProducts
-                            ) { tab, position ->
-                                tab.text = categoryItemsArray[position].name
-                            }.attach()
-                        }
-                    }else{
-                        task.exception!!.printStackTrace()
+                .addSnapshotListener { value, error ->
+                    error?.printStackTrace()
+                    dismissDialogProgress(context)
+                    val categoryItemsArray = ArrayList<ProductCategoryItem>()
+                    val map = value!!.data as Map<String, Map<String,String>>
+                    for(category_field in map.entries){
+                        categoryItemsArray.add(
+                            ProductCategoryItem(
+                                key = category_field.key,
+                                name = category_field.value[Constants.FIELD_FD_PRODUCTS_MAIN_CATEGORY_NAME].toString(),
+                                category_key = category_field.value[Constants.FIELD_FD_PRODUCTS_MAIN_CATEGORY_KEY].toString(),
+                                order = category_field.value[Constants.FIELD_FD_PRODUCTS_MAIN_CATEGORY_ORDER].toString().toInt(),
+                            )
+                        )
                     }
+                    Collections.sort(categoryItemsArray, kotlin.Comparator { o1, o2 ->
+                        (o1.order).compareTo(o2.order) })
+                    viewPagerMainProducts.adapter =
+                        activity?.let {
+                            ViewPagerAdapterProducts(
+                                it,
+                                categoryItemsArray, shop_key.toString())
+                        }
+                    TabLayoutMediator(tabLayout, viewPagerMainProducts
+                    ) { tab, position ->
+                        tab.text = categoryItemsArray[position].name
+                    }.attach()
                 }
     }
 
@@ -151,6 +163,14 @@ class ProductsFragment : Fragment() {
         firebaseFirestore = FirebaseFirestore.getInstance()
         tabLayout = view.tabLayoutProducts
         viewPagerMainProducts = view.viewPagerMainProducts
+        if(shopNotice!!.isNotEmpty()){
+            view.linearLayout6.visibility = View.VISIBLE
+            view.specialOfferTextView.text = shopNotice
+            view.specialOfferTextView.setTextColor(Color.parseColor(shopNoticeColor))
+            view.specialOfferTextView.setBackgroundColor(Color.parseColor(shopNoticeColorBg))
+        }else{
+            view.linearLayout6.visibility = View.GONE
+        }
     }
 
     companion object {

@@ -18,7 +18,7 @@ import java.util.*
 
 fun Context.showToast(message: String, status: Int){
     val toast = FancyToast.makeText(this, message, FancyToast.LENGTH_SHORT, status, false)
-    toast.setGravity(Gravity.BOTTOM, 0,400 )
+    toast.setGravity(Gravity.BOTTOM, 0,200 )
     toast.show()
 }
 

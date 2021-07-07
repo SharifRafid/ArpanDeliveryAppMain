@@ -38,6 +38,7 @@ class PhoneAuthActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setLanguageDefault()
         setContentView(R.layout.activity_phone_auth)
+        setTheme(R.style.Theme_ArpanDelivery)
         initLogics()
     }
 

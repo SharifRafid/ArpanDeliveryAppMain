@@ -19,7 +19,6 @@ import com.shashank.sony.fancytoastlib.FancyToast
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
 
-
 class MainActivity : AppCompatActivity() {
 
     private lateinit var sharedPreferences : SharedPreferences
@@ -53,6 +52,7 @@ class MainActivity : AppCompatActivity() {
         if(FirebaseAuth.getInstance().currentUser!=null){
             redirectToHomeActivity()
         }else{
+            setTheme(R.style.Theme_ArpanDelivery)
             launchAnimation()
         }
     }
@@ -108,13 +108,16 @@ class MainActivity : AppCompatActivity() {
 
     fun onRegistrationButtonClick(view: View){
         val phoneNumberText = edt_phone_number.text.toString()
-        if(phoneNumberText.isEmpty()){
-            this.showToast(getString(R.string.provide_phone_number_error_text), FancyToast.ERROR)
-        }else{
-            val intentToOtpPage = Intent(this, PhoneAuthActivity::class.java)
-            intentToOtpPage.putExtra("phone_number_from_main_act", phoneNumberText)
-            startActivity(intentToOtpPage)
-        }
+        val intentToOtpPage = Intent(this, PhoneAuthActivity::class.java)
+        intentToOtpPage.putExtra("phone_number_from_main_act", phoneNumberText)
+        startActivity(intentToOtpPage)
+//        if(phoneNumberText.isEmpty()){
+//            this.showToast(getString(R.string.provide_phone_number_error_text), FancyToast.ERROR)
+//        }else{
+//            val intentToOtpPage = Intent(this, PhoneAuthActivity::class.java)
+//            intentToOtpPage.putExtra("phone_number_from_main_act", phoneNumberText)
+//            startActivity(intentToOtpPage)
+//        }
     }
 
     fun onNoRegisterButtonClick(view: View){

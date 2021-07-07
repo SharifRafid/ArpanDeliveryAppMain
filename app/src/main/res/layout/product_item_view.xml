@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="@style/Widget.MaterialComponents.Button"
     android:id="@+id/mainCardView"
-    android:gravity="center"
-    android:padding="1px"
-    android:layout_margin="1px"
-    android:background="@color/divider_bg_color_1">
+    android:backgroundTint="@color/shop_card_bg_color"
+    app:cardCornerRadius="10dp"
+    android:layout_margin="5dp">
     <LinearLayout
         android:id="@+id/divider"
         android:layout_width="match_parent"
@@ -20,6 +19,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:padding="2dp"
         android:background="@color/shop_card_bg_color"
         android:orientation="horizontal">
         <LinearLayout
@@ -115,8 +115,8 @@
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/materialCardView"
-            android:layout_width="wrap_content"
-            android:layout_height="100dp"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
             app:cardElevation="0dp"
             android:layout_margin="5dp"
             android:visibility="gone"
@@ -127,8 +127,8 @@
                 app:label_orientation="RIGHT_TOP"
                 app:label_text="SPECIAL"
                 app:label_backgroundColor="@color/red_normal"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
                 android:layout_centerVertical="true"
                 android:src="@drawable/loading_image_glide"
                 android:scaleType="centerCrop"/>
@@ -160,4 +160,4 @@
         android:orientation="vertical"
         android:visibility="gone"
         android:background="#EFEFEF"/>
-</LinearLayout>
+</com.google.android.material.card.MaterialCardView>

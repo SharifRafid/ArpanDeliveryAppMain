@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import arpan.delivery.R
 import arpan.delivery.data.db.CartProductEntity
@@ -27,7 +28,9 @@ import kotlinx.android.synthetic.main.dialog_alert_layout_main.view.*
 class CartItemRecyclerAdapter(
         private val context: Context,
         private val productItems: ArrayList<CartProductEntity>,
-        private val cartProductItemRecyclerAdapter : CartProductItemRecyclerAdapter?) : RecyclerView.Adapter
+        private val positionMainAdapter : Int,
+        private val mainCartProductItemRecyclerAdapter: CartProductItemRecyclerAdapter
+        ) : RecyclerView.Adapter
     <CartItemRecyclerAdapter.RecyclerViewHolder>() {
 
     class RecyclerViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -39,7 +42,7 @@ class CartItemRecyclerAdapter(
         val descTextView = itemView.descTextView as TextView
         val amountTextView = itemView.amountTextView as TextView
         val price = itemView.offerPriceTextView as TextView
-        val cardView = itemView.mainCardView as LinearLayout
+        val cardView = itemView.mainCardView as CardView
         val imageCardView = itemView.materialCardView as MaterialCardView
     }
 
@@ -180,6 +183,11 @@ class CartItemRecyclerAdapter(
                 notifyItemRemoved(position)
                 notifyItemRangeRemoved(position, productItems.size)
                 (context as HomeActivity).cartViewModel.deleteCartDataItem(context, cartProductEntity)
+                if(productItems.isEmpty()){
+                    mainCartProductItemRecyclerAdapter.productItems.removeAt(positionMainAdapter)
+                    mainCartProductItemRecyclerAdapter.notifyItemRemoved(positionMainAdapter)
+                    mainCartProductItemRecyclerAdapter.notifyItemRangeChanged(positionMainAdapter, mainCartProductItemRecyclerAdapter.productItems.size)
+                }
                 dialog.dismiss()
             }
             dialog.show()

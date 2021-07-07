@@ -60,16 +60,15 @@ public class SliderAdapterExample extends
         viewHolder.textViewDescription.setText(sliderItem.getImageDescription());
         viewHolder.textViewDescription.setTextSize(16);
         viewHolder.textViewDescription.setTextColor(Color.WHITE);
+
         StorageReference storageReference = FirebaseStorage.getInstance().getReference(Constants.FS_OFFERS_OI)
                 .child(sliderItem.getImageLocation());
 
         Glide.with(context)
                 .load(storageReference)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .fitCenter()
-                .override(300,300)
+                .centerCrop()
                 .into(viewHolder.imageViewBackground);
-        viewHolder.imageViewBackground.setScaleType(ImageView.ScaleType.CENTER_CROP);
     }
 
     @Override

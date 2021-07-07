@@ -17,10 +17,29 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ArpanDelivery">
         <activity android:name=".ui.home.AboutArpan"></activity>
-        <activity android:name=".ui.home.HomeActivity">
+        <activity android:name=".ui.home.HomeActivity"
+            android:screenOrientation="portrait"
+            android:launchMode="singleTask">
+            <intent-filter android:label="Open Shop">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <!-- Accepts URIs that begin with "http://arpan-app.wixsite.com/arpan-app” -->
+                <data android:scheme="https"
+                    android:host="arpan-app.wixsite.com"
+                    android:pathPrefix="/arpan-app" />
+                <!-- note that the leading "/" is required for pathPrefix-->
+            </intent-filter>
+            <intent-filter android:label="Open Shop">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <!-- Accepts URIs that begin with "example://gizmos” -->
+                <data android:scheme="arpanapp"
+                    android:host="arpan-app" />
+            </intent-filter>
             <intent-filter>
                 <action android:name=".ui.home.HomeActivity" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>

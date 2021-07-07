@@ -1,7 +1,10 @@
 package arpan.delivery.ui.cart
 
+import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
+import android.location.Location
+import android.location.LocationManager
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -29,7 +32,12 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.firestore.FirebaseFirestore
 import com.shashank.sony.fancytoastlib.FancyToast
 import kotlinx.android.synthetic.main.activity_home.*
+import kotlinx.android.synthetic.main.dialog_alert_layout_main.view.*
 import kotlinx.android.synthetic.main.fragment_cart.view.*
+import kotlinx.android.synthetic.main.fragment_cart.view.productsRecyclerView
+import kotlinx.android.synthetic.main.fragment_cart.view.productsTextView
+import kotlinx.android.synthetic.main.fragment_order_new.view.*
+import mumayank.com.airlocationlibrary.AirLocation
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
@@ -137,48 +145,39 @@ class CartFragment : Fragment() {
         }else{
             view.textLinearView.visibility = View.GONE
             view.recyclersLinearView.visibility = View.VISIBLE
-            FirebaseDatabase.getInstance().reference.child("ORDER_TAKING_TIME")
-                    .addValueEventListener(object : ValueEventListener{
-                        override fun onDataChange(snapshot: DataSnapshot) {
-                            val startTime = snapshot.child("start_time").value.toString()
-                            val endTime = snapshot.child("end_time").value.toString()
-                            val over_time_orders = snapshot.child("over_time_orders").value.toString()
-                            if(over_time_orders == "yes"){
-                                view.floating_action_button.visibility = View.VISIBLE
-                            }else{
-                                val string1 = "${startTime}:00"
-                                val time1 = SimpleDateFormat("HH:mm:ss", Locale.ENGLISH).parse(string1)
-                                val calendar1 = Calendar.getInstance()
-                                calendar1.time = time1
-                                calendar1.add(Calendar.DATE, 1)
-                                val string2 = "${endTime}:00"
-                                val time2 = SimpleDateFormat("HH:mm:ss", Locale.ENGLISH).parse(string2)
-                                val calendar2 = Calendar.getInstance()
-                                calendar2.time = time2
-                                calendar2.add(Calendar.DATE, 1)
-                                val someRandomTime = SimpleDateFormat("HH:mm:ss", Locale.ENGLISH).format(Calendar.getInstance().time)
-                                val date = SimpleDateFormat("HH:mm:ss", Locale.ENGLISH).parse(someRandomTime)
-                                val calendar3 = Calendar.getInstance()
-                                calendar3.time = date
-                                calendar3.add(Calendar.DATE, 1)
-                                Log.e("C3", date.toString())
-                                Log.e("C2", time2.toString())
-                                Log.e("C1", time1.toString())
-                                val x = calendar3.time
-                                if(x.after(calendar1.time) && x.before(calendar2.time)) {
-                                    view.floating_action_button.visibility = View.VISIBLE
-                                }else{
-                                    view.context.showToast(getString(R.string.shgop_order_time_ehon_bodro_ache), FancyToast.ERROR)
-                                    view.floating_action_button.visibility = View.GONE
-                                }
-                            }
-                        }
-
-                        override fun onCancelled(error: DatabaseError) {
-                            error.toException().printStackTrace()
-                        }
-
-                    })
+            var snapshot = (view.context as HomeActivity).dataSnapshotOrderTakingTime
+            val startTime = snapshot.child("start_time").value.toString()
+            val endTime = snapshot.child("end_time").value.toString()
+            val over_time_orders = snapshot.child("over_time_orders").value.toString()
+            if(over_time_orders == "yes"){
+                view.floating_action_button.visibility = View.VISIBLE
+            }else{
+                val string1 = "${startTime}:00"
+                val time1 = SimpleDateFormat("HH:mm:ss", Locale.ENGLISH).parse(string1)
+                val calendar1 = Calendar.getInstance()
+                calendar1.time = time1
+                calendar1.add(Calendar.DATE, 1)
+                val string2 = "${endTime}:00"
+                val time2 = SimpleDateFormat("HH:mm:ss", Locale.ENGLISH).parse(string2)
+                val calendar2 = Calendar.getInstance()
+                calendar2.time = time2
+                calendar2.add(Calendar.DATE, 1)
+                val someRandomTime = SimpleDateFormat("HH:mm:ss", Locale.ENGLISH).format(Calendar.getInstance().time)
+                val date = SimpleDateFormat("HH:mm:ss", Locale.ENGLISH).parse(someRandomTime)
+                val calendar3 = Calendar.getInstance()
+                calendar3.time = date
+                calendar3.add(Calendar.DATE, 1)
+                Log.e("C3", date.toString())
+                Log.e("C2", time2.toString())
+                Log.e("C1", time1.toString())
+                val x = calendar3.time
+                if(x.after(calendar1.time) && x.before(calendar2.time)) {
+                    view.floating_action_button.visibility = View.VISIBLE
+                }else{
+                    view.context.showToast(getString(R.string.shgop_order_time_ehon_bodro_ache), FancyToast.ERROR)
+                    view.floating_action_button.visibility = View.GONE
+                }
+            }
             if(mainCartCustomObjectHashMap["product_item"]!!.isNotEmpty()){
                 view.productsTextView.visibility = View.VISIBLE
                 view.productsRecyclerView.visibility = View.VISIBLE
@@ -215,21 +214,21 @@ class CartFragment : Fragment() {
     }
 
     private fun initiateRestLogicForMedicine(view: View) {
-        val cartItemRecyclerAdapter = mainCartCustomObjectHashMap["medicine_item"]?.let { CartItemRecyclerAdapter(view.context, it, null) }
-        view.medicineRecyclerView.layoutManager = LinearLayoutManager(view.context)
-        view.medicineRecyclerView.adapter = cartItemRecyclerAdapter
+//        val cartItemRecyclerAdapter = mainCartCustomObjectHashMap["medicine_item"]?.let { CartItemRecyclerAdapter(view.context, it) }
+//        view.medicineRecyclerView.layoutManager = LinearLayoutManager(view.context)
+//        view.medicineRecyclerView.adapter = cartItemRecyclerAdapter
     }
 
     private fun initiateRestLogicForCustomOrder(view: View) {
-        val cartItemRecyclerAdapter = mainCartCustomObjectHashMap["custom_order_item"]?.let { CartItemRecyclerAdapter(view.context, it, null) }
-        view.customOrderRecyclerView.layoutManager = LinearLayoutManager(view.context)
-        view.customOrderRecyclerView.adapter = cartItemRecyclerAdapter
+//        val cartItemRecyclerAdapter = mainCartCustomObjectHashMap["custom_order_item"]?.let { CartItemRecyclerAdapter(view.context, it) }
+//        view.customOrderRecyclerView.layoutManager = LinearLayoutManager(view.context)
+//        view.customOrderRecyclerView.adapter = cartItemRecyclerAdapter
     }
 
     private fun initiateRestLogicForParcel(view: View) {
-        val cartItemRecyclerAdapter = mainCartCustomObjectHashMap["parcel_item"]?.let { CartItemRecyclerAdapter(view.context,it, null) }
-        view.parcelRecyclerView.layoutManager = LinearLayoutManager(view.context)
-        view.parcelRecyclerView.adapter = cartItemRecyclerAdapter
+//        val cartItemRecyclerAdapter = mainCartCustomObjectHashMap["parcel_item"]?.let { CartItemRecyclerAdapter(view.context,it) }
+//        view.parcelRecyclerView.layoutManager = LinearLayoutManager(view.context)
+//        view.parcelRecyclerView.adapter = cartItemRecyclerAdapter
     }
 
     private fun initiateRestLogicForArrayList(view: View) {
@@ -285,9 +284,25 @@ class CartFragment : Fragment() {
     }
 
     private fun initLogic(view: View) {
+        var locationAsked = false
         if(FirebaseAuth.getInstance().currentUser!=null){
             view.floating_action_button.text = getString(R.string.order_now)
-            view.floating_action_button.setOnClickListener { (view.context as HomeActivity).navController.navigate(R.id.action_cartFragment_to_orderFragment) }
+            view.floating_action_button.setOnClickListener {
+                if (locationAsked) {
+                    (view.context as HomeActivity).navController.navigate(R.id.action_cartFragment_to_orderFragment)
+                } else {
+                    val manager = view.context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+                    locationAsked = true
+                    if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                        AirLocation(view.context as HomeActivity, object : AirLocation.Callback {
+                            override fun onSuccess(locations: ArrayList<Location>) {}
+                            override fun onFailure(locationFailedEnum: AirLocation.LocationFailedEnum) {}
+                        },true).start()
+                    }else{
+                        (view.context as HomeActivity).navController.navigate(R.id.action_cartFragment_to_orderFragment)
+                    }
+                }
+            }
         }else{
             view.floating_action_button.text = getString(R.string.login_to_order)
             view.floating_action_button.setOnClickListener {

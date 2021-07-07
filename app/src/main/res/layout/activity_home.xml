@@ -233,4 +233,4 @@
             android:background="@color/blue_normal"
             android:theme="@style/NavigationTheme"
             android:id="@+id/navigationView"/>
-    </androidx.drawerlayout.widget.DrawerLayout>
+</androidx.drawerlayout.widget.DrawerLayout>

@@ -4,7 +4,6 @@ import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Intent
 import android.location.Location
-import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -16,7 +15,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import arpan.delivery.R
-import arpan.delivery.data.adapters.OrderItemRecyclerAdapter
 import arpan.delivery.data.adapters.OrderProductItemRecyclerAdapter
 import arpan.delivery.data.db.CartProductEntity
 import arpan.delivery.data.models.*
@@ -29,23 +27,22 @@ import arpan.delivery.utils.showToast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.StorageReference
 import com.google.gson.Gson
 import com.shashank.sony.fancytoastlib.FancyToast
 import com.squareup.okhttp.*
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.dialog_alert_layout_main.view.*
 import kotlinx.android.synthetic.main.dialog_progress_layout_main.view.*
-import kotlinx.android.synthetic.main.fragment_order.view.*
+import kotlinx.android.synthetic.main.fragment_order_new.*
+import kotlinx.android.synthetic.main.fragment_order_new.view.*
 import mumayank.com.airlocationlibrary.AirLocation
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
+import kotlin.math.roundToInt
 
-class OrderFragment : Fragment() {
+class OrderFragmentNew : Fragment() {
 
     private lateinit var firebaseFirestore: FirebaseFirestore
     private lateinit var firebaseDatabase: FirebaseDatabase
@@ -53,11 +50,10 @@ class OrderFragment : Fragment() {
     private lateinit var progressDialog : Dialog
     private lateinit var cartViewModel : CartViewModel
     private lateinit var homeViewModel : HomeViewModel
-    private val mainCartCustomObjectHashMap = HashMap<String, ArrayList<CartProductEntity>>()
+    private val mainCartCustomObjectHashMap = ArrayList<CartProductEntity>()
     private val mainShopItemHashMap = ArrayList<MainShopCartItem>()
     private lateinit var productRecyclerViewAdapter : OrderProductItemRecyclerAdapter
     private var currentCalc = 0
-    private var deliveryCharges = ArrayList<Int>()
     private var deliveryLocations = ArrayList<String>()
     private var priceTotal = 0
     private var deliveryCharge = 0
@@ -73,10 +69,11 @@ class OrderFragment : Fragment() {
     private var locationStatus = 0
     private var lat = ""
     private var lang = ""
+    private val BKASH_CHARGE_PERCENTAGE = 0.0175f
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_order, container, false)
+        return inflater.inflate(R.layout.fragment_order_new, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -146,7 +143,53 @@ class OrderFragment : Fragment() {
         orderItemMain.userNote = userNote
         orderItemMain.userAddress = userAddress
         orderItemMain.products = cartViewModel.cartItems.value!!
-        orderItemMain.promoCodeApplied  = promoCodeActive
+        orderItemMain.promoCodeApplied = promoCodeActive
+        orderItemMain.totalPrice = priceTotal
+        orderItemMain.daCharge = daCharge
+        orderItemMain.deliveryCharge = deliveryCharge
+        if(promoCodeActive){
+            when {
+                promoCode.shopDiscount -> {
+                    if(priceTotal<promoCode.discountPrice){
+                        orderItemMain.totalPrice = 0
+                    }else{
+                        orderItemMain.totalPrice = priceTotal-promoCode.discountPrice
+                    }
+                    Log.e("PRICE1",orderItemMain.totalPrice.toString())
+                }
+                promoCode.bothDiscount -> {
+                    if(priceTotal+deliveryCharge<promoCode.discountPrice){
+                        orderItemMain.totalPrice = 0
+                        orderItemMain.deliveryCharge = 0
+                    }else{
+                        if(promoCode.discountPrice>priceTotal){
+                            orderItemMain.totalPrice = 0
+                            if(promoCode.discountPrice-priceTotal>deliveryCharge){
+                                orderItemMain.deliveryCharge = 0
+                            }else{
+                                orderItemMain.deliveryCharge -= promoCode.discountPrice
+                            }
+                        }else{
+                            orderItemMain.totalPrice -= promoCode.discountPrice
+                        }
+                    }
+                    Log.e("PRICE2",orderItemMain.totalPrice.toString())
+                    Log.e("PRICE2",orderItemMain.deliveryCharge.toString())
+                }
+                promoCode.deliveryDiscount -> {
+                    if(deliveryCharge<promoCode.discountPrice){
+                        orderItemMain.deliveryCharge = 0
+                    }else{
+                        orderItemMain.deliveryCharge-=promoCode.discountPrice
+                    }
+                    Log.e("PRICE3",orderItemMain.deliveryCharge.toString())
+                }
+            }
+        }
+        if(radioGroup.checkedRadioButtonId == R.id.rb1){
+            orderItemMain.totalPrice += roundNumberPriceTotal((orderItemMain.totalPrice+orderItemMain.deliveryCharge)
+                    *BKASH_CHARGE_PERCENTAGE).toInt()
+        }
         orderItemMain.promoCode = promoCode
         orderItemMain.lattitude = lat
         orderItemMain.longtitude = lang
@@ -155,79 +198,11 @@ class OrderFragment : Fragment() {
         }else{
             "COD"
         }
-        orderItemMain.totalPrice = priceTotal
         orderItemMain.locationItem = homeViewModel.getLocationArray()[view.spinner_1.selectedItemPosition]
-        orderItemMain.deliveryCharge = deliveryCharge
-        orderItemMain.daCharge = daCharge
         orderItemMain.orderPlacingTimeStamp = System.currentTimeMillis()
         orderItemMain.lastTouchedTimeStamp = System.currentTimeMillis()
-        val firebaseStorage = FirebaseStorage.getInstance().reference.child("ORDER_IMAGES")
-                .child(key)
-        val images = ArrayList<OrderImageUploadItem>()
-        for(item in cartViewModel.cartItems.value!!.filter {
-            !it.product_item &&
-                    it.parcel_order_image.isNotEmpty()||
-                    it.medicine_order_image.isNotEmpty()||
-                    it.custom_order_image.isNotEmpty()
-        }){
-            when {
-                item.parcel_order_image.isNotEmpty() -> {
-                    val imgKey = "OI"+item.id
-                    images.add(
-                            OrderImageUploadItem(
-                                    name = imgKey,
-                                    uri = item.parcel_order_image
-                            )
-                    )
-                    orderItemMain.products[orderItemMain.products.indexOf(item)].parcel_order_image = imgKey
-                }
-                item.medicine_order_image.isNotEmpty() -> {
-                    val imgKey = "OI"+item.id
-                    images.add(
-                            OrderImageUploadItem(
-                                    name = imgKey,
-                                    uri = item.medicine_order_image
-                            )
-                    )
-                    orderItemMain.products[orderItemMain.products.indexOf(item)].medicine_order_image = imgKey
-                }
-                item.custom_order_image.isNotEmpty() -> {
-                    val imgKey = "OI"+item.id
-                    images.add(
-                            OrderImageUploadItem(
-                                    name = imgKey,
-                                    uri = item.custom_order_image
-                            )
-                    )
-                    orderItemMain.products[orderItemMain.products.indexOf(item)].custom_order_image = imgKey
-                }
-            }
-        }
-        if(images.isNotEmpty()){
-            startUploadingImages(view, orderItemMain, firebaseStorage, images)
-        }else{
-            placeOrderFinalUpload(view, orderItemMain)
-        }
-    }
 
-    private fun startUploadingImages(view: View, orderItemMain: OrderItemMain, firebaseStorage: StorageReference, images: ArrayList<OrderImageUploadItem>) {
-        dialogViewCustomAnimation.animationView.setAnimation(R.raw.uploading)
-        uploadedItemCount = 0
-        uploadImage(view, orderItemMain, firebaseStorage, images)
-    }
-
-    private fun uploadImage(view: View, orderItemMain: OrderItemMain, firebaseStorage: StorageReference, images: ArrayList<OrderImageUploadItem>) {
-        if(uploadedItemCount <= images.size-1){
-            Log.e("IMAGE COUNT",images[uploadedItemCount].uri)
-            firebaseStorage.child(images[uploadedItemCount].name)
-                    .putFile(Uri.parse(images[uploadedItemCount].uri))
-                    .addOnCompleteListener {
-                        uploadedItemCount += 1
-                        uploadImage(view, orderItemMain, firebaseStorage, images)
-                    }
-        }else{
-            placeOrderFinalUpload(view, orderItemMain)
-        }
+        placeOrderFinalUpload(view, orderItemMain)
     }
 
     private fun placeOrderFinalUpload(view: View, orderItemMain: OrderItemMain) {
@@ -245,7 +220,8 @@ class OrderFragment : Fragment() {
                             orderItemMain.orderId = "ARP"+(task.result!!.value.toString().toInt()+1)
                             FirebaseDatabase.getInstance().reference.child("orderNumber")
                                     .child(getDate(System.currentTimeMillis(), "dd-MM-yyyy").toString())
-                                    .child("ON").setValue((task.result!!.value.toString().toInt()+1).toString())
+                                    .child("ON")
+                                    .setValue((task.result!!.value.toString().toInt()+1).toString())
                         }
                         if(promoCodeActive){
                             FirebaseDatabase.getInstance().reference
@@ -254,7 +230,6 @@ class OrderFragment : Fragment() {
                                     .child("remainingUses")
                                     .setValue(promoCode.remainingUses-1)
                         }
-                        dialogViewCustomAnimation.animationView.setAnimation(R.raw.uploading_completed)
                         FirebaseFirestore.getInstance().collection("users")
                                 .document(FirebaseAuth.getInstance().currentUser!!.uid)
                                 .collection("users_order_collection")
@@ -301,6 +276,7 @@ class OrderFragment : Fragment() {
             }else{
                 view.bkash_charge_note.visibility = View.GONE
             }
+            setPriceTotalOnView(view)
         }
     }
 
@@ -311,22 +287,11 @@ class OrderFragment : Fragment() {
 
     private fun workWithTheArrayList(list: List<CartProductEntity>, view: View) {
         for(cartProductEntity in list){
-            when {
-                cartProductEntity.parcel_item -> {
-                    mainCartCustomObjectHashMap["parcel_item"]?.add(cartProductEntity)
-                }
-                cartProductEntity.custom_order_item -> {
-                    mainCartCustomObjectHashMap["custom_order_item"]?.add(cartProductEntity)
-                }
-                cartProductEntity.medicine_item -> {
-                    mainCartCustomObjectHashMap["medicine_item"]?.add(cartProductEntity)
-                }
-                else -> {
-                    mainCartCustomObjectHashMap["product_item"]?.add(cartProductEntity)
-                }
+            if(cartProductEntity.product_item){
+                mainCartCustomObjectHashMap.add(cartProductEntity)
             }
         }
-        if(mainCartCustomObjectHashMap["product_item"]!!.isNotEmpty()){
+        if(mainCartCustomObjectHashMap.isNotEmpty()){
             view.productsTextView.visibility = View.VISIBLE
             view.productsRecyclerView.visibility = View.VISIBLE
             view.applyPromoCodeLinear.visibility = View.VISIBLE
@@ -337,39 +302,13 @@ class OrderFragment : Fragment() {
             view.productsTextView.visibility = View.GONE
             view.productsRecyclerView.visibility = View.GONE
         }
-        if(mainCartCustomObjectHashMap["parcel_item"]!!.isNotEmpty()){
-            view.parcelOrderTextView.visibility = View.VISIBLE
-            //view.parcelOrderTextView2.visibility = View.VISIBLE
-            view.parcelRecyclerView.visibility = View.VISIBLE
-            initiateRestLogicForParcel(view)
-        }else{
-            view.parcelOrderTextView.visibility = View.GONE
-            view.parcelOrderTextView2.visibility = View.GONE
-            view.parcelRecyclerView.visibility = View.GONE
-        }
-        if(mainCartCustomObjectHashMap["custom_order_item"]!!.isNotEmpty()){
-            view.customOrderTextView.visibility = View.VISIBLE
-            //view.customOrderTextView2.visibility = View.VISIBLE
-            view.customOrderRecyclerView.visibility = View.VISIBLE
-            initiateRestLogicForCustomOrder(view)
-        }else{
-            view.customOrderTextView.visibility = View.GONE
-            view.customOrderTextView2.visibility = View.GONE
-            view.customOrderRecyclerView.visibility = View.GONE
-        }
-        if(mainCartCustomObjectHashMap["medicine_item"]!!.isNotEmpty()){
-            view.medicineOrderTextView.visibility = View.VISIBLE
-            //view.medicineOrderTextView2.visibility = View.VISIBLE
-            view.medicineRecyclerView.visibility = View.VISIBLE
-            initiateRestLogicForMedicine(view)
-        }else{
-            view.medicineOrderTextView.visibility = View.GONE
-            view.medicineOrderTextView2.visibility = View.GONE
-            view.medicineRecyclerView.visibility = View.GONE
-        }
     }
 
     private fun initSpinnerLocations(view: View) {
+        deliveryLocations.clear()
+        homeViewModel.getLocationArray().forEach {
+            deliveryLocations.add(it.locationName)
+        }
         val adapter = ArrayAdapter(
                 view.context,
                 R.layout.custom_spinner_view,
@@ -392,27 +331,137 @@ class OrderFragment : Fragment() {
         }
     }
 
-    private fun initiateRestLogicForMedicine(view: View) {
-        val cartItemRecyclerAdapter = mainCartCustomObjectHashMap["medicine_item"]?.let { OrderItemRecyclerAdapter(view.context, it) }
-        view.medicineRecyclerView.layoutManager = LinearLayoutManager(view.context)
-        view.medicineRecyclerView.adapter = cartItemRecyclerAdapter
+    private fun setPriceTotalOnView(view: View) {
+        val locationItem = homeViewModel.getLocationArray()[view.spinner_1.selectedItemPosition]
+        if(mainShopItemHashMap.size == 1){
+            if(locationItem.locationName.trim() == "মাগুরা সদর"){
+                deliveryCharge = mainShopItemHashMap[0].shop_details.deliver_charge.toInt()
+                daCharge = mainShopItemHashMap[0].shop_details.da_charge.toInt()
+            }else{
+                if(mainShopItemHashMap[0].shop_details.isClient == "yes"){
+                    deliveryCharge = locationItem.deliveryChargeClient
+                    daCharge = locationItem.daCharge
+                }else{
+                    deliveryCharge = locationItem.deliveryCharge
+                    daCharge = locationItem.daCharge
+                }
+            }
+        }else{
+            if(mainShopItemHashMap.size <= homeViewModel.getMaxShops().value!!){
+                deliveryCharge = (view.context as HomeActivity).homeViewModel
+                    .getLocationArray()[view.spinner_1.selectedItemPosition].deliveryCharge
+                daCharge = (view.context as HomeActivity).homeViewModel
+                    .getLocationArray()[view.spinner_1.selectedItemPosition].daCharge
+            }else{
+                deliveryCharge = (view.context as HomeActivity).homeViewModel
+                    .getLocationArray()[view.spinner_1.selectedItemPosition].deliveryCharge +
+                        ((mainShopItemHashMap.size-
+                                homeViewModel.getMaxShops().value!!)*
+                                homeViewModel.getDeliveryChargeExtra().value!!)
+                daCharge = (view.context as HomeActivity).homeViewModel
+                    .getLocationArray()[view.spinner_1.selectedItemPosition].daCharge +
+                        ((mainShopItemHashMap.size-
+                                homeViewModel.getMaxShops().value!!)*
+                                homeViewModel.getDAChargeExtra().value!!)
+            }
+        }
+        if(promoCodeActive){
+            when {
+                promoCode.shopDiscount -> {
+                    if(priceTotal<promoCode.discountPrice){
+                        if(radioGroup.checkedRadioButtonId == R.id.rb1){
+                            val ptdvbc = roundNumberPriceTotal((0+deliveryCharge)*BKASH_CHARGE_PERCENTAGE)
+                            view.bkash_charge_note.text = "বিকাশ চার্জ হিসাবে ${ptdvbc} টাকা যোগ করা হয়েছে"
+
+                            view.txtAllPrice.text = "মোটঃ ${0+ptdvbc} + ${deliveryCharge} = ${0+deliveryCharge+ptdvbc} টাকা"
+                        }else{
+                            view.txtAllPrice.text = "মোটঃ ${0} + ${deliveryCharge} = ${0+deliveryCharge} টাকা"
+                        }
+                    }else{
+                        if(radioGroup.checkedRadioButtonId == R.id.rb1){
+                            val ptdvbc = roundNumberPriceTotal((priceTotal-promoCode.discountPrice+deliveryCharge)*BKASH_CHARGE_PERCENTAGE)
+                            view.bkash_charge_note.text = "বিকাশ চার্জ হিসাবে ${ptdvbc} টাকা যোগ করা হয়েছে"
+                            view.txtAllPrice.text = "মোটঃ ${priceTotal-promoCode.discountPrice+ptdvbc} + ${deliveryCharge} = ${priceTotal-promoCode.discountPrice+deliveryCharge+ptdvbc} টাকা"
+                        }else{
+                            view.txtAllPrice.text = "মোটঃ ${priceTotal-promoCode.discountPrice} + ${deliveryCharge} = ${priceTotal-promoCode.discountPrice+deliveryCharge} টাকা"
+                        }
+                    }
+                }
+//
+//                promoCode.bothDiscount -> {
+//                    if(priceTotal+deliveryCharge<promoCode.discountPrice){
+//                        if(radioGroup.checkedRadioButtonId == R.id.rb1){
+//                            val ptdvbc = 0
+//                            view.bkash_charge_note.text = "বিকাশ চার্জ হিসাবে ${ptdvbc} টাকা যোগ করা হয়েছে"
+//                            view.txtAllPrice.text = "মোটঃ ${priceTotal+ptdvbc} + ${deliveryCharge} = ${0+ptdvbc} টাকা"
+//                        }else{
+//                            view.txtAllPrice.text = "মোটঃ ${priceTotal} + ${deliveryCharge} = ${0} টাকা"
+//                        }
+//                    }else{
+//                        if(radioGroup.checkedRadioButtonId == R.id.rb1){
+//                            val ptdvbc = roundNumberPriceTotal((priceTotal+deliveryCharge-promoCode.discountPrice)*BKASH_CHARGE_PERCENTAGE)
+//                            view.bkash_charge_note.text = "বিকাশ চার্জ হিসাবে ${ptdvbc} টাকা যোগ করা হয়েছে"
+//                            view.txtAllPrice.text = "মোটঃ ${priceTotal+ptdvbc} + ${deliveryCharge} = ${priceTotal+deliveryCharge-promoCode.discountPrice+ptdvbc} টাকা"
+//                        }else{
+//                            view.txtAllPrice.text = "মোটঃ ${priceTotal} + ${deliveryCharge} = ${priceTotal+deliveryCharge-promoCode.discountPrice} টাকা"
+//                        }
+//                    }
+//                }
+                promoCode.deliveryDiscount -> {
+                    if(locationItem.locationName.trim() == "মাগুরা সদর"){
+                        if(deliveryCharge<promoCode.discountPrice){
+                            if(radioGroup.checkedRadioButtonId == R.id.rb1){
+                                val ptdvbc = roundNumberPriceTotal((priceTotal+0)*BKASH_CHARGE_PERCENTAGE)
+                                view.bkash_charge_note.text = "বিকাশ চার্জ হিসাবে ${ptdvbc} টাকা যোগ করা হয়েছে"
+                                view.txtAllPrice.text = "মোটঃ ${priceTotal+ptdvbc} + ${0} = ${priceTotal+0+ptdvbc} টাকা"
+                            }else{
+                                view.txtAllPrice.text = "মোটঃ ${priceTotal} + ${0} = ${priceTotal+0} টাকা"
+                            }
+                        }else{
+                            if(radioGroup.checkedRadioButtonId == R.id.rb1){
+                                val ptdvbc = roundNumberPriceTotal((priceTotal+deliveryCharge-promoCode.discountPrice)*BKASH_CHARGE_PERCENTAGE)
+                                view.bkash_charge_note.text = "বিকাশ চার্জ হিসাবে ${ptdvbc} টাকা যোগ করা হয়েছে"
+                                view.txtAllPrice.text = "মোটঃ ${priceTotal+ptdvbc} + ${deliveryCharge-promoCode.discountPrice} = ${priceTotal+deliveryCharge-promoCode.discountPrice+ptdvbc} টাকা"
+                            }else{
+                                view.txtAllPrice.text = "মোটঃ ${priceTotal} + ${deliveryCharge-promoCode.discountPrice} = ${priceTotal+deliveryCharge-promoCode.discountPrice} টাকা"
+                            }
+                        }
+                    }else{
+                        view.context.showToast("প্রোমো কোডটি শুধু মাত্র মাগুরা সদর এর জন্য প্রযোজ্য হবে।", FancyToast.ERROR)
+                        if(radioGroup.checkedRadioButtonId == R.id.rb1){
+                            val ptdvbc = roundNumberPriceTotal((priceTotal+deliveryCharge)*BKASH_CHARGE_PERCENTAGE)
+                            view.txtAllPrice.text = "মোটঃ ${priceTotal+ptdvbc} +" +
+                                    " ${deliveryCharge} = ${priceTotal+deliveryCharge+ptdvbc} টাকা"
+                            view.bkash_charge_note.text = "বিকাশ চার্জ হিসাবে ${ptdvbc} টাকা যোগ করা হয়েছে"
+                        }else{
+                            view.txtAllPrice.text = "মোটঃ ${priceTotal} + ${deliveryCharge} = ${priceTotal+deliveryCharge} টাকা"
+                        }
+                    }
+                }
+            }
+        }else{
+            if(radioGroup.checkedRadioButtonId == R.id.rb1){
+                val ptdvbc = roundNumberPriceTotal((priceTotal+deliveryCharge)*BKASH_CHARGE_PERCENTAGE)
+                view.txtAllPrice.text = "মোটঃ ${priceTotal+ptdvbc} +" +
+                        " ${deliveryCharge} = ${priceTotal+deliveryCharge+ptdvbc} টাকা"
+                view.bkash_charge_note.text = "বিকাশ চার্জ হিসাবে ${ptdvbc} টাকা যোগ করা হয়েছে"
+            }else{
+                view.txtAllPrice.text = "মোটঃ ${priceTotal} + ${deliveryCharge} = ${priceTotal+deliveryCharge} টাকা"
+            }
+        }
     }
 
-    private fun initiateRestLogicForCustomOrder(view: View) {
-        val cartItemRecyclerAdapter = mainCartCustomObjectHashMap["custom_order_item"]?.let { OrderItemRecyclerAdapter(view.context, it) }
-        view.customOrderRecyclerView.layoutManager = LinearLayoutManager(view.context)
-        view.customOrderRecyclerView.adapter = cartItemRecyclerAdapter
-    }
-
-    private fun initiateRestLogicForParcel(view: View) {
-        val cartItemRecyclerAdapter = mainCartCustomObjectHashMap["parcel_item"]?.let { OrderItemRecyclerAdapter(view.context, it) }
-        view.parcelRecyclerView.layoutManager = LinearLayoutManager(view.context)
-        view.parcelRecyclerView.adapter = cartItemRecyclerAdapter
+    private fun roundNumberPriceTotal(d: Float): Int {
+        return if(d > d.toInt()){
+            d.toInt()+1
+        }else{
+            d.roundToInt()
+        }
     }
 
     private fun initiateRestLogicForArrayList(view: View) {
         mainShopItemHashMap.clear()
-        for(cartItemEntity in mainCartCustomObjectHashMap["product_item"]!!){
+        for(cartItemEntity in mainCartCustomObjectHashMap){
             val filteredArray = mainShopItemHashMap.filter { it -> it.shop_doc_id == cartItemEntity.product_item_shop_key }
             if(filteredArray.isEmpty()){
                 val shopItem = MainShopCartItem()
@@ -434,9 +483,11 @@ class OrderFragment : Fragment() {
     private fun fillUpShopDetailsValueInMainShopItemList(view: View) {
         firebaseFirestore.collection(Constants.FC_SHOPS_MAIN)
             .document(mainShopItemHashMap[currentCalc].shop_doc_id)
-            .get().addOnSuccessListener { document ->
-                mainShopItemHashMap[currentCalc].shop_details =
-                    ShopItem(
+            .addSnapshotListener { document, error ->
+                error?.printStackTrace()
+                if(document!=null){
+                    mainShopItemHashMap[currentCalc].shop_details =
+                        ShopItem(
                             key = document.id,
                             name = document.getString(Constants.FIELD_FD_SM_NAME).toString(),
                             categories = document.getString(Constants.FIELD_FD_SM_CATEGORY).toString(),
@@ -447,59 +498,25 @@ class OrderFragment : Fragment() {
                             location = document.getString(Constants.FIELD_FD_SM_LOCATION).toString(),
                             username = document.getString(Constants.FIELD_FD_SM_USERNAME).toString(),
                             password = document.getString(Constants.FIELD_FD_SM_PASSWORD).toString(),
-                            order = document.getString(Constants.FIELD_FD_SM_ORDER).toString().toInt()
-                    )
-                if(currentCalc+1 >= mainShopItemHashMap.size){
-                    // The data is downloaded all of those
-                    view.productsRecyclerView.layoutManager = LinearLayoutManager(view.context)
-                    view.productsRecyclerView.adapter = productRecyclerViewAdapter
-                    calculateTotalPrice(view)
-                    progressDialog.dismiss()
-                    initLocationDetectingProcessWithUsersPermissionAsWell(view)
-                }else{
-                    currentCalc ++
-                    fillUpShopDetailsValueInMainShopItemList(view)
+                            order = document.getString(Constants.FIELD_FD_SM_ORDER).toString().toInt(),
+                            isClient = document.getString(Constants.FIELD_FD_SM_IS_CLIENT).toString()
+                        )
+                    if(currentCalc+1 >= mainShopItemHashMap.size){
+                        // The data is downloaded all of those
+                        view.productsRecyclerView.layoutManager = LinearLayoutManager(view.context)
+                        view.productsRecyclerView.adapter = productRecyclerViewAdapter
+                        calculateTotalPrice(view)
+                        progressDialog.dismiss()
+                        initLocationDetectingProcessWithUsersPermissionAsWell(view)
+                    }else{
+                        currentCalc ++
+                        fillUpShopDetailsValueInMainShopItemList(view)
+                    }
                 }
             }
     }
 
     private fun initLocationDetectingProcessWithUsersPermissionAsWell(view: View) {
-//        val dialogView = LayoutInflater.from(view.context)
-//                .inflate(R.layout.dialog_alert_layout_main, null)
-//        val dialog = AlertDialog.Builder(view.context)
-//                .setView(dialogView).create()
-//        dialogView.btnNoDialogAlertMain.text = getString(R.string.no)
-//        dialogView.btnYesDialogAlertMain.text = getString(R.string.ok_text)
-//        dialogView.titleTextView.text = getString(R.string.location_permission)
-//        dialogView.messageTextView.text = getString(R.string.do_you_want_to_track_location)
-//        dialogView.btnNoDialogAlertMain.setOnClickListener {
-//            view.location.visibility = View.GONE
-//            dialog.dismiss()
-//        }
-//        dialogView.btnYesDialogAlertMain.setOnClickListener {view.location.visibility = View.VISIBLE
-//            airLocation = AirLocation(view.context as HomeActivity, object : AirLocation.Callback {
-//                override fun onSuccess(locations: ArrayList<Location>) {
-//                    locationStatus = 1
-//                    lat = locations[0].latitude.toString()
-//                    lang = locations[0].longitude.toString()
-//                    Log.e("LOCATION", "$lat,$lang")
-//                    view.location.text = "আপনার লোকেশন ডিটেক্ট করা গিয়েছে। ধন্যবাদ"
-//                }
-//                override fun onFailure(locationFailedEnum: AirLocation.LocationFailedEnum) {
-//                    locationStatus = 2
-//                    //view.location.text = "আপনার লোকেশন ডিটেক্ট করা যায়নি আবার চেষ্টা করতে ক্লিক করুন"
-//                    view.location.text = "দ্রুততম ডেলিভারির জন্য আপনার লোকেশন ডিটেক্ট করা হচ্ছে......"
-//                    airLocation.start()
-//                }
-//            },true)
-//            airLocation.start()
-////                view.location.setOnClickListener {
-////                    view.location.text = "দ্রুততম ডেলিভারির জন্য আপনার লোকেশন ডিটেক্ট করা হচ্ছে......"
-////                    airLocation.start()
-////                }
-//            dialog.dismiss()
-//        }
-//        dialog.show()
         view.location.visibility = View.VISIBLE
         view.location.text = "দ্রুততম ডেলিভারির জন্য আপনার লোকেশন ডিটেক্ট করা হচ্ছে......"
         airLocation = AirLocation(view.context as HomeActivity, object : AirLocation.Callback {
@@ -532,105 +549,36 @@ class OrderFragment : Fragment() {
             }
             override fun onFailure(locationFailedEnum: AirLocation.LocationFailedEnum) {
                 locationStatus = 2
-                //view.location.text = "আপনার লোকেশন ডিটেক্ট করা যায়নি আবার চেষ্টা করতে ক্লিক করুন"
-                initLocationDetectingProcessWithUsersPermissionAsWell(view)
+//                view.location.text = "আপনার লোকেশন ডিটেক্ট করা যায়নি আবার চেষ্টা করতে ক্লিক করুন"
+//                view.location.setOnClickListener {
+//                    airLocation.start()
+//                }
+                airLocation.start()
             }
         },true)
         airLocation.start()
     }
 
     private fun calculateTotalPrice(view: View) {
-        if(mainShopItemHashMap.isEmpty()){
-            // No Product Item
-        }else{
-            if((view.context as HomeActivity).cartItemsAllMainList.any { !it.product_item }){
-                singleShopMode = false
-                priceTotal = 0
-                deliveryCharge = deliveryCharges[view.spinner_1.selectedItemPosition]
-                daCharge = (view.context as HomeActivity).homeViewModel
-                    .getLocationArray()[view.spinner_1.selectedItemPosition].daCharge
-                for(shop in mainShopItemHashMap){
-                    for (pdct in shop.cart_products){
-                        priceTotal += (pdct.product_item_price * pdct.product_item_amount)
-                    }
-                }
-                setPriceTotalOnView(view)
-            }else{
-                if(mainShopItemHashMap.size == 1){
-                    singleShopMode = true
-                    priceTotal = 0
-                    deliveryCharge = mainShopItemHashMap[0].shop_details.deliver_charge.toInt()
-                    daCharge = mainShopItemHashMap[0].shop_details.da_charge.toInt()
-                    for (pdct in mainShopItemHashMap[0].cart_products){
-                        priceTotal += (pdct.product_item_price * pdct.product_item_amount)
-                    }
-                    setPriceTotalOnView(view)
-                }else{
-                    singleShopMode = false
-                    priceTotal = 0
-                    deliveryCharge = deliveryCharges[view.spinner_1.selectedItemPosition]
-                    daCharge = (view.context as HomeActivity).homeViewModel
-                        .getLocationArray()[view.spinner_1.selectedItemPosition].daCharge
-                    for(shop in mainShopItemHashMap){
-                        for (pdct in shop.cart_products){
-                            priceTotal += (pdct.product_item_price * pdct.product_item_amount)
-                        }
-                    }
-                    setPriceTotalOnView(view)
-                }
+        priceTotal = 0
+        for(shop in mainShopItemHashMap){
+            shop.cart_products.forEach {
+                priceTotal += (it.product_item_price*it.product_item_amount)
             }
         }
-    }
-
-    private fun setPriceTotalOnView(view: View) {
-        val position = view.spinner_1.selectedItemPosition
-        if(position==0){
-            view.text_address_container.visibility = View.VISIBLE
-            if(singleShopMode){
-                deliveryCharge = mainShopItemHashMap[0].shop_details.deliver_charge.toInt()
-                daCharge = mainShopItemHashMap[0].shop_details.da_charge.toInt()
-            }else{
-                if(mainShopItemHashMap.size <= homeViewModel.getMaxShops().value!!){
-                    deliveryCharge = deliveryCharges[view.spinner_1.selectedItemPosition]
-                    daCharge = (view.context as HomeActivity).homeViewModel
-                        .getLocationArray()[view.spinner_1.selectedItemPosition].daCharge
-                }else{
-                    deliveryCharge = deliveryCharges[view.spinner_1.selectedItemPosition] +
-                            ((mainShopItemHashMap.size-
-                                    homeViewModel.getMaxShops().value!!)*
-                                    homeViewModel.getDeliveryChargeExtra().value!!)
-                    daCharge = (view.context as HomeActivity).homeViewModel
-                        .getLocationArray()[view.spinner_1.selectedItemPosition].daCharge +
-                            ((mainShopItemHashMap.size-
-                                    homeViewModel.getMaxShops().value!!)*
-                                    homeViewModel.getDAChargeExtra().value!!)
-                }
-            }
-        }else{
-            deliveryCharge = deliveryCharges[view.spinner_1.selectedItemPosition]
-            daCharge = (view.context as HomeActivity).homeViewModel
-                .getLocationArray()[view.spinner_1.selectedItemPosition].daCharge
-            view.text_address_container.visibility = View.GONE
-        }
-        view.txtAllPrice.text = getString(R.string.total_total_text)+" "+"${priceTotal}+${deliveryCharge} " +
-                "= ${priceTotal+deliveryCharge} "+getString(R.string.taka_text)
-        if(promoCodeActive){
-            if(priceTotal <= promoCode.discountPrice){
-                view.txtAllPrice.text = getString(R.string.total_total_text)+" "+"${0}+${deliveryCharge} " +
-                        "= ${0+deliveryCharge} "+getString(R.string.taka_text)
-            }else{
-                view.txtAllPrice.text = getString(R.string.total_total_text)+" "+
-                        "${priceTotal - promoCode.discountPrice}+${deliveryCharge} " +
-                        "= ${priceTotal - promoCode.discountPrice+deliveryCharge} "+
-                        getString(R.string.taka_text)
-            }
-        }
+        setPriceTotalOnView(view)
     }
 
     private fun initiatePromoCodeLogic(view: View) {
         view.addPromoCode.setOnClickListener {
             view.applyPromoCodeLinear.visibility = View.GONE
             view.promoCodeLinear.visibility = View.VISIBLE
+            view.promoCodeAppliedLinear.visibility = View.GONE
+        }
+        view.hidePromoCodeEnterStage.setOnClickListener {
+            view.edt_coupon_code.setText("")
+            view.applyPromoCodeLinear.visibility = View.VISIBLE
+            view.promoCodeLinear.visibility = View.GONE
             view.promoCodeAppliedLinear.visibility = View.GONE
         }
         view.apply_promo_code.setOnClickListener {
@@ -646,28 +594,36 @@ class OrderFragment : Fragment() {
                                     promoCodesArray.add(item.getValue(PromoCode::class.java)!!)
                                 }
                                 val filteredArray =
-                                        promoCodesArray.filter { promoCode ->
-                                            if(promoCode.promoCodeName == view.edt_coupon_code.text.toString()){
-                                                if(promoCode.minimumPrice <= priceTotal){
-                                                    if(promoCode.active){
-                                                        if(promoCode.remainingUses!=0){
-                                                            if(promoCode.validityOfCode>System.currentTimeMillis()){
-                                                                true
+                                        promoCodesArray.filter { promoCode2 ->
+                                            if(promoCode2.promoCodeName.equals(view.edt_coupon_code.text.toString(), ignoreCase = true)){
+                                                if(promoCode2.active){
+                                                    if(promoCode2.remainingUses!=0){
+                                                        if(promoCode2.validityOfCode>System.currentTimeMillis()){
+                                                            if(promoCode2.minimumPrice <= priceTotal){
+                                                                if(promoCode2.shopBased){
+                                                                    if(mainShopItemHashMap.size == 1 && mainShopItemHashMap[0].key == promoCode2.shopKey){
+                                                                        true
+                                                                    }else{
+                                                                        errorMessage = "এই প্রমো কোডটি শুধু মাত্র ${promoCode2.shopName} শপের অর্ডারের ক্ষেত্রে প্রযোয্য"
+                                                                        false
+                                                                    }
+                                                                }else{
+                                                                    true
+                                                                }
                                                             }else{
-                                                                errorMessage = getString(R.string.time_of_promo_code)
+                                                                errorMessage = "এই প্রমো কোডের জন্য সর্বনিম্ন ${promoCode2.minimumPrice} টাকার অর্ডার করতে হবে। "
                                                                 false
                                                             }
                                                         }else{
-                                                            errorMessage = getString(R.string.already_used_max)
+                                                            errorMessage = getString(R.string.time_of_promo_code)
                                                             false
                                                         }
                                                     }else{
-                                                        errorMessage = getString(R.string.not_active_try_another)
+                                                        errorMessage = getString(R.string.already_used_max)
                                                         false
                                                     }
                                                 }else{
-                                                    errorMessage = getString(R.string.minimum_order_value_text) + " " +
-                                                            promoCode.minimumPrice +" " + getString(R.string.taka)
+                                                    errorMessage = getString(R.string.not_active_try_another)
                                                     false
                                                 }
                                             }else{
@@ -683,8 +639,9 @@ class OrderFragment : Fragment() {
                                     view.promoCodeLinear.visibility = View.GONE
                                     view.promoCodeAppliedLinear.visibility =  View.VISIBLE
                                     view.applyPromoCodeLinear.visibility = View.GONE
-                                    view.promoCodeAppliedText.text = getString(R.string.your_promo_code_is_applied_1)+
-                                            " "+promoCode.discountPrice+" "+getString(R.string.your_promo_code_is_applied_2)
+
+                                    view.promoCodeAppliedText.text = "আপনার প্রোমো কোডটি অ্যাপ্লাই করা হয়েছে।"
+
                                     view.promoCodeAppliedRemoveText.setOnClickListener {
                                         promoCodeActive = false
                                         promoCode = PromoCode()
@@ -692,7 +649,7 @@ class OrderFragment : Fragment() {
                                         view.promoCodeLinear.visibility = View.GONE
                                         view.promoCodeAppliedLinear.visibility = View.GONE
                                         view.edt_coupon_code.setText("")
-                                        calculateTotalPrice(view)
+                                        setPriceTotalOnView(view)
                                     }
                                     setPriceTotalOnView(view)
                                     progressDialog.dismiss()
@@ -720,14 +677,6 @@ class OrderFragment : Fragment() {
         homeViewModel = activity?.let { ViewModelProvider(it).get(HomeViewModel::class.java) }!!
         productRecyclerViewAdapter =
             OrderProductItemRecyclerAdapter(view.context, mainShopItemHashMap)
-        for(item in homeViewModel.getLocationArray()) {
-            deliveryCharges.add(item.deliveryCharge)
-            deliveryLocations.add(item.locationName)
-        }
-        mainCartCustomObjectHashMap["product_item"] = ArrayList()
-        mainCartCustomObjectHashMap["parcel_item"] = ArrayList()
-        mainCartCustomObjectHashMap["custom_order_item"] = ArrayList()
-        mainCartCustomObjectHashMap["medicine_item"] = ArrayList()
     }
 
     fun sendNotification(

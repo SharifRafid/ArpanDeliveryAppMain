@@ -9,14 +9,14 @@
     <color name="white">#FFFFFFFF</color>
     <color name="green_normal">#43A047</color>
     <color name="red_normal">#EA594D</color>
-    <color name="bg_color">#FFFFFF</color>
+    <color name="bg_color">#F1F1F1</color>
     <color name="shop_card_bg_color">#ffffff</color>
     <color name="shop_card_text_color_1">#333333</color>
     <color name="shop_card_text_color_2">#0071BC</color>
     <color name="tooltip_card_bg_color">#333333</color>
     <color name="tooltip_card_text_color">#FFFFFF</color>
     <color name="top_item_text_color_1">#0071BC</color>
-    <color name="tab_indicator_bg_color_selector">#ffffff</color>
+    <color name="tab_indicator_bg_color_selector">#F1F1F1</color>
     <color name="tab_text_color">#0071BC</color>
     <color name="tab_text_color_selected">#0071BC</color>
     <color name="divider_bg_color_1">#000000</color>
@@ -50,6 +50,6 @@
     <color name="switch_track_tint">#AAC7DF</color>
     <color name="bg_color_first_page">#333333</color>
     <color name="bg_color_profile_page">#F6F6F6</color>
-    <color name="bg_color_deep_card">#FFFFFF</color>
+    <color name="bg_color_deep_card">#292929</color>
     <color name="edit_text_color_profile_page_">#737373</color>
 </resources>

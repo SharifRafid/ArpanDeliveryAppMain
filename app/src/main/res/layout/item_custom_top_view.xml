@@ -4,24 +4,26 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     style="@style/Widget.MaterialComponents.Button"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_margin="2dp"
+    android:layout_margin="10dp"
     app:cardBackgroundColor="@color/shop_card_bg_color"
     app:cardCornerRadius="10dp"
     app:layout_constraintTop_toBottomOf="@+id/materialCardView">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:gravity="center"
+        android:layout_gravity="center"
         android:orientation="vertical"
-        android:padding="2dp">
+        android:padding="8dp">
+
         <ImageView
             android:id="@+id/image_view"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:layout_margin="12dp"
+            android:layout_width="23dp"
+            android:layout_height="23dp"
+            android:layout_margin="5dp"
             android:scaleType="centerCrop"
             android:src="@drawable/ic_arpan_shop_icon"
             app:tint="@color/top_item_text_color_1" />
@@ -34,9 +36,8 @@
             android:gravity="center"
             android:text="অর্পন শপ"
             android:textColor="@color/top_item_text_color_1"
-            android:textSize="12sp"
-            android:layout_margin="6dp"
-            android:textStyle="bold" />
+            android:textSize="10sp"
+            android:layout_margin="2dp" />
     </LinearLayout>
 
 </androidx.cardview.widget.CardView>

@@ -147,11 +147,18 @@
     <string name="dark_mode">ডার্ক মুড</string>
     <string name="set_theme">থিম চেঞ্জ করুন</string>
     <string name="add_promo_code">প্রোমো কোড অ্যাড করুন</string>
-    <string name="minimum_order_value_text">Minimum Order Value For This Promo Code Is</string>
-    <string name="taka">Taka</string>
-    <string name="time_of_promo_code">The time of the promo code is now over, try another one.</string>
-    <string name="already_used_max">This promo code is already used the maximum time, no more uses remain.</string>
-    <string name="not_active_try_another">This promo code is not active, try another one.</string>
+    <string name="minimum_order_value_text">এই প্রমো কোডের সর্বনিম্ন </string>
+    <string name="taka">টাকা</string>
+    <string name="time_of_promo_code">এই প্রমোকোড ব্যবহারের সময় শেষ হয়ে গিয়েছে, অন্য একটি চেষ্টা করুন।</string>
+    <string name="already_used_max">এই প্রমোকোডটি সর্বোচ্চ বার ব্যবহৃত হয়ে গিয়েছে, আর ব্যবহার করা যাবে না।</string>
+    <string name="not_active_try_another">এই প্রমো কোডটি অ্যাকটিভ নাই, অন্য সময় চেষ্টা করুন।</string>
     <string name="share_the_app">অ্যাপটি শেয়ার করুন</string>
     <string name="rate_the_app">রেটিং দিন</string>
+    <string name="client_be_title">ক্লায়েন্ট হতে চাই</string>
+    <string name="know_about_arpan_title">অর্পণ সম্পর্কে জানুন</string>
+    <string name="no_data_found">কোনো ডাটা পাওয়া যায় নি</string>
+    <string name="complete_profile">প্রোফাইল সম্পূর্ন করুন</string>
+    <string name="please_complete_profile">দ্রুত অর্ডার কর‌তে আপনার প্রোফাইল সম্পূর্ণ করুন।</string>
+    <string name="location_permission">লোকেশন পারমিশন</string>
+    <string name="do_you_want_to_track_location">ডেলিভারি দ্রুততর করার জন্য আপনি কি লোকেশন পারমিশন দিতে চান?</string>
 </resources>

@@ -4,11 +4,12 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    style="@style/Widget.AppCompat.Button.Borderless"
+    style="@style/Widget.MaterialComponents.Button"
     android:id="@+id/mainCardView"
-    android:backgroundTint="@color/shop_card_bg_color"
+    android:background="@drawable/drop_shadow_all_sides"
     app:cardCornerRadius="10dp"
-    android:layout_margin="3dp">
+    app:cardElevation="10dp"
+    android:layout_margin="6dp">
     <LinearLayout
         android:layout_width="match_parent"
         android:orientation="horizontal"
@@ -16,13 +17,14 @@
         android:gravity="center">
         <ImageView
             android:id="@+id/shopImageItem"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:layout_width="75dp"
+            android:layout_height="75dp"
             android:src="@drawable/loading_image_glide"
             android:scaleType="centerCrop"/>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingStart="6dp"
             android:orientation="vertical">
             <LinearLayout
                 android:layout_width="match_parent"
@@ -37,8 +39,8 @@
                     android:text="অর্পন"
                     android:textStyle="bold"
                     android:textColor="@color/shop_card_text_color_1"
-                    android:textSize="16sp"
-                    android:padding="10dp"/>
+                    android:textSize="14sp"
+                    android:padding="6dp"/>
                 <TextView
                     android:id="@+id/priceTextView"
                     android:layout_width="match_parent"
@@ -49,13 +51,13 @@
                     android:textStyle="bold"
                     android:visibility="gone"
                     android:textColor="@color/shop_card_text_color_2"
-                    android:textSize="14sp"
+                    android:textSize="12sp"
                     android:padding="10dp"/>
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="1px"
-                android:layout_marginStart="20dp"
+                android:layout_marginStart="6dp"
                 android:layout_marginEnd="20dp"
                 android:background="@color/grey_normal"/>
             <TextView
@@ -67,8 +69,8 @@
                 android:text="অর্পন"
                 android:textStyle="bold"
                 android:textColor="@color/shop_card_text_color_1"
-                android:textSize="14sp"
-                android:padding="10dp"/>
+                android:textSize="12sp"
+                android:padding="6dp"/>
         </LinearLayout>
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

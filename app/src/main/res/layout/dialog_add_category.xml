@@ -5,6 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:background="@color/bg_color"
+    android:fitsSystemWindows="true"
     android:gravity="center_horizontal">
     <LinearLayout
         android:id="@+id/topLinearLayout"

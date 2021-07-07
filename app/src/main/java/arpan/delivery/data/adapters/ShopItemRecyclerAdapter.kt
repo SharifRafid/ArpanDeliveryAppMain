@@ -70,8 +70,12 @@ class ShopItemRecyclerAdapter(
             bundle.putString("shop_name",shopItems[position].name)
             bundle.putString("shop_location",shopItems[position].location)
             bundle.putString("cover_image",shopItems[position].cover_image)
+            bundle.putString("image",shopItems[position].image)
             bundle.putString("deliver_charge",shopItems[position].deliver_charge)
             bundle.putString("da_charge",shopItems[position].da_charge)
+            bundle.putString("shopNotice",shopItems[position].shopNotice)
+            bundle.putString("shopNoticeColor",shopItems[position].shopNoticeColor)
+            bundle.putString("shopNoticeColorBg",shopItems[position].shopNoticeColorBg)
             (context as HomeActivity).navController.navigate(R.id.productsFragment, bundle)
         }
 

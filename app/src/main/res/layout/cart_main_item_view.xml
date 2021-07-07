@@ -1,19 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
+    app:cardCornerRadius="10dp"
     android:id="@+id/mainCardView"
     android:gravity="center"
     android:padding="1px"
-    android:layout_margin="1px"
+    android:layout_margin="6dp"
     android:background="@color/cart_border_color">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
+        android:padding="4dp"
         android:background="@color/shop_card_bg_color"
         android:orientation="horizontal">
         <LinearLayout
@@ -156,15 +158,17 @@
                 android:id="@+id/deleteTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:background="@drawable/bg_btn_2"
                 android:fontFamily="@font/hind_siliguri_font"
                 android:gravity="center"
-                android:paddingEnd="15dp"
-                android:paddingTop="8dp"
-                android:paddingBottom="8dp"
                 android:paddingStart="15dp"
+                android:paddingTop="8dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
+                android:paddingEnd="15dp"
+                android:paddingBottom="8dp"
                 android:text="     Delete     "
                 android:textColor="@color/white"
-                android:background="@drawable/bg_btn_2"
                 android:textSize="14sp"
                 android:textStyle="bold" />
 
@@ -178,4 +182,4 @@
         android:orientation="vertical"
         android:visibility="gone"
         android:background="#7E7E7E"/>
-</LinearLayout>
+</androidx.cardview.widget.CardView>

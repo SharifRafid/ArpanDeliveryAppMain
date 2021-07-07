@@ -62,7 +62,7 @@ class OldOrderListFragment : Fragment() {
 
         val d = Calendar.getInstance() // this takes current date
         d[Calendar.DAY_OF_MONTH] = c.getActualMaximum(Calendar.DAY_OF_MONTH)
-        d[Calendar.HOUR_OF_DAY] = 0
+        d[Calendar.HOUR_OF_DAY] = 24
 
         startTimeMonthMillis = c.timeInMillis
         endTimeMonthMillis = d.timeInMillis
@@ -81,30 +81,23 @@ class OldOrderListFragment : Fragment() {
                     .whereGreaterThanOrEqualTo("orderPlacingTimeStamp", startTimeMonthMillis)
                     .whereLessThanOrEqualTo("orderPlacingTimeStamp", endTimeMonthMillis)
                     .orderBy("orderPlacingTimeStamp")
-                    .get()
-                    .addOnCompleteListener {
-                        if(it.isSuccessful){
-                            for(document in it.result!!.documents){
-                                val o = document.toObject(OrderItemMain::class.java)!!
-                                o.docID = document.id
-                                ordersMainArrayList.add(o)
-                            }
-                            if(ordersMainArrayList.isNotEmpty()){
-                                placeOrderMainData(view)
-                            }else{
-                                view.noProductsText.visibility = View.VISIBLE
-                                view.noProductsTextView.text = getString(R.string.you_have_no_orders)
-                                view.progressBar.visibility = View.GONE
-                                view.recyclerView.visibility = View.GONE
-                            }
-                        }else{
-                            view.noProductsText.visibility = View.VISIBLE
-                            view.noProductsTextView.text = getString(R.string.you_have_no_orders)
-                            view.progressBar.visibility = View.GONE
-                            view.recyclerView.visibility = View.GONE
-                            it.exception!!.printStackTrace()
-                        }
+                .addSnapshotListener { value, error ->
+                    error?.printStackTrace()
+                    ordersMainArrayList.clear()
+                    for(document in value!!.documents){
+                        val o = document.toObject(OrderItemMain::class.java)!!
+                        o.docID = document.id
+                        ordersMainArrayList.add(o)
                     }
+                    if(ordersMainArrayList.isNotEmpty()){
+                        placeOrderMainData(view)
+                    }else{
+                        view.noProductsText.visibility = View.VISIBLE
+                        view.noProductsTextView.text = getString(R.string.you_have_no_orders)
+                        view.progressBar.visibility = View.GONE
+                        view.recyclerView.visibility = View.GONE
+                    }
+                }
         }
     }
 
@@ -140,62 +133,6 @@ class OldOrderListFragment : Fragment() {
         view.recyclerView.visibility = View.VISIBLE
     }
 
-//    private fun enableRadioGroupLogic(view: View) {
-//        view.radioGroup.setOnCheckedChangeListener { group, checkedId ->
-//            when(checkedId){
-//                R.id.pendingRadio -> {
-//                    loadSecondData(view, "PENDING")
-//                }
-//                R.id.approvedRadio -> {
-//                    loadSecondData(view, "APPROVED")
-//                }
-//                R.id.onDeliveryRadio -> {
-//                    loadSecondData(view, "DELIVERY")
-//                }
-//                R.id.completedRadio -> {
-//                    loadSecondData(view, "COMPLETED")
-//                }
-//            }
-//        }
-//    }
-
-    private fun loadSecondData(view: View, s: String) {
-        view.noProductsText.visibility = View.GONE
-        view.progressBar.visibility = View.VISIBLE
-        view.recyclerView.visibility = View.GONE
-        firebaseFirestore.collection("users")
-                .document(FirebaseAuth.getInstance().currentUser!!.uid)
-                .collection("users_order_collection")
-                .whereGreaterThanOrEqualTo("orderPlacingTimeStamp", startTimeMonthMillis)
-                .whereLessThanOrEqualTo("orderPlacingTimeStamp", endTimeMonthMillis)
-                .orderBy("orderPlacingTimeStamp")
-                .get()
-                .addOnCompleteListener {
-                    if(it.isSuccessful){
-                        ordersMainArrayList.clear()
-                        for(document in it.result!!.documents){
-                            val o = document.toObject(OrderItemMain::class.java)!!
-                            o.docID = document.id
-                            ordersMainArrayList.add(o)
-                        }
-                        if(ordersMainArrayList.isNotEmpty()){
-                            placeOrderMainData(view)
-                        }else{
-                            view.noProductsText.visibility = View.VISIBLE
-                            view.noProductsTextView.text = getString(R.string.you_have_no_orders)
-                            view.progressBar.visibility = View.GONE
-                            view.recyclerView.visibility = View.GONE
-                        }
-                    }else{
-                        view.noProductsText.visibility = View.VISIBLE
-                        view.noProductsTextView.text = getString(R.string.you_have_no_orders)
-                        view.progressBar.visibility = View.GONE
-                        view.recyclerView.visibility = View.GONE
-                        it.exception!!.printStackTrace()
-                    }
-                }
-    }
-
     fun getDate(milliSeconds: Long, dateFormat: String?): String? {
         // Create a DateFormatter object for displaying date in specified format.
         val formatter = SimpleDateFormat(dateFormat, Locale.ENGLISH)
@@ -203,12 +140,5 @@ class OldOrderListFragment : Fragment() {
         val calendar: Calendar = Calendar.getInstance()
         calendar.setTimeInMillis(milliSeconds)
         return formatter.format(calendar.getTime())
-    }
-
-    override fun onResume() {
-        super.onResume()
-        if(FirebaseAuth.getInstance().currentUser!=null){
-            loadSecondData(mainView, "PENDING")
-        }
     }
 }

@@ -14,7 +14,7 @@ import kotlinx.android.synthetic.main.cart_product_item_view.view.*
 
 class CartProductItemRecyclerAdapter(
         private val context : Context,
-        private val productItems : ArrayList<MainShopCartItem>
+        val productItems : ArrayList<MainShopCartItem>
 ) : RecyclerView.Adapter
     <CartProductItemRecyclerAdapter.RecyclerViewHolder>() {
 
@@ -38,7 +38,7 @@ class CartProductItemRecyclerAdapter(
     }
 
     override fun onBindViewHolder(holder: RecyclerViewHolder, position: Int) {
-        cartItemRecyclerAdapter = CartItemRecyclerAdapter(context, productItems[position].cart_products, this)
+        cartItemRecyclerAdapter = CartItemRecyclerAdapter(context, productItems[position].cart_products, position, this)
         holder.productsTextView.text = productItems[position].shop_details.name
         holder.productsRecyclerView.layoutManager = LinearLayoutManager(context)
         holder.productsRecyclerView.adapter = cartItemRecyclerAdapter

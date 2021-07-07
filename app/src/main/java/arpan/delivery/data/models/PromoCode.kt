@@ -9,5 +9,15 @@ data class PromoCode(
     var remainingUses : Int = 0,
     var promoCodeName : String = "",
     var validityOfCode : Long = 0,
-    var active : Boolean = false
+    var active : Boolean = false,
+
+    var shopBased : Boolean = false,
+    var shopKey : String = "",
+    var shopName : String = "",
+
+    var shopDiscount : Boolean = false,
+
+    var deliveryDiscount : Boolean = false,
+
+    var bothDiscount : Boolean = false,
 )

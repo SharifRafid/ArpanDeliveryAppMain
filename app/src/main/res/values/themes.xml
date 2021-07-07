@@ -21,6 +21,11 @@
         <item name="alertDialogTheme">@style/AlertDialogCustom</item>
         <item name="alertDialogStyle">@style/AlertDialogCustom</item>
     </style>
+    <style name="splashScreenTheme" parent="Theme.ArpanDelivery">
+        <item name="android:windowBackground">@drawable/arpan_icon_main</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowFullscreen">true</item>
+    </style>
     <style name="Style_TextView">
         <item name="fontFamily">@font/hind_siliguri_font</item>
         <item name="android:textSize">14sp</item>

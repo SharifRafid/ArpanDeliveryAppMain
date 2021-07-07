@@ -53,11 +53,14 @@ class MyFirebaseIdService : FirebaseMessagingService() {
     }
 
     private fun addRegistrationToken(token: Map<String, Any>, uid: String) {
-        db.collection("users").document(uid).update(token)
+        if(uid.isNotEmpty()){
+            db.collection("users").document(uid).update(token)
+        }
     }
 
     private fun getRegistrationTokens(uid: String) {
-        db.collection("users")
+        if(uid.isNotEmpty()){
+            db.collection("users")
                 .document(uid)
                 .get()
                 .addOnCompleteListener(OnCompleteListener<DocumentSnapshot?> { task ->
@@ -73,6 +76,7 @@ class MyFirebaseIdService : FirebaseMessagingService() {
                         Log.d(TAG, "get failed with ", task.exception)
                     }
                 })
+        }
     }
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {

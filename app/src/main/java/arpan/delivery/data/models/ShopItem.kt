@@ -11,5 +11,9 @@ data class ShopItem (
     val location : String = "",
     val username : String = "",
     val password : String = "",
-    val order : Int = 0
+    val order : Int = 0,
+    val isClient : String = "no",
+    var shopNotice : String = "",
+    var shopNoticeColor : String = "",
+    var shopNoticeColorBg : String = "",
 )

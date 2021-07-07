@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center"
+    android:paddingBottom="10dp"
     android:background="@color/bg_color"
     tools:context=".ui.home.HomeActivity">
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -34,7 +35,7 @@
                 android:fontFamily="@font/hind_siliguri_font"
                 android:gravity="center"
                 android:padding="8dp"
-                android:text="ARP-1001"
+                android:text=""
                 android:textColor="@color/blue_normal"
                 android:textColorHint="#6E8697"
                 android:textSize="18sp"
@@ -56,7 +57,7 @@
                 android:paddingTop="10dp"
                 android:paddingEnd="30dp"
                 android:paddingBottom="10dp"
-                android:text="PENDING"
+                android:text=""
                 android:textSize="16sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -70,6 +71,7 @@
             android:layout_margin="2dp"
             android:enabled="false"
             android:hint="@string/name"
+            android:visibility="gone"
             android:textColorHint="#8A8A8A"
             app:boxStrokeColor="#A6A6A6"
             app:boxStrokeWidthFocused="1.3dp"
@@ -99,6 +101,7 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:visibility="gone"
             android:layout_margin="2dp"
             android:hint="@string/phone"
             android:textColorHint="#8A8A8A"
@@ -117,6 +120,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/hind_siliguri_font"
                 android:gravity="top"
+                android:visibility="gone"
                 android:inputType="phone"
                 android:padding="10dp"
                 android:textColor="@color/text_color_edit_custom"
@@ -202,7 +206,7 @@
                 android:id="@+id/pickDropScrollView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:visibility="visible"
+                android:visibility="gone"
                 android:scrollbars="none">
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -505,6 +509,61 @@
                     </LinearLayout>
                 </LinearLayout>
             </ScrollView>
+
+            <LinearLayout
+                android:id="@+id/customOrderLinearLayout"
+                android:layout_width="match_parent"
+                android:visibility="gone"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+                <TextView
+                    android:id="@+id/titleCustomOrderLinear"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/divider_bg_color_1"
+                    android:fontFamily="@font/hind_siliguri_font"
+                    android:gravity="center"
+                    android:padding="4dp"
+                    android:text=""
+                    android:textColor="@color/divider_text_color_1"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center">
+                    <TextView
+                        android:id="@+id/customOrderTitleTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/hind_siliguri_font"
+                        android:gravity="center"
+                        android:layout_weight="1"
+                        android:padding="4dp"
+                        android:text=""
+                        android:textColor="@color/black"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+                    <ImageView
+                        android:id="@+id/shopImageItem"
+                        android:layout_width="70dp"
+                        android:layout_height="70dp"
+                        android:padding="10dp"
+                        android:src="@drawable/loading_image_glide"
+                        android:scaleType="centerCrop"/>
+                </LinearLayout>
+                <TextView
+                    android:id="@+id/customOrderDetailsTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:fontFamily="@font/hind_siliguri_font"
+                    android:padding="4dp"
+                    android:text=""
+                    android:textColor="@color/black"
+                    android:textSize="14sp" />
+            </LinearLayout>
+
             <androidx.core.widget.NestedScrollView
                 android:id="@+id/nestedScrollView"
                 android:layout_width="match_parent"
@@ -655,7 +714,7 @@
                 android:fontFamily="@font/hind_siliguri_font"
                 android:gravity="center"
                 android:padding="5dp"
-                android:text="COD"
+                android:text=""
                 android:textColor="@color/grey_normal"
                 android:textSize="14sp"
                 android:textStyle="bold"
@@ -722,7 +781,7 @@
                     android:fontFamily="@font/hind_siliguri_font"
                     android:gravity="center"
                     android:padding="10dp"
-                    android:text="মোট : ০ টাকা"
+                    android:text=""
                     android:textColor="@color/text_color_edit_custom"
                     android:textColorHint="#6E8697"
                     android:textSize="15sp"
@@ -745,7 +804,7 @@
                     android:paddingTop="10dp"
                     android:paddingEnd="30dp"
                     android:paddingBottom="10dp"
-                    android:text="PENDING"
+                    android:text=""
                     android:textSize="16sp"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"

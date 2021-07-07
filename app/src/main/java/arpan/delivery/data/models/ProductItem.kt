@@ -17,5 +17,6 @@ data class ProductItem (
         var shortDescription : String = "",
         var offerDetails : String = "",
         var productDetails : String = "",
-        var order : String = ""
+        var order : String = "",
+        var arpanCharge : Int = 0,
 )

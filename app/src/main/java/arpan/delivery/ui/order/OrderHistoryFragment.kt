@@ -1,5 +1,6 @@
 package arpan.delivery.ui.order
 
+import android.app.AlertDialog
 import android.app.Dialog
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -31,16 +32,9 @@ import com.google.firebase.storage.FirebaseStorage
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.fragment_order_history.view.*
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [OrderHistoryFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class OrderHistoryFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
@@ -104,12 +98,14 @@ class OrderHistoryFragment : Fragment() {
             view.noProductsText.visibility = View.VISIBLE
             view.mainLayout.visibility = View.GONE
         }else{
+            progressDialog.show()
             FirebaseFirestore.getInstance().collection("users")
                     .document(FirebaseAuth.getInstance().currentUser!!.uid)
                     .collection("users_order_collection")
                     .document(orderId)
                     .get().addOnCompleteListener {
-                        if(it.isSuccessful){
+                    progressDialog.dismiss()
+                    if(it.isSuccessful){
                             if(it.result!!.exists()){
                                 val orderItemMain = it.result!!.toObject(OrderItemMain::class.java) as OrderItemMain
                                 if(orderItemMain.pickDropOrder){
@@ -117,23 +113,132 @@ class OrderHistoryFragment : Fragment() {
                                     view.pickDropScrollView.visibility = View.VISIBLE
                                     view.text_name_container.visibility = View.GONE
                                     view.text_number_container.visibility = View.GONE
+                                    view.edt_name.setText(orderItemMain.pickDropOrderItem.senderName)
+                                    view.edt_mobile.setText(orderItemMain.pickDropOrderItem.senderPhone)
+                                    view.edt_address.setText(orderItemMain.pickDropOrderItem.senderAddress)
+                                    view.edt_aboutParcel.setText(orderItemMain.pickDropOrderItem.parcelDetails)
+                                    view.edt_name_reciver.setText(orderItemMain.pickDropOrderItem.recieverName)
+                                    view.edt_mobile_reciver.setText(orderItemMain.pickDropOrderItem.recieverPhone)
+                                    view.edt_address_reciver.setText(orderItemMain.pickDropOrderItem.recieverAddress)
                                     view.txt_number.visibility = View.GONE
                                 }else{
                                     view.text_number_container.visibility = View.VISIBLE
                                     view.text_name_container.visibility = View.VISIBLE
                                     view.txt_number.visibility = View.VISIBLE
-                                    view.nestedScrollView.visibility = View.VISIBLE
-                                    view.pickDropScrollView.visibility = View.GONE
-                                    workWithTheArrayList(orderItemMain.products, view)
+                                    if(orderItemMain.products.size==1 && !orderItemMain.products[0].product_item){
+                                        view.customOrderLinearLayout.visibility = View.VISIBLE
+                                        view.nestedScrollView.visibility = View.GONE
+                                        view.pickDropScrollView.visibility = View.GONE
+                                        if(orderItemMain.products[0].parcel_item){
+                                            view.titleCustomOrderLinear.text = "পার্সেল অর্ডার"
+                                            view.customOrderTitleTextView.text = "কুরিয়ার নেমঃ "+ orderItemMain.products[0].parcel_order_text
+                                            view.customOrderDetailsTextView.text = "ডিটেইলসঃ "+ orderItemMain.products[0].parcel_order_text_2
+                                            if(orderItemMain.products[0].parcel_order_image.isNotEmpty()){
+                                                val firebaseStorage = FirebaseStorage.getInstance()
+                                                    .reference.child("ORDER_IMAGES")
+                                                    .child(orderItemMain.key)
+                                                    .child(orderItemMain.products[0].parcel_order_image)
+
+                                                Glide.with(requireContext())
+                                                    .load(firebaseStorage)
+                                                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                                    .centerCrop()
+                                                    .override(300,300)
+                                                    .placeholder(R.drawable.loading_image_glide).into(view.shopImageItem)
+
+                                                view.shopImageItem.setOnClickListener {
+                                                    val dialog = AlertDialog.Builder(context, R.style.Theme_ArpanDelivery).create()
+                                                    val view2 = LayoutInflater.from(context).inflate(R.layout.product_image_big_view,null)
+                                                    Glide.with(requireContext())
+                                                        .load(firebaseStorage)
+                                                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                                        .centerInside()
+                                                        .into(view2.imageView)
+                                                    dialog.setView(view2)
+                                                    //dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+                                                    dialog.show()
+                                                }
+                                            }else{
+                                                view.shopImageItem.visibility = View.GONE
+                                            }
+                                        }else if(orderItemMain.products[0].medicine_item){
+                                            view.titleCustomOrderLinear.text = "মেডিসিন অর্ডার"
+                                            view.customOrderTitleTextView.text = "ফার্মেসিঃ "+ orderItemMain.products[0].medicine_order_text
+                                            view.customOrderDetailsTextView.text = "ঔষোধঃ "+ orderItemMain.products[0].medicine_order_text_2
+                                            if(orderItemMain.products[0].medicine_order_image.isNotEmpty()){
+                                                val firebaseStorage = FirebaseStorage.getInstance()
+                                                    .reference.child("ORDER_IMAGES")
+                                                    .child(orderItemMain.key)
+                                                    .child(orderItemMain.products[0].medicine_order_image)
+
+                                                Glide.with(requireContext())
+                                                    .load(firebaseStorage)
+                                                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                                    .centerCrop()
+                                                    .override(300,300)
+                                                    .placeholder(R.drawable.loading_image_glide).into(view.shopImageItem)
+
+                                                view.shopImageItem.setOnClickListener {
+                                                    val dialog = AlertDialog.Builder(context, R.style.Theme_ArpanDelivery).create()
+                                                    val view2 = LayoutInflater.from(context).inflate(R.layout.product_image_big_view,null)
+                                                    Glide.with(requireContext())
+                                                        .load(firebaseStorage)
+                                                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                                        .centerInside()
+                                                        .into(view2.imageView)
+                                                    dialog.setView(view2)
+                                                    //dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+                                                    dialog.show()
+                                                }
+                                            }else{
+                                                view.shopImageItem.visibility = View.GONE
+                                            }
+                                        }else if(orderItemMain.products[0].custom_order_item){
+                                            view.titleCustomOrderLinear.text = "কাস্টম অর্ডার"
+                                            view.customOrderTitleTextView.text = "জেনারেল অর্ডার"
+                                            view.customOrderDetailsTextView.text = "ডিটেইলসঃ "+ orderItemMain.products[0].custom_order_text
+                                            if(orderItemMain.products[0].custom_order_image.isNotEmpty()){
+                                                val firebaseStorage = FirebaseStorage.getInstance()
+                                                    .reference.child("ORDER_IMAGES")
+                                                    .child(orderItemMain.key)
+                                                    .child(orderItemMain.products[0].custom_order_image)
+
+                                                Glide.with(requireContext())
+                                                    .load(firebaseStorage)
+                                                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                                    .centerCrop()
+                                                    .override(300,300)
+                                                    .placeholder(R.drawable.loading_image_glide).into(view.shopImageItem)
+
+                                                view.shopImageItem.setOnClickListener {
+                                                    val dialog = AlertDialog.Builder(context, R.style.Theme_ArpanDelivery).create()
+                                                    val view2 = LayoutInflater.from(context).inflate(R.layout.product_image_big_view,null)
+                                                    Glide.with(requireContext())
+                                                        .load(firebaseStorage)
+                                                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                                        .centerInside()
+                                                        .into(view2.imageView)
+                                                    dialog.setView(view2)
+                                                    //dialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+                                                    dialog.show()
+                                                }
+                                            }else{
+                                                view.shopImageItem.visibility = View.GONE
+                                            }
+                                        }
+                                    }else{
+                                        view.nestedScrollView.visibility = View.VISIBLE
+                                        view.pickDropScrollView.visibility = View.GONE
+                                        view.customOrderLinearLayout.visibility = View.GONE
+                                        workWithTheArrayList(orderItemMain.products, view)
+                                    }
                                 }
-                                view.edt_name.setText(orderItemMain.pickDropOrderItem.senderName)
-                                view.edt_mobile.setText(orderItemMain.pickDropOrderItem.senderPhone)
-                                view.edt_address.setText(orderItemMain.pickDropOrderItem.senderAddress)
-                                view.edt_aboutParcel.setText(orderItemMain.pickDropOrderItem.parcelDetails)
-                                view.edt_name_reciver.setText(orderItemMain.pickDropOrderItem.recieverName)
-                                view.edt_mobile_reciver.setText(orderItemMain.pickDropOrderItem.recieverPhone)
-                                view.edt_address_reciver.setText(orderItemMain.pickDropOrderItem.recieverAddress)
-                                orderItemMain.userAddress = "From "+orderItemMain.pickDropOrderItem.senderLocation+"To "+orderItemMain.pickDropOrderItem.recieverLocation
+                                if(orderItemMain.userAddress.isEmpty()){
+                                    view.text_address_container.visibility = View.GONE
+                                }else{
+                                    view.text_address_container.visibility = View.VISIBLE
+                                    view.txt_address.setText(orderItemMain.userAddress)
+                                }
                                 priceTotal = orderItemMain.totalPrice
                                 deliveryCharge = orderItemMain.deliveryCharge
                                 promoCodeActive = orderItemMain.promoCodeApplied
@@ -175,7 +280,7 @@ class OrderHistoryFragment : Fragment() {
                                             .override(300,300)
                                             .placeholder(R.drawable.loading_image_glide).into(view.imageView)
                                 }
-                                view.paymentText.text = getString(R.string.payment_method) + orderItemMain.paymentMethod
+                                view.paymentText.text = getString(R.string.payment_method) +" "+ orderItemMain.paymentMethod
                                 view.shopsProgress.visibility = View.GONE
                                 view.noProductsText.visibility = View.GONE
                                 view.mainLayout.visibility = View.VISIBLE
@@ -336,20 +441,11 @@ class OrderHistoryFragment : Fragment() {
     }
 
     private fun setPriceTotalOnView(view: View) {
-        view.txtAllPrice.text = getString(R.string.total_total_text)+"${priceTotal}+${deliveryCharge} " +
+        view.txtAllPrice.text = getString(R.string.total_total_text)+" ${priceTotal}+${deliveryCharge} " +
                 "= ${priceTotal+deliveryCharge} "+getString(R.string.taka_text)
         if(promoCodeActive){
             view.promoCodeAppliedLinear.visibility = View.VISIBLE
             view.promoCodeAppliedText.text  = getString(R.string.you_got_part_1)+" "+promoCode.discountPrice+" "+getString(R.string.you_got_part_2)
-            if(priceTotal <= promoCode.discountPrice){
-                view.txtAllPrice.text = getString(R.string.total_total_text)+"${0}+${deliveryCharge} " +
-                        "= ${0+deliveryCharge} "+getString(R.string.taka_text)
-            }else{
-                view.txtAllPrice.text = getString(R.string.total_total_text)+
-                        "${priceTotal - promoCode.discountPrice}+${deliveryCharge} " +
-                        "= ${priceTotal - promoCode.discountPrice+deliveryCharge} "+
-                        getString(R.string.taka_text)
-            }
         }else{
             view.promoCodeAppliedLinear.visibility = View.GONE
         }

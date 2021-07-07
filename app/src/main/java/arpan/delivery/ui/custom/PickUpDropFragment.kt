@@ -13,6 +13,7 @@ import android.os.Bundle
 import android.provider.OpenableColumns
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -38,12 +39,17 @@ import com.google.firebase.storage.FirebaseStorage
 import com.shashank.sony.fancytoastlib.FancyToast
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.dialog_progress_layout_main.view.*
+import kotlinx.android.synthetic.main.fragment_medicine_new.view.*
 import kotlinx.android.synthetic.main.fragment_order.view.*
 import kotlinx.android.synthetic.main.fragment_pick_up_drop.*
 import kotlinx.android.synthetic.main.fragment_pick_up_drop.view.*
 import kotlinx.android.synthetic.main.fragment_pick_up_drop.view.bkash_charge_note
+import kotlinx.android.synthetic.main.fragment_pick_up_drop.view.imageView
 import kotlinx.android.synthetic.main.fragment_pick_up_drop.view.radioGroup
 import kotlinx.android.synthetic.main.fragment_pick_up_drop.view.spinner_1
+import kotlinx.android.synthetic.main.fragment_pick_up_drop.view.spinner_2
+import kotlinx.android.synthetic.main.fragment_pick_up_drop.view.txt_place_order
+import kotlinx.android.synthetic.main.fragment_pick_up_drop.view.txt_price
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
@@ -67,6 +73,40 @@ class PickUpDropFragment : Fragment() {
     ): View {
         v = inflater.inflate(R.layout.fragment_pick_up_drop, container, false)
         contextMain = container!!.context
+
+        var snapshot = (v.context as HomeActivity).dataSnapshotOrderTakingTime
+        val startTime = snapshot.child("start_time").value.toString()
+        val endTime = snapshot.child("end_time").value.toString()
+        val over_time_orders = snapshot.child("over_time_orders").value.toString()
+        if(over_time_orders == "yes"){
+            v.txt_place_order.visibility = View.VISIBLE
+        }else{
+            val string1 = "${startTime}:00"
+            val time1 = SimpleDateFormat("HH:mm:ss", Locale.ENGLISH).parse(string1)
+            val calendar1 = Calendar.getInstance()
+            calendar1.time = time1
+            calendar1.add(Calendar.DATE, 1)
+            val string2 = "${endTime}:00"
+            val time2 = SimpleDateFormat("HH:mm:ss", Locale.ENGLISH).parse(string2)
+            val calendar2 = Calendar.getInstance()
+            calendar2.time = time2
+            calendar2.add(Calendar.DATE, 1)
+            val someRandomTime = SimpleDateFormat("HH:mm:ss", Locale.ENGLISH).format(Calendar.getInstance().time)
+            val date = SimpleDateFormat("HH:mm:ss", Locale.ENGLISH).parse(someRandomTime)
+            val calendar3 = Calendar.getInstance()
+            calendar3.time = date
+            calendar3.add(Calendar.DATE, 1)
+            Log.e("C3", date.toString())
+            Log.e("C2", time2.toString())
+            Log.e("C1", time1.toString())
+            val x = calendar3.time
+            if(x.after(calendar1.time) && x.before(calendar2.time)) {
+                v.txt_place_order.visibility = View.VISIBLE
+            }else{
+                v.context.showToast(getString(R.string.shgop_order_time_ehon_bodro_ache), FancyToast.ERROR)
+                v.txt_place_order.visibility = View.GONE
+            }
+        }
 
         (v.context as HomeActivity).titleActionBarTextView.text = getString(R.string.pick_and_drop_page_title)
         (v.context as HomeActivity).deleteItemsFromCart.visibility = View.GONE
@@ -358,7 +398,7 @@ class PickUpDropFragment : Fragment() {
         orderItemMain.userId = FirebaseAuth.getInstance().currentUser!!.uid
         orderItemMain.userPhoneAccount = FirebaseAuth.getInstance().currentUser!!.phoneNumber!!
         orderItemMain.paymentMethod = if(view.radioGroup.checkedRadioButtonId == R.id.rb1){
-            "BKASH"
+            "bKash"
         }else{
             "COD"
         }

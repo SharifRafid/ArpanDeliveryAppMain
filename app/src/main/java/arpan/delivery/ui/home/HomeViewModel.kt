@@ -10,9 +10,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import arpan.delivery.R
 import arpan.delivery.data.models.LocationItem
-import arpan.delivery.data.models.PromoCode
-import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.QuerySnapshot
 import com.shreyaspatil.MaterialDialog.MaterialDialog
 
 class HomeViewModel : ViewModel() {
@@ -58,9 +57,19 @@ class HomeViewModel : ViewModel() {
         return daChargeExtra
     }
 
-    private lateinit var offersDocumentSnapshotMain : MutableLiveData<Task<DocumentSnapshot>>
-    private lateinit var offersDocumentSnapshotMainData : MutableLiveData<Task<DocumentSnapshot>>
-    private lateinit var categoriesDocumentSnapshotMain : MutableLiveData<Task<DocumentSnapshot>>
+    private var mainShopsDocumentSnapshot : QuerySnapshot? = null
+
+    fun setMainShopsDocumentSnapshot(ds: QuerySnapshot){
+        mainShopsDocumentSnapshot = ds
+    }
+
+    fun getMainShopsDocumentSnapshot() : QuerySnapshot?{
+        return mainShopsDocumentSnapshot
+    }
+
+    private lateinit var offersDocumentSnapshotMain : MutableLiveData<DocumentSnapshot>
+    private lateinit var offersDocumentSnapshotMainData : MutableLiveData<DocumentSnapshot>
+    private lateinit var categoriesDocumentSnapshotMain : MutableLiveData<DocumentSnapshot>
 
     private var categoriesMaxOrderLimitCustomOrder : MutableLiveData<Int> = MutableLiveData(0)
     private var categoriesMaxOrderLimitParcel : MutableLiveData<Int> = MutableLiveData(0)
@@ -83,27 +92,27 @@ class HomeViewModel : ViewModel() {
         locationsArrayPickDrop = MutableLiveData(a)
     }
 
-    fun setOffersDocumentSnapshotData(documentSnapshotTask : MutableLiveData<Task<DocumentSnapshot>>){
+    fun setOffersDocumentSnapshotData(documentSnapshotTask : MutableLiveData<DocumentSnapshot>){
         offersDocumentSnapshotMain = documentSnapshotTask
     }
 
-    fun setOffersDocumentSnapshotMainData(documentSnapshotTask : MutableLiveData<Task<DocumentSnapshot>>){
+    fun setOffersDocumentSnapshotMainData(documentSnapshotTask: MutableLiveData<DocumentSnapshot>){
         offersDocumentSnapshotMainData = documentSnapshotTask
     }
 
-    fun setCategoriesDocumentSnapshotData(documentSnapshotTask : MutableLiveData<Task<DocumentSnapshot>>){
+    fun setCategoriesDocumentSnapshotData(documentSnapshotTask : MutableLiveData<DocumentSnapshot>){
         categoriesDocumentSnapshotMain = documentSnapshotTask
     }
 
-    fun getOffersDocumentSnapshotData(): MutableLiveData<Task<DocumentSnapshot>> {
+    fun getOffersDocumentSnapshotData(): MutableLiveData<DocumentSnapshot> {
         return offersDocumentSnapshotMain
     }
 
-    fun getOffersDocumentSnapshotMainData(): MutableLiveData<Task<DocumentSnapshot>> {
+    fun getOffersDocumentSnapshotMainData(): MutableLiveData<DocumentSnapshot> {
         return offersDocumentSnapshotMainData
     }
 
-    fun getCategoriesDocumentSnapshotData(): MutableLiveData<Task<DocumentSnapshot>> {
+    fun getCategoriesDocumentSnapshotData(): MutableLiveData<DocumentSnapshot> {
         return categoriesDocumentSnapshotMain
     }
 
@@ -173,21 +182,21 @@ class HomeViewModel : ViewModel() {
         }
     }
 
-    private lateinit var timeBasedNotificationsDocumentSnapshotMainData :  MutableLiveData<Task<DocumentSnapshot>>
-    private lateinit var normalNotificationsDocumentSnapshotMainData :  MutableLiveData<Task<DocumentSnapshot>>
+    private lateinit var timeBasedNotificationsDocumentSnapshotMainData :  MutableLiveData<DocumentSnapshot>
+    private lateinit var normalNotificationsDocumentSnapshotMainData :  MutableLiveData<DocumentSnapshot>
 
-    fun setTimeBasedNotificationsDocumentSnapshotMainData(mutableLiveData: MutableLiveData<Task<DocumentSnapshot>>) {
+    fun setTimeBasedNotificationsDocumentSnapshotMainData(mutableLiveData: MutableLiveData<DocumentSnapshot>) {
         timeBasedNotificationsDocumentSnapshotMainData  = mutableLiveData
     }
 
-    fun setNormalNotificationsDocumentSnapshotMainData(mutableLiveData: MutableLiveData<Task<DocumentSnapshot>>) {
+    fun setNormalNotificationsDocumentSnapshotMainData(mutableLiveData: MutableLiveData<DocumentSnapshot>) {
         normalNotificationsDocumentSnapshotMainData = mutableLiveData
     }
-    fun getTimeBasedNotificationsDocumentSnapshotMainData() : MutableLiveData<Task<DocumentSnapshot>>{
+    fun getTimeBasedNotificationsDocumentSnapshotMainData() : MutableLiveData<DocumentSnapshot>{
         return timeBasedNotificationsDocumentSnapshotMainData
     }
 
-    fun getNormalNotificationsDocumentSnapshotMainData(): MutableLiveData<Task<DocumentSnapshot>> {
+    fun getNormalNotificationsDocumentSnapshotMainData(): MutableLiveData<DocumentSnapshot> {
         return normalNotificationsDocumentSnapshotMainData
     }
 

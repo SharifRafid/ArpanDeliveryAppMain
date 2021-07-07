@@ -3,7 +3,6 @@ package arpan.delivery.ui.home
 import android.app.AlertDialog
 import android.app.Dialog
 import android.content.ActivityNotFoundException
-import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.Configuration
@@ -16,11 +15,12 @@ import android.os.Bundle
 import android.util.Log
 import android.util.Size
 import android.view.*
+import android.widget.LinearLayout
 import android.widget.PopupWindow
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
@@ -32,6 +32,7 @@ import arpan.delivery.data.db.CartDb
 import arpan.delivery.data.db.CartItemsRepo
 import arpan.delivery.data.db.CartProductEntity
 import arpan.delivery.data.models.LocationItem
+import arpan.delivery.data.models.ShopItem
 import arpan.delivery.ui.cart.CartItemsViewModelFactory
 import arpan.delivery.ui.cart.CartViewModel
 import arpan.delivery.ui.launcher.MainActivity
@@ -39,21 +40,25 @@ import arpan.delivery.utils.Constants
 import arpan.delivery.utils.createProgressDialog
 import arpan.delivery.utils.showToast
 import com.google.android.gms.tasks.OnCompleteListener
-import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.google.firebase.dynamiclinks.ktx.dynamicLinks
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.FirebaseMessaging
 import com.shashank.sony.fancytoastlib.FancyToast
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.call_dialog_view.view.*
 import kotlinx.android.synthetic.main.dialog_add_category.view.*
 import kotlinx.android.synthetic.main.dialog_alert_layout_main.view.*
+import kotlinx.android.synthetic.main.fragment_cart.view.*
+import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.fragment_order.view.*
+import kotlinx.android.synthetic.main.pop_up_to_take_to_cart.view.*
 import kotlinx.android.synthetic.main.theme_change_button.view.*
 import kotlinx.android.synthetic.main.tooltip.view.*
 import java.util.*
@@ -70,18 +75,47 @@ class HomeActivity : AppCompatActivity() {
     private var firebaseFirestore = FirebaseFirestore.getInstance()
     var cartItemsAllMainList = ArrayList<CartProductEntity>()
     lateinit var sets : HashSet<String>
+    lateinit var dataSnapshotOrderTakingTime: DataSnapshot
+    lateinit var popUpForCartRedirect : PopupWindow
+
+    var firstLaunch = true
+
+    var mainShopsArrayList = ArrayList<ShopItem>()
 
     var popUpWindowOpen = false
     var popupWindow = PopupWindow()
+
+    var userNameFromProfile = ""
+    var userAddressFromProfile = ""
+
+    var completeCountOfListeners = ArrayList<Boolean>()
+
+    private var deepLinkChecked = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setLanguageDefault()
         setContentView(R.layout.activity_home)
+        setTheme(R.style.Theme_ArpanDelivery)
         initVar()
         initLogic()
         initCartLogic()
         initFabMenu()
+        initUserDetailsFetch()
+    }
+
+    private fun initUserDetailsFetch() {
+        if(FirebaseAuth.getInstance().currentUser!=null){
+            val uid = FirebaseAuth.getInstance().currentUser!!.uid
+            firebaseFirestore.collection("users")
+                .document(uid)
+                .addSnapshotListener { value, error ->
+                    if(value!=null){
+                        userNameFromProfile = value.getString("name").toString()
+                        userAddressFromProfile = value.getString("address").toString()
+                    }
+                }
+        }
     }
 
     private fun initFabMenu() {
@@ -222,6 +256,20 @@ class HomeActivity : AppCompatActivity() {
         supportActionBar!!.setDisplayShowTitleEnabled(false)
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration)
         NavigationUI.setupWithNavController(navigationView, navController)
+        val popUpForCartRedirectView = LayoutInflater.from(this).inflate(R.layout.pop_up_to_take_to_cart, null)
+        popUpForCartRedirect = PopupWindow(popUpForCartRedirectView,
+            LinearLayout.LayoutParams.WRAP_CONTENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT, true)
+        //popUpForCartRedirect.setWindowLayoutType(WindowManager.LayoutParams.TYPE_TOAST);
+        popUpForCartRedirect.animationStyle = R.anim.popupwindowanimation
+        popUpForCartRedirectView.cardViewTakeToCart.setOnClickListener {
+            popUpForCartRedirect.dismiss()
+            openCartFragment(it)
+        }
+        popUpForCartRedirect.contentView = popUpForCartRedirectView
+        popUpForCartRedirect.isOutsideTouchable = false
+        popUpForCartRedirect.isTouchable = true
+        popUpForCartRedirect.isFocusable = false
 //        (navigationView.menu.findItem(R.id.changeThemeMenuItem).actionView as SwitchMaterial).isClickable = false
 //        (navigationView.menu.findItem(R.id.changeThemeMenuItem).actionView as SwitchMaterial).isChecked =
 //                AppCompatDelegate.getDefaultNightMode()==AppCompatDelegate.MODE_NIGHT_YES
@@ -237,7 +285,7 @@ class HomeActivity : AppCompatActivity() {
             }else if(id == R.id.shareTheApp){
                 val sharingIntent = Intent(Intent.ACTION_SEND)
                 sharingIntent.type = "text/plain"
-                val shareBody = "Download Arpan App From Google Play https://play.google.com/store/apps/details?id=com.dubd.arponapp"
+                val shareBody = "Download Arpan App From Google Play https://play.google.com/store/apps/details?id=arpan.delivery"
                 sharingIntent.putExtra(Intent.EXTRA_SUBJECT, "Share Arpan App")
                 sharingIntent.putExtra(Intent.EXTRA_TEXT, shareBody)
                 startActivity(Intent.createChooser(sharingIntent, "Share via"))
@@ -262,6 +310,49 @@ class HomeActivity : AppCompatActivity() {
                     )
                 }
             }
+            else if(id == R.id.customOrderNewFragment){
+                if(!completeCountOfListeners.contains(false)){
+                    if(FirebaseAuth.getInstance().currentUser!=null){
+                        navController.navigate(R.id.customOrderNewFragment)
+                    }else{
+                        showToast("অর্ডার করার জন্য লগ ইন করতে হবে ।", FancyToast.ERROR)
+                    }
+                }else{
+                    showToast("একটু অপেক্ষা করুন", FancyToast.LENGTH_SHORT)
+                }
+            }else if(id == R.id.medicineNewFragment){
+                if(!completeCountOfListeners.contains(false)){
+                    if(FirebaseAuth.getInstance().currentUser!=null){
+                        navController.navigate(R.id.medicineNewFragment)
+                    }else{
+                        showToast("অর্ডার করার জন্য লগ ইন করতে হবে ।", FancyToast.ERROR)
+                    }
+                }else{
+                    showToast("একটু অপেক্ষা করুন", FancyToast.LENGTH_SHORT)
+                }
+            }else if(id == R.id.pickUpDropFragment){
+                if(!completeCountOfListeners.contains(false)){
+                    if(FirebaseAuth.getInstance().currentUser!=null){
+                        navController.navigate(R.id.pickUpDropFragment)
+                    }else{
+                        showToast("অর্ডার করার জন্য লগ ইন করতে হবে ।", FancyToast.ERROR)
+                    }
+                }else{
+                    showToast("একটু অপেক্ষা করুন", FancyToast.LENGTH_SHORT)
+                }
+            }else if(id == R.id.parcelNewFragment){
+                if(!completeCountOfListeners.contains(false)){
+                    if(FirebaseAuth.getInstance().currentUser!=null){
+                        navController.navigate(R.id.parcelNewFragment)
+                    }else{
+                        showToast("অর্ডার করার জন্য লগ ইন করতে হবে ।", FancyToast.ERROR)
+                    }
+                }else{
+                    showToast("একটু অপেক্ষা করুন", FancyToast.LENGTH_SHORT)
+                }
+            }else{
+                NavigationUI.onNavDestinationSelected(menuItem, navController)
+            }
 //            else if(id == R.id.changeThemeMenuItem){
 //                if(AppCompatDelegate.getDefaultNightMode()!=AppCompatDelegate.MODE_NIGHT_YES){
 //                    (menuItem.actionView as SwitchMaterial).isChecked = true
@@ -271,19 +362,58 @@ class HomeActivity : AppCompatActivity() {
 //                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
 //                }
 //            }
-            NavigationUI.onNavDestinationSelected(menuItem, navController)
             drawerMainHome.closeDrawer(GravityCompat.START)
             true
         }
         drawerMainHome.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
         getViewPagerImages()
-        initiateRealtimeListenerForProductOrderLimits()
-        initiateRealtimeListenerForLocationNormalOrders()
-        initiateRealtimeListenerForLocationPickDropOrders()
-        initiateRealtimeListenerForOrderShopLimits()
-        initFirebaseMessaging()
-        initBottomMenuClicks()
-        initUserProfileData()
+        completeCountOfListeners.add(false)
+        completeCountOfListeners.add(false)
+        completeCountOfListeners.add(false)
+        completeCountOfListeners.add(false)
+        completeCountOfListeners.add(false)
+        completeCountOfListeners.add(false)
+        initiateRealtimeListenerForProductOrderLimits()     //0
+        initiateRealtimeListenerForLocationNormalOrders()       //1
+        initiateRealtimeListenerForLocationPickDropOrders()     //2
+        initiateRealtimeListenerForOrderShopLimits()        //3
+        initFirebaseMessaging()     //NONE
+        initBottomMenuClicks()      //NONE
+        initUserProfileData()       //NONE
+        initiateRealtimeListenerForOrderTakingTime()        //4
+    }
+
+    fun showPopUpWindowForCart(){
+        popUpForCartRedirect.showAtLocation(fabMain, Gravity.BOTTOM, 0, 200)
+        Timer().schedule(object : TimerTask() {
+            override fun run() {
+                runOnUiThread {
+                    hidePopUpWindowForCart()
+                }
+            }
+        }, 3000)
+    }
+
+    fun hidePopUpWindowForCart(){
+        if(popUpForCartRedirect.isShowing){
+            popUpForCartRedirect.dismiss()
+        }
+    }
+
+    private fun initiateRealtimeListenerForOrderTakingTime() {
+        FirebaseDatabase.getInstance().reference.child("ORDER_TAKING_TIME")
+            .addValueEventListener(object : ValueEventListener{
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    completeCountOfListeners[4] = true
+                    dataSnapshotOrderTakingTime = snapshot
+                    checkShouldHideProgressOrNot()
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    error.toException().printStackTrace()
+                }
+
+            })
     }
 
     private fun initUserProfileData() {
@@ -291,32 +421,30 @@ class HomeActivity : AppCompatActivity() {
             val uid = FirebaseAuth.getInstance().currentUser!!.uid
             firebaseFirestore.collection("users")
                     .document(uid)
-                    .get().addOnCompleteListener {
-                        if(it.isSuccessful){
-                            if(it.result!=null){
-                                if(it.result!!.getString("name").toString().isEmpty()){
-                                    val view = LayoutInflater.from(this@HomeActivity)
-                                            .inflate(R.layout.dialog_alert_layout_main, null)
-                                    val dialog = AlertDialog.Builder(this@HomeActivity)
-                                            .setView(view).create()
-                                    view.btnNoDialogAlertMain.text = getString(R.string.no)
-                                    view.btnYesDialogAlertMain.text = getString(R.string.ok_text)
-                                    view.titleTextView.text = getString(R.string.complete_profile)
-                                    view.messageTextView.text = getString(R.string.please_complete_profile)
-                                    view.btnNoDialogAlertMain.setOnClickListener {
-                                        dialog.dismiss()
-                                    }
-                                    view.btnYesDialogAlertMain.setOnClickListener {
-                                        dialog.dismiss()
-                                        navController.navigate(R.id.profileFragment)
-                                    }
-                                    dialog.show()
-                                }
+                .addSnapshotListener { value, error ->
+                    error?.printStackTrace()
+                    if(value!=null){
+                        if(value.getString("name").toString().isEmpty() ||
+                            value.getString("address").toString().isEmpty()) {
+                            val view = LayoutInflater.from(this@HomeActivity)
+                                .inflate(R.layout.dialog_alert_layout_main, null)
+                            val dialog = AlertDialog.Builder(this@HomeActivity)
+                                .setView(view).create()
+                            view.btnNoDialogAlertMain.text = getString(R.string.no)
+                            view.btnYesDialogAlertMain.text = getString(R.string.ok_text)
+                            view.titleTextView.text = getString(R.string.complete_profile)
+                            view.messageTextView.text = getString(R.string.please_complete_profile)
+                            view.btnNoDialogAlertMain.setOnClickListener {
+                                dialog.dismiss()
                             }
-                        }else {
-                            it.exception!!.printStackTrace()
+                            view.btnYesDialogAlertMain.setOnClickListener {
+                                dialog.dismiss()
+                                navController.navigate(R.id.profileFragment)
+                            }
+                            dialog.show()
                         }
                     }
+                }
         }
 
     }
@@ -328,7 +456,7 @@ class HomeActivity : AppCompatActivity() {
             }
         }
         img_complain.setOnClickListener { view ->
-            val dialog = Dialog(this, android.R.style.Theme_Translucent_NoTitleBar)
+            val dialog = Dialog(this, R.style.Theme_ArpanDelivery)
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
             dialog.window!!.setLayout(
                 WindowManager.LayoutParams.MATCH_PARENT,
@@ -365,6 +493,8 @@ class HomeActivity : AppCompatActivity() {
 
                                 }
                             }
+                }else{
+                    showToast(" আপনি কোনো কিছু লিখেন নাই। ", FancyToast.ERROR)
                 }
             }
             dialog.setContentView(dialogView)
@@ -445,6 +575,7 @@ class HomeActivity : AppCompatActivity() {
                 .child("order_shop_limits")
                 .addValueEventListener(object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
+                        completeCountOfListeners[3] = true
                         homeViewModel.setMaxShops(
                             snapshot.child("max_shops").getValue(Long::class.java)!!.toInt()
                         )
@@ -459,6 +590,7 @@ class HomeActivity : AppCompatActivity() {
                             )!!.toInt()
                         )
                         homeViewModel.setAllowMoreShops(snapshot.child("allow_more").value as Boolean)
+                        checkShouldHideProgressOrNot()
                     }
 
                     override fun onCancelled(error: DatabaseError) {
@@ -503,6 +635,7 @@ class HomeActivity : AppCompatActivity() {
                 .child("delivery_charges_pick_drop")
             .addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
+                    completeCountOfListeners[2] = true
                     val arrayList = ArrayList<LocationItem>()
                     for (snap in snapshot.children) {
                         arrayList.add(
@@ -515,6 +648,7 @@ class HomeActivity : AppCompatActivity() {
                         )
                     }
                     homeViewModel.setLocationArrayPickDrop(arrayList)
+                    checkShouldHideProgressOrNot()
                 }
 
                 override fun onCancelled(error: DatabaseError) {
@@ -527,28 +661,30 @@ class HomeActivity : AppCompatActivity() {
     private fun initiateRealtimeListenerForLocationNormalOrders() {
         FirebaseDatabase.getInstance()
             .reference
-                .child("data")
-                .child("delivery_charges")
+            .child("data")
+            .child("delivery_charges")
             .addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
+                    completeCountOfListeners[1] = true
                     val arrayList = ArrayList<LocationItem>()
                     for (snap in snapshot.children) {
-                        arrayList.add(
-                            LocationItem(
-                                key = snap.key.toString(),
-                                locationName = snap.child("name").value.toString(),
-                                deliveryCharge = snap.child("deliveryCharge").value.toString().toInt(),
-                                daCharge = snap.child("daCharge").value.toString().toInt(),
-                            )
+                        val locationItem = LocationItem(
+                            key = snap.key.toString(),
+                            locationName = snap.child("name").value.toString(),
+                            deliveryCharge = snap.child("deliveryCharge").value.toString().toInt(),
+                            daCharge = snap.child("daCharge").value.toString().toInt(),
                         )
+                        if(snap.child("deliveryChargeClient").value != null){
+                            locationItem.deliveryChargeClient = snap.child("deliveryChargeClient").value.toString().toInt()
+                        }
+                        arrayList.add(locationItem)
                     }
                     homeViewModel.setLocationArray(arrayList)
+                    checkShouldHideProgressOrNot()
                 }
-
                 override fun onCancelled(error: DatabaseError) {
                     error.toException().printStackTrace()
                 }
-
             })
     }
 
@@ -562,6 +698,9 @@ class HomeActivity : AppCompatActivity() {
                     }
 
                     override fun onDataChange(snapshot: DataSnapshot) {
+                        completeCountOfListeners[0] = true
+                        checkShouldHideProgressOrNot()
+
                         homeViewModel.setCategoriesMaxOrderLimitParcel(
                             snapshot.child("parcel").value.toString().toInt()
                         )
@@ -583,54 +722,159 @@ class HomeActivity : AppCompatActivity() {
         showProgressDialog()
         firebaseFirestore.collection(Constants.FC_OFFERS_OI)
                 .document(Constants.FD_OFFERS_OIS)
-                .get().addOnCompleteListener {
-                    homeViewModel.setOffersDocumentSnapshotData(MutableLiveData(it))
+            .addSnapshotListener { value, error ->
+                error?.printStackTrace()
+                if(value!=null){
+                    homeViewModel.setOffersDocumentSnapshotData(MutableLiveData(value))
                     getViewPagerImagesMain()
                 }
+            }
     }
 
     private fun getViewPagerImagesMain() {
         firebaseFirestore.collection(Constants.FC_OFFERS_OI)
-                .document(Constants.FD_OFFERS_OID)
-                .get().addOnCompleteListener {
-                    homeViewModel.setOffersDocumentSnapshotMainData(MutableLiveData(it))
-                    firebaseFirestore.collection(Constants.FC_OFFERS_OI)
-                            .document("timebased_notifications_document")
-                            .get().addOnCompleteListener { task ->
-                                homeViewModel.setTimeBasedNotificationsDocumentSnapshotMainData(
-                                    MutableLiveData(
-                                        task
-                                    )
-                                )
-                                firebaseFirestore.collection(Constants.FC_OFFERS_OI)
-                                        .document("normal_notifications_document")
-                                        .get().addOnCompleteListener { task ->
-                                            homeViewModel.setNormalNotificationsDocumentSnapshotMainData(
-                                                MutableLiveData(
-                                                    task
-                                                )
-                                            )
-                                            getCategoriesData()
-                                        }
-                            }
+            .document(Constants.FD_OFFERS_OID)
+            .addSnapshotListener { value, error ->
+                error?.printStackTrace()
+                if(value!=null){
+                    homeViewModel.setOffersDocumentSnapshotMainData(MutableLiveData(value))
                 }
+                firebaseFirestore.collection(Constants.FC_OFFERS_OI)
+                    .document("timebased_notifications_document")
+                    .addSnapshotListener { value2, error2 ->
+                        error2?.printStackTrace()
+                        homeViewModel.setTimeBasedNotificationsDocumentSnapshotMainData(
+                            MutableLiveData(value2)
+                        )
+                        firebaseFirestore.collection(Constants.FC_OFFERS_OI)
+                            .document("normal_notifications_document")
+                            .addSnapshotListener { value3, error3 ->
+                                error3?.printStackTrace()
+                                if(value3!=null){
+                                    homeViewModel.setNormalNotificationsDocumentSnapshotMainData(
+                                        MutableLiveData(value3)
+                                    )
+                                    getCategoriesData()
+                                }
+                            }
+                    }
+
+            }
+//        firebaseFirestore.collection(Constants.FC_OFFERS_OI)
+//                .document(Constants.FD_OFFERS_OID)
+//                .get().addOnCompleteListener {
+//                    homeViewModel.setOffersDocumentSnapshotMainData(MutableLiveData(it))
+//                    firebaseFirestore.collection(Constants.FC_OFFERS_OI)
+//                            .document("timebased_notifications_document")
+//                            .get().addOnCompleteListener { task ->
+//                                homeViewModel.setTimeBasedNotificationsDocumentSnapshotMainData(
+//                                    MutableLiveData(
+//                                        task
+//                                    )
+//                                )
+//                                firebaseFirestore.collection(Constants.FC_OFFERS_OI)
+//                                        .document("normal_notifications_document")
+//                                        .get().addOnCompleteListener { task ->
+//                                            homeViewModel.setNormalNotificationsDocumentSnapshotMainData(
+//                                                MutableLiveData(
+//                                                    task
+//                                                )
+//                                            )
+//                                            getCategoriesData()
+//                                        }
+//                            }
+//            }
+//
     }
 
     private fun getCategoriesData() {
         firebaseFirestore.collection(Constants.FC_SHOPS_MAIN_CATEGORY)
                 .document(Constants.FD_SHOPS_MAIN_CATEGORY)
-                .get().addOnCompleteListener {
-                    homeViewModel.setCategoriesDocumentSnapshotData(MutableLiveData(it))
+            .addSnapshotListener { value, error ->
+                error?.printStackTrace()
+                if(value!=null){
+                    homeViewModel.setCategoriesDocumentSnapshotData(MutableLiveData(value))
+                    loadShopsDataFromFirestore()
+                    completeCountOfListeners[5] = true
+                    checkShouldHideProgressOrNot()
+                }
+            }
+    }
+
+    private fun loadShopsDataFromFirestore() {
+        FirebaseFirestore.getInstance()
+            .collection(Constants.FC_SHOPS_MAIN)
+            .whereEqualTo(Constants.FIELD_FD_SM_STATUS, "open")
+            .orderBy(Constants.FIELD_FD_SM_CATEGORY)
+            .orderBy(Constants.FIELD_FD_SM_ORDER)
+            .addSnapshotListener { value, error ->
+                error?.printStackTrace()
+                homeViewModel.setMainShopsDocumentSnapshot(value!!)
+                if(firstLaunch){
                     homeViewModel.setStatus(true)
                     navController.navigate(R.id.action_homeFragment_self)
-                    hideProgressDialog()
-                    checkPopUpStatus()
+                    firstLaunch = false
                 }
+            }
+    }
+
+    private fun checkShouldHideProgressOrNot() {
+        hideProgressDialog()
+        if(!completeCountOfListeners.contains(false)){
+            checkPopUpStatus()
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        checkDynamicLinkStatus()
+    }
+
+    fun checkDynamicLinkStatus() {
+        Firebase.dynamicLinks
+            .getDynamicLink(intent)
+            .addOnSuccessListener(this) { pendingDynamicLinkData ->
+                // Get deep link from result (may be null if no link is found)
+                var deepLink: Uri? = null
+                if (pendingDynamicLinkData != null) {
+                    deepLink = pendingDynamicLinkData.link
+                    Log.e("data",deepLink.toString())
+                    val shopId = deepLink.toString().removePrefix("http://arpan-app.wixsite.com/arpan-app?=")
+                    for(item in mainShopsArrayList){
+                        if(item.key == shopId){
+                            val bundle = Bundle()
+                            bundle.putString("shop_key",item.key)
+                            bundle.putString("shop_name",item.name)
+                            bundle.putString("shop_location",item.location)
+                            bundle.putString("cover_image",item.cover_image)
+                            bundle.putString("image",item.image)
+                            bundle.putString("deliver_charge",item.deliver_charge)
+                            bundle.putString("da_charge",item.da_charge)
+                            bundle.putString("shopNotice",item.shopNotice)
+                            bundle.putString("shopNoticeColor",item.shopNoticeColor)
+                            bundle.putString("shopNoticeColorBg",item.shopNoticeColorBg)
+                            if(navController.currentDestination!!.id != R.id.productsFragment){
+                                navController.navigate(R.id.productsFragment, bundle)
+                            }
+                            break
+                        }
+                    }
+                }
+
+                // Handle the deep link. For example, open the linked
+                // content, or apply promotional credit to the user's
+                // account.
+                // ...
+
+                // ...
+            }
+            .addOnFailureListener(this) { e -> Log.w("TAG_HOME_ACTIVITY", "getDynamicLink:onFailure", e) }
     }
 
     private fun checkPopUpStatus() {
         checkNotificationPopUpStatus()
         checkOnlinePopUpStatus()
+        //checkDynamicLinkStatus()
     }
 
     private fun checkOnlinePopUpStatus() {
@@ -733,7 +977,13 @@ class HomeActivity : AppCompatActivity() {
     }
 
     fun openCartFragment(view: View) {
-        navController.navigate(R.id.cartFragment)
+        if(!completeCountOfListeners.contains(false)){
+            if(navController.currentDestination!!.id != R.id.cartFragment){
+                navController.navigate(R.id.cartFragment)
+            }
+        }else{
+            showToast("একটু অপেক্ষা করুন", FancyToast.LENGTH_SHORT)
+        }
     }
 
     fun deleteAllItemsFromCart(view2: View) {

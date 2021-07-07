@@ -43,29 +43,25 @@ class OffersFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_offers, container, false)
         (view.context as HomeActivity).homeViewModel.getOffersDocumentSnapshotMainData().observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            if(it.isSuccessful){
-                if(it.result!!.data!!.entries.isNotEmpty()){
-                    val imagesList = ArrayList<OfferImage>()
-                    val map = it.result!!.data!! as Map<String, Map<String, String>>
-                    for(docField in map.entries){
-                        imagesList.add(
-                                OfferImage(
-                                        key = docField.key,
-                                        imageLocation = docField.value[Constants.FIELD_FD_OFFERS_OID_LOCATION].toString(),
-                                        imageDescription = docField.value[Constants.FIELD_FD_OFFERS_OID_DESCRIPTION].toString(),
-                                        order = docField.value[Constants.FIELD_FD_OFFERS_OID_ORDER].toString().toInt()
-                                ))
-                    }
-                    Collections.sort(imagesList, kotlin.Comparator { o1, o2 ->
-                        (o1.order).compareTo(o2.order)
-                    })
-                    val linearLayoutManager = LinearLayoutManager(view.context)
-                    linearLayoutManager.orientation = LinearLayoutManager.VERTICAL
-                    view.mainRecyclerView.layoutManager = linearLayoutManager
-                    view.mainRecyclerView.adapter = OfferItemRecyclerAdapter(view.context, imagesList)
+            if(it.data!!.entries.isNotEmpty()){
+                val imagesList = ArrayList<OfferImage>()
+                val map = it.data!! as Map<String, Map<String, String>>
+                for(docField in map.entries){
+                    imagesList.add(
+                        OfferImage(
+                            key = docField.key,
+                            imageLocation = docField.value[Constants.FIELD_FD_OFFERS_OID_LOCATION].toString(),
+                            imageDescription = docField.value[Constants.FIELD_FD_OFFERS_OID_DESCRIPTION].toString(),
+                            order = docField.value[Constants.FIELD_FD_OFFERS_OID_ORDER].toString().toInt()
+                        ))
                 }
-            }else{
-                it.exception!!.printStackTrace()
+                Collections.sort(imagesList, kotlin.Comparator { o1, o2 ->
+                    (o1.order).compareTo(o2.order)
+                })
+                val linearLayoutManager = LinearLayoutManager(view.context)
+                linearLayoutManager.orientation = LinearLayoutManager.VERTICAL
+                view.mainRecyclerView.layoutManager = linearLayoutManager
+                view.mainRecyclerView.adapter = OfferItemRecyclerAdapter(view.context, imagesList)
             }
         })
         return view

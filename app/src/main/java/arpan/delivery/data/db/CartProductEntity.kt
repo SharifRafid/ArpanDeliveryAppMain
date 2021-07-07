@@ -29,10 +29,16 @@ data class CartProductEntity (
     var product_item_name : String = "",
     @ColumnInfo(name = "product_item_shop_key")
     var product_item_shop_key : String = "",
+    @ColumnInfo(name = "product_item_shop_name")
+    var product_item_shop_name : String = "",
     @ColumnInfo(name = "product_item_category_tag")
     var product_item_category_tag : String = "",
     @ColumnInfo(name = "product_item_price")
     var product_item_price : Int = 0,
+    @ColumnInfo(name = "product_item_offer_price")
+    var product_item_offer_price : Int = 0,
+    @ColumnInfo(name = "product_arpan_profit")
+    var product_arpan_profit : Int = 0,
     @ColumnInfo(name = "product_item_image")
     var product_item_image : String = "",
     @ColumnInfo(name = "product_item_desc")

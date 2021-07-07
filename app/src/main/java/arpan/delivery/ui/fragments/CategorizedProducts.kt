@@ -1,31 +1,32 @@
 package arpan.delivery.ui.fragments
 
-import arpan.delivery.utils.Constants
+import android.R.attr.radius
 import android.app.Activity
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.OnTouchListener
 import android.view.ViewGroup
+import android.widget.LinearLayout
+import android.widget.PopupWindow
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import arpan.delivery.R
 import arpan.delivery.data.adapters.ProductItemRecyclerAdapter
 import arpan.delivery.data.models.ProductItem
-import arpan.delivery.data.models.ShopItem
 import arpan.delivery.ui.home.HomeActivity
-import arpan.delivery.utils.showToast
+import arpan.delivery.utils.Constants
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
-import com.shashank.sony.fancytoastlib.FancyToast
 import kotlinx.android.synthetic.main.fragment_categorized_products.view.*
-import kotlinx.android.synthetic.main.fragment_categorized_shops.view.*
 import kotlinx.android.synthetic.main.fragment_categorized_shops.view.mainRecyclerView
 import kotlinx.android.synthetic.main.fragment_categorized_shops.view.shopsProgress
-import kotlinx.android.synthetic.main.fragment_home.*
-import kotlin.collections.ArrayList
+import kotlinx.android.synthetic.main.pop_up_to_take_to_cart.view.*
+
 
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
@@ -57,6 +58,7 @@ class CategorizedProducts : Fragment() {
         val linearLayoutManager = LinearLayoutManager(context)
         linearLayoutManager.orientation = LinearLayoutManager.VERTICAL
         view.mainRecyclerView.layoutManager = linearLayoutManager
+
         adapter = ProductItemRecyclerAdapter(this, view.context,
             view.context as Activity,
             productsMainArrayList,shop_key.toString(),filter_cat_word.toString(),shop_key.toString()
@@ -71,7 +73,39 @@ class CategorizedProducts : Fragment() {
             .orderBy("order")
             .limit(Constants.MAIN_SHOPS_PAGING_ARRAYLIST_SIZE.toLong())
 
-        runFirstQuery(view)
+        //runFirstQuery(view)
+        runFirstQueryWithSnapshotListenerForFasterPerformance(view)
+    }
+
+    private fun runFirstQueryWithSnapshotListenerForFasterPerformance(view: View) {
+        FirebaseFirestore.getInstance().collection(Constants.FC_SHOPS_MAIN)
+            .document(shop_key.toString())
+            .collection(Constants.FD_PRODUCTS_MAIN_SUB_COLLECTION)
+            .whereEqualTo("shopCategoryKey", filter_cat_word)
+            .whereEqualTo("inStock", "active")
+            .orderBy("order")
+            .addSnapshotListener { value, error ->
+                error?.printStackTrace()
+                if(value!=null){
+                    if(value.documents.isNotEmpty()){
+                        productsMainArrayList.clear()
+                        for(document in value.documents){
+                            val p = document.toObject(ProductItem::class.java)!!
+                            p.key = document.id
+                            productsMainArrayList.add(p)
+                        }
+                        adapter.notifyDataSetChanged()
+                        view.shopsProgress.visibility = View.GONE
+                        view.mainRecyclerView.visibility = View.VISIBLE
+                        view.noProductsText.visibility = View.GONE
+                    }else{
+                        //context?.showToast(getString(R.string.no_data_fount), FancyToast.WARNING)
+                        view.shopsProgress.visibility = View.GONE
+                        view.mainRecyclerView.visibility = View.GONE
+                        view.noProductsText.visibility = View.VISIBLE
+                    }
+                }
+            }
     }
 
     private fun runFirstQuery(view : View) {

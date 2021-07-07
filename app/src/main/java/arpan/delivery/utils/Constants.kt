@@ -3,7 +3,7 @@ package arpan.delivery.utils
 class Constants {
     companion object{
 
-        const val MAIN_SHOPS_PAGING_ARRAYLIST_SIZE = 5
+        const val MAIN_SHOPS_PAGING_ARRAYLIST_SIZE = 10
 
         //COUNTS RTDB LOCATION
         const val COUNT_PRODUCT_CATEGORY_MAIN = "product_counts_category_main"
@@ -38,6 +38,7 @@ class Constants {
         const val FIELD_FD_SM_PASSWORD = "shop_main_password"
         const val FIELD_FD_SM_ORDER = "shop_main_order"
         const val FIELD_FD_SM_STATUS = "shop_main_status"
+        const val FIELD_FD_SM_IS_CLIENT = "shop_main_is_client"
 
         //FirebaseFirestore Shops Category Main
         const val FC_SHOPS_MAIN_CATEGORY = "shop_categories"

@@ -2,19 +2,13 @@ package arpan.delivery.data.adapters
 
 import android.app.Activity
 import android.content.Context
-import android.content.Intent
 import android.graphics.Paint
-import android.provider.Settings.Global.getString
-import android.util.Log
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
-import android.widget.Toast
-import androidx.cardview.widget.CardView
-import androidx.lifecycle.ViewModelProvider
+import android.widget.*
+import androidx.core.view.GravityCompat
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.recyclerview.widget.RecyclerView
 import arpan.delivery.R
@@ -26,21 +20,19 @@ import arpan.delivery.utils.showToast
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.google.android.material.card.MaterialCardView
-import com.google.android.material.switchmaterial.SwitchMaterial
-import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import com.lid.lib.LabelImageView
 import com.shashank.sony.fancytoastlib.FancyToast
 import kotlinx.android.synthetic.main.product_item_view.view.*
 
 class ProductItemRecyclerAdapter(
-    private val viewModelStoreOwner : ViewModelStoreOwner,
-        private val context : Context,
-        private val activity : Activity,
-        private val productItems : ArrayList<ProductItem>,
-        private val shopName : String,
-        private val categoryKey : String,
-        private val shopKey : String,
+    private val viewModelStoreOwner: ViewModelStoreOwner,
+    private val context: Context,
+    private val activity: Activity,
+    private val productItems: ArrayList<ProductItem>,
+    private val shopName: String,
+    private val categoryKey: String,
+    private val shopKey: String,
     private val cartViewModel: CartViewModel
 ) : RecyclerView.Adapter
     <ProductItemRecyclerAdapter.RecyclerViewHolder>() {
@@ -52,7 +44,7 @@ class ProductItemRecyclerAdapter(
         val descTextView = itemView.descTextView as TextView
         val price = itemView.priceTextView as TextView
         val offerPrice = itemView.offerPriceTextView as TextView
-        val cardView = itemView.mainCardView as LinearLayout
+        val cardView = itemView.mainCardView as MaterialCardView
         val imageCardView = itemView.materialCardView as MaterialCardView
     }
 
@@ -75,13 +67,15 @@ class ProductItemRecyclerAdapter(
         if(productItems[position].price.toInt() != productItems[position].offerPrice.toInt()
                 && productItems[position].offerPrice.toInt() != 0){
             holder.price.visibility = View.VISIBLE
-            holder.price.text = " ${productItems[position].price}"
+            holder.price.text = " ${productItems[position].price.toInt()+productItems[position].arpanCharge}"
             holder.price.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
-            holder.offerPrice.text = "${productItems[position].offerPrice}"
+            holder.offerPrice.text = "${productItems[position].offerPrice.toInt()+productItems[position].arpanCharge}"
         }else{
             holder.price.visibility = View.GONE
-            holder.offerPrice.text = "${productItems[position].offerPrice}"
+            holder.offerPrice.text = "${productItems[position].offerPrice.toInt()+productItems[position].arpanCharge}"
         }
+
+        holder.imageView.isLabelVisual = productItems[position].offerStatus=="active"
 
         if(productItems[position].image1.isNotEmpty()){
             val storageReference = FirebaseStorage.getInstance().getReference("shops")
@@ -92,8 +86,8 @@ class ProductItemRecyclerAdapter(
                 .load(storageReference)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .centerCrop()
-                .override(300,300)
-                .placeholder(R.drawable.loading_image_glide).into(holder.imageView)
+                .placeholder(R.drawable.loading_image_glide)
+                .into(holder.imageView)
 
             holder.imageCardView.visibility = View.VISIBLE
         }else{
@@ -126,13 +120,17 @@ class ProductItemRecyclerAdapter(
                                     product_item_name = productItems[position].name,
                                     product_item_shop_key= productItems[position].shopKey,
                                     product_item_category_tag = productItems[position].shopCategoryKey,
-                                    product_item_price = productItems[position].offerPrice.toInt(),
+                                product_arpan_profit =  productItems[position].arpanCharge,
+                                    product_item_price = productItems[position].offerPrice.toInt()+productItems[position].arpanCharge,
                                     product_item_image = productItems[position].image1,
                                     product_item_desc = productItems[position].shortDescription,
                                     product_item_amount = 1
                             )
                     )
-                    context.showToast( context.getString(R.string.product_added_to_cart),FancyToast.SUCCESS)
+                    //context.showToast( context.getString(R.string.product_added_to_cart),FancyToast.SUCCESS)
+                    if(!(context as HomeActivity).popUpForCartRedirect.isShowing){
+                        context.showPopUpWindowForCart()
+                    }
                 }else{
                     if((context as HomeActivity).sets.size < (context as HomeActivity).homeViewModel.getMaxShops().value!!.toInt()){
                         cartViewModel.insertItemToCart(context,
@@ -142,13 +140,17 @@ class ProductItemRecyclerAdapter(
                                         product_item_name = productItems[position].name,
                                         product_item_shop_key= productItems[position].shopKey,
                                         product_item_category_tag = productItems[position].shopCategoryKey,
-                                        product_item_price = productItems[position].offerPrice.toInt(),
+                                    product_arpan_profit =  productItems[position].arpanCharge,
+                                        product_item_price = productItems[position].offerPrice.toInt()+productItems[position].arpanCharge,
                                         product_item_image = productItems[position].image1,
                                         product_item_desc = productItems[position].shortDescription,
                                         product_item_amount = 1
                                 )
                         )
-                        context.showToast(context.getString(R.string.product_added_to_cart),FancyToast.SUCCESS )
+                        //context.showToast(context.getString(R.string.product_added_to_cart),FancyToast.SUCCESS )
+                        if(!(context as HomeActivity).popUpForCartRedirect.isShowing){
+                            context.showPopUpWindowForCart()
+                        }
                     }else{
                         if((context as HomeActivity).homeViewModel.getAllowMoreShops().value!!){
                             cartViewModel.insertItemToCart(context,
@@ -158,13 +160,17 @@ class ProductItemRecyclerAdapter(
                                             product_item_name = productItems[position].name,
                                             product_item_shop_key= productItems[position].shopKey,
                                             product_item_category_tag = productItems[position].shopCategoryKey,
-                                            product_item_price = productItems[position].offerPrice.toInt(),
+                                            product_item_price = productItems[position].offerPrice.toInt()+productItems[position].arpanCharge,
+                                        product_arpan_profit =  productItems[position].arpanCharge,
                                             product_item_image = productItems[position].image1,
                                             product_item_desc = productItems[position].shortDescription,
                                             product_item_amount = 1
                                     )
                             )
-                            context.showToast( context.getString(R.string.product_added_to_cart),FancyToast.SUCCESS )
+                            //context.showToast( context.getString(R.string.product_added_to_cart),FancyToast.SUCCESS )
+                            if(!(context as HomeActivity).popUpForCartRedirect.isShowing){
+                                context.showPopUpWindowForCart()
+                            }
                         }else{
                             context.showToast( context.getString(R.string.reached_max_order_limit),FancyToast.ERROR )
                         }
@@ -179,13 +185,17 @@ class ProductItemRecyclerAdapter(
                                 product_item_name = productItems[position].name,
                                 product_item_shop_key= productItems[position].shopKey,
                                 product_item_category_tag = productItems[position].shopCategoryKey,
-                                product_item_price = productItems[position].offerPrice.toInt(),
+                                product_item_price = productItems[position].offerPrice.toInt()+productItems[position].arpanCharge,
+                                product_arpan_profit =  productItems[position].arpanCharge,
                                 product_item_image = productItems[position].image1,
                                 product_item_desc = productItems[position].shortDescription,
                                 product_item_amount = updateAmount+1
                         )
                 )
-                context.showToast(context.getString(R.string.cart_updated_successfully),FancyToast.SUCCESS)
+                //context.showToast(context.getString(R.string.cart_updated_successfully),FancyToast.SUCCESS)
+                if(!(context as HomeActivity).popUpForCartRedirect.isShowing){
+                    context.showPopUpWindowForCart()
+                }
             }
         }
     }

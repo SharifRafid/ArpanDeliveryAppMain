@@ -15,15 +15,15 @@ android {
         applicationId "arpan.delivery"
         minSdkVersion 19
         targetSdkVersion 30
-        versionCode 1
-        versionName "1.0"
+        versionCode 2
+        versionName "2.0"
         multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -74,6 +74,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-storage-ktx'
     implementation 'com.google.firebase:firebase-firestore-ktx'
     implementation 'com.google.firebase:firebase-auth-ktx'
+    implementation 'com.google.firebase:firebase-dynamic-links-ktx'
     implementation "com.google.firebase:firebase-messaging:$firebase_messaging_version"
     implementation "com.google.firebase:firebase-messaging-directboot:$firebase_messaging_version"
     implementation "com.firebaseui:firebase-ui-storage:$firebase_ui_storage_version"
@@ -96,6 +97,7 @@ dependencies {
     implementation 'com.github.douglasjunior:android-simple-tooltip:1.0.0-rc.0'
     implementation 'com.github.pouriaHemmati:JustifiedTextView:1.0.0'
     implementation 'com.google.android.gms:play-services-location:18.0.0'
-    implementation 'com.github.mumayank:AirLocation:2.4'
+    implementation 'com.github.mumayank:AirLocation:2.5.2'
     implementation 'com.github.mukeshsolanki:android-otpview-pinview:2.1.2'
+    implementation 'com.jsibbold:zoomage:1.3.1'
 }

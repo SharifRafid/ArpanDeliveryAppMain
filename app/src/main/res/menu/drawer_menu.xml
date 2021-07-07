@@ -12,23 +12,17 @@
             android:title="@string/my_orders"
             android:icon="@drawable/ic_baseline_shop_two_24"/>
     </group>
-    <group android:id="@+id/grp2">
-        <item
-            android:id="@id/offersFragment"
-            android:title="@string/offers"
-            android:icon="@drawable/ic_offer_icon"/>
-    </group>
     <group android:id="@+id/grp3">
         <item
-            android:id="@id/customOrderFragment"
+            android:id="@id/customOrderNewFragment"
             android:title="@string/custom_order"
             android:icon="@drawable/ic_custom_order_icon" />
         <item
-            android:id="@id/medicineFragment"
+            android:id="@id/medicineNewFragment"
             android:title="@string/medicine"
             android:icon="@drawable/ic_medicine_icon" />
         <item
-            android:id="@id/parcelFragment"
+            android:id="@id/parcelNewFragment"
             android:title="@string/parcel"
             android:icon="@drawable/ic_parcel_icon"/>
         <item

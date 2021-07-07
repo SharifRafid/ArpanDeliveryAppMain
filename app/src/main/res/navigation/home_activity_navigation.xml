@@ -146,9 +146,9 @@
     </fragment>
     <fragment
         android:id="@+id/orderFragment"
-        android:name="arpan.delivery.ui.order.OrderFragment"
+        android:name="arpan.delivery.ui.order.OrderFragmentNew"
         android:label="fragment_order"
-        tools:layout="@layout/fragment_order" >
+        tools:layout="@layout/fragment_order_new" >
         <action
             android:id="@+id/action_orderFragment_to_cartFragment"
             app:destination="@id/cartFragment" />
@@ -208,4 +208,19 @@
         android:name="arpan.delivery.ui.fragments.BeClient"
         android:label="fragment_be_client"
         tools:layout="@layout/fragment_be_client" />
+    <fragment
+        android:id="@+id/customOrderNewFragment"
+        android:name="arpan.delivery.ui.custom.CustomOrderNewFragment"
+        android:label="fragment_custom_order_new"
+        tools:layout="@layout/fragment_custom_order_new" />
+    <fragment
+        android:id="@+id/medicineNewFragment"
+        android:name="arpan.delivery.ui.custom.MedicineNewFragment"
+        android:label="fragment_medicine_new"
+        tools:layout="@layout/fragment_medicine_new" />
+    <fragment
+        android:id="@+id/parcelNewFragment"
+        android:name="arpan.delivery.ui.custom.ParcelNewFragment"
+        android:label="fragment_parcel_new"
+        tools:layout="@layout/fragment_parcel_new" />
 </navigation>

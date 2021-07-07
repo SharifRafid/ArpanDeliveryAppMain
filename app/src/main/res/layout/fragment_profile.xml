@@ -31,7 +31,7 @@
             android:id="@+id/mainLinearView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:cardBackgroundColor="@color/bg_color_deep_card"
+            app:cardBackgroundColor="@color/white"
             app:cardCornerRadius="10dp">
             <LinearLayout
                 android:layout_width="match_parent"
@@ -99,10 +99,9 @@
 
         <androidx.cardview.widget.CardView
             android:layout_width="275dp"
-            app:cardBackgroundColor="@color/bg_color_deep_card"
+            app:cardBackgroundColor="@color/white"
             app:cardCornerRadius="10dp"
             android:layout_height="wrap_content">
-
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
