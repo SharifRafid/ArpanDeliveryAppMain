@@ -30,7 +30,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:padding="5dp"
+        android:padding="2dp"
         android:orientation="horizontal">
         <TextView
             android:id="@+id/titleTextView"
@@ -42,7 +42,7 @@
             android:padding="5dp"
             android:text="রেড লিকার প্রিমিয়াম ক্লোন টি(ব্ল্যাক টি) ২০০ গ্রাম"
             android:textColor="@color/order_item_text_color_2"
-            android:textSize="16sp"
+            android:textSize="12sp"
             android:textStyle="bold"/>
         <LinearLayout
             android:layout_width="1dp"
@@ -54,10 +54,10 @@
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif"
             android:gravity="center"
-            android:padding="10dp"
+            android:padding="5dp"
             android:text="1"
             android:textColor="@color/order_item_text_color_2"
-            android:textSize="16sp"
+            android:textSize="13sp"
             android:textStyle="bold"/>
         <LinearLayout
             android:layout_width="1dp"
@@ -69,10 +69,10 @@
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif"
             android:gravity="center"
-            android:padding="10dp"
+            android:padding="5dp"
             android:text="330৳"
             android:textColor="@color/order_item_text_color_2"
-            android:textSize="16sp"
+            android:textSize="13sp"
             android:textStyle="bold"/>
     </LinearLayout>
     <LinearLayout

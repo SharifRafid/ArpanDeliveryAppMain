@@ -95,10 +95,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
+            android:background="@drawable/bg_transparent_bottom_nav"
             app:backgroundTint="@color/blue_normal">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
+                android:background="#00FFFFFF"
                 android:layout_height="wrap_content">
 
                 <RelativeLayout
@@ -212,7 +214,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/arpan_icon_main"
-            app:backgroundTint="@color/bg_color"
+            app:backgroundTint="#00FF0505"
             app:maxImageSize="56dp"
             app:tint="@null"
             app:borderWidth="0dp"

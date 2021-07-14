@@ -1,7 +1,9 @@
 package arpan.delivery.ui.order
 
+import android.app.Activity
 import android.app.AlertDialog
 import android.app.Dialog
+import android.content.Context
 import android.content.Intent
 import android.location.Location
 import android.os.Bundle
@@ -9,6 +11,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
@@ -42,6 +45,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.math.roundToInt
 
+
 class OrderFragmentNew : Fragment() {
 
     private lateinit var firebaseFirestore: FirebaseFirestore
@@ -69,7 +73,7 @@ class OrderFragmentNew : Fragment() {
     private var locationStatus = 0
     private var lat = ""
     private var lang = ""
-    private val BKASH_CHARGE_PERCENTAGE = 0.0175f
+    private val BKASH_CHARGE_PERCENTAGE = 0.0185f
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
@@ -97,7 +101,7 @@ class OrderFragmentNew : Fragment() {
             val userNumber = view.txt_number.text.toString()
             val userAddress = view.txt_address.text.toString()
             val userNote = view.txt_note.text.toString()
-            if(userName.isNotEmpty()&&userNumber.isNotEmpty()&&userAddress.isNotEmpty()){
+            if(userName.isNotEmpty()&&userNumber.isNotEmpty()){
                 if(cartViewModel.cartItems.value!!.isNotEmpty()){
                     val view2 = LayoutInflater.from(view.context)
                             .inflate(R.layout.dialog_alert_layout_main, null)
@@ -119,7 +123,7 @@ class OrderFragmentNew : Fragment() {
                     view.context.showToast(getString(R.string.you_have_no_products), FancyToast.ERROR)
                 }
             }else{
-                view.context.showToast(getString(R.string.no_products), FancyToast.ERROR)
+                view.context.showToast("আপনার নাম এবং নাম্বার দিন ।", FancyToast.ERROR)
             }
         }
     }
@@ -206,20 +210,17 @@ class OrderFragmentNew : Fragment() {
     }
 
     private fun placeOrderFinalUpload(view: View, orderItemMain: OrderItemMain) {
-        FirebaseDatabase.getInstance().reference.child("orderNumber")
-                .child(getDate(System.currentTimeMillis(), "dd-MM-yyyy").toString())
+        FirebaseDatabase.getInstance().reference.child("orderNumberNew")
                 .child("ON")
                 .get().addOnCompleteListener { task ->
                     if(task.isSuccessful){
                         if(task.result!!.value==null){
                             orderItemMain.orderId = "ARP1001"
-                            FirebaseDatabase.getInstance().reference.child("orderNumber")
-                                    .child(getDate(System.currentTimeMillis(), "dd-MM-yyyy").toString())
+                            FirebaseDatabase.getInstance().reference.child("orderNumberNew")
                                     .child("ON").setValue("1001")
                         }else{
                             orderItemMain.orderId = "ARP"+(task.result!!.value.toString().toInt()+1)
-                            FirebaseDatabase.getInstance().reference.child("orderNumber")
-                                    .child(getDate(System.currentTimeMillis(), "dd-MM-yyyy").toString())
+                            FirebaseDatabase.getInstance().reference.child("orderNumberNew")
                                     .child("ON")
                                     .setValue((task.result!!.value.toString().toInt()+1).toString())
                         }
@@ -286,20 +287,19 @@ class OrderFragmentNew : Fragment() {
     }
 
     private fun workWithTheArrayList(list: List<CartProductEntity>, view: View) {
+        mainCartCustomObjectHashMap.clear()
         for(cartProductEntity in list){
             if(cartProductEntity.product_item){
                 mainCartCustomObjectHashMap.add(cartProductEntity)
             }
         }
         if(mainCartCustomObjectHashMap.isNotEmpty()){
-            view.productsTextView.visibility = View.VISIBLE
             view.productsRecyclerView.visibility = View.VISIBLE
             view.applyPromoCodeLinear.visibility = View.VISIBLE
             initiateRestLogicForArrayList(view)
             initiatePromoCodeLogic(view)
         }else{
             view.applyPromoCodeLinear.visibility = View.GONE
-            view.productsTextView.visibility = View.GONE
             view.productsRecyclerView.visibility = View.GONE
         }
     }
@@ -323,6 +323,11 @@ class OrderFragmentNew : Fragment() {
                     position: Int,
                     id: Long
             ) {
+                if(deliveryLocations[position].trim()=="মাগুরা সদর"){
+                    view.text_address_container.visibility = View.VISIBLE
+                }else{
+                    view.text_address_container.visibility = View.GONE
+                }
                 setPriceTotalOnView(view)
             }
             override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -582,6 +587,7 @@ class OrderFragmentNew : Fragment() {
             view.promoCodeAppliedLinear.visibility = View.GONE
         }
         view.apply_promo_code.setOnClickListener {
+            hideKeyboardFrom(view.context, view)
             if(view.edt_coupon_code.text.isNotEmpty()){
                 progressDialog.show()
                 FirebaseDatabase.getInstance().reference
@@ -714,6 +720,12 @@ class OrderFragmentNew : Fragment() {
             }
 
         })
+    }
+
+    fun hideKeyboardFrom(context: Context, view: View) {
+        val imm: InputMethodManager =
+            context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

@@ -1,30 +1,35 @@
 package arpan.delivery.data.adapters
 
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentStatePagerAdapter
-import androidx.viewpager2.adapter.FragmentStateAdapter
-import arpan.delivery.data.models.ShopCategoryItem
-import arpan.delivery.ui.fragments.CategorizedShops
+import android.content.Context
+import android.os.Parcelable
+import android.view.View
+import android.widget.TextView
+import androidx.viewpager.widget.PagerAdapter
+import androidx.viewpager.widget.ViewPager
 
-class ViewPagerAdapterShops(fragmentManager : FragmentManager,
-                            private val dataList: ArrayList<ShopCategoryItem>) :
-    FragmentStatePagerAdapter(fragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
-
-    private var mPageReferenceMap = HashMap<Int, Fragment>()
-
-    fun getFragment(key: Int): Fragment {
-        return mPageReferenceMap[key]!!
-    }
-
+private class ViewPagerAdapterShops(ctx: Context, data: List<String>) :
+    PagerAdapter() {
+    private val data: List<String> = data
+    private val ctx: Context = ctx
     override fun getCount(): Int {
-        return dataList.size
+        return data.size
     }
 
-    override fun getItem(position: Int): Fragment {
-        val myFragment: Fragment = CategorizedShops.newInstance(dataList[position].category_key, "")
-        mPageReferenceMap[position] = myFragment
-        return myFragment
+    override fun instantiateItem(collection: View, position: Int): Any {
+        val view = TextView(ctx)
+        view.text = data[position]
+        (collection as ViewPager).addView(view)
+        return view
     }
+
+    override fun isViewFromObject(view: View, `object`: Any): Boolean {
+        return view === `object`
+    }
+
+    override fun saveState(): Parcelable? {
+        return null
+    }
+
+    override fun restoreState(arg0: Parcelable?, arg1: ClassLoader?) {}
+
 }

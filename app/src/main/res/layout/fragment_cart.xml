@@ -43,18 +43,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
-                <TextView
-                    android:id="@+id/productsTextView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/hind_siliguri_font"
-                    android:gravity="center"
-                    android:background="@color/divider_bg_color_1"
-                    android:text="@string/shop_products"
-                    android:textColor="@color/divider_text_color_1"
-                    android:textSize="14sp"
-                    android:padding="4dp"
-                    android:textStyle="bold"/>
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/productsRecyclerView"
                     android:layout_width="match_parent"
@@ -116,6 +104,9 @@
                     android:layout_height="wrap_content"
                     android:nestedScrollingEnabled="false"/>
             </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="160dp"/>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
@@ -133,5 +124,5 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="30dp"/>
+        android:layout_marginBottom="80dp"/>
 </RelativeLayout>

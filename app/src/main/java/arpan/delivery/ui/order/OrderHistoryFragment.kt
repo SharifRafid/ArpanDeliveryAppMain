@@ -31,6 +31,8 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.fragment_order_history.view.*
+import kotlinx.android.synthetic.main.fragment_order_history.view.imageView
+import kotlinx.android.synthetic.main.product_image_big_view.view.*
 
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
@@ -149,6 +151,9 @@ class OrderHistoryFragment : Fragment() {
                                                 view.shopImageItem.setOnClickListener {
                                                     val dialog = AlertDialog.Builder(context, R.style.Theme_ArpanDelivery).create()
                                                     val view2 = LayoutInflater.from(context).inflate(R.layout.product_image_big_view,null)
+                                                    view2.floatingActionButton.setOnClickListener{
+                                                        dialog.dismiss()
+                                                    }
                                                     Glide.with(requireContext())
                                                         .load(firebaseStorage)
                                                         .diskCacheStrategy(DiskCacheStrategy.ALL)
@@ -181,6 +186,9 @@ class OrderHistoryFragment : Fragment() {
                                                 view.shopImageItem.setOnClickListener {
                                                     val dialog = AlertDialog.Builder(context, R.style.Theme_ArpanDelivery).create()
                                                     val view2 = LayoutInflater.from(context).inflate(R.layout.product_image_big_view,null)
+                                                    view2.floatingActionButton.setOnClickListener{
+                                                        dialog.dismiss()
+                                                    }
                                                     Glide.with(requireContext())
                                                         .load(firebaseStorage)
                                                         .diskCacheStrategy(DiskCacheStrategy.ALL)
@@ -213,6 +221,9 @@ class OrderHistoryFragment : Fragment() {
                                                 view.shopImageItem.setOnClickListener {
                                                     val dialog = AlertDialog.Builder(context, R.style.Theme_ArpanDelivery).create()
                                                     val view2 = LayoutInflater.from(context).inflate(R.layout.product_image_big_view,null)
+                                                    view2.floatingActionButton.setOnClickListener{
+                                                        dialog.dismiss()
+                                                    }
                                                     Glide.with(requireContext())
                                                         .load(firebaseStorage)
                                                         .diskCacheStrategy(DiskCacheStrategy.ALL)

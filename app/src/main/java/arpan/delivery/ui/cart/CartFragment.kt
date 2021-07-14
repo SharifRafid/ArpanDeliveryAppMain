@@ -30,12 +30,12 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Source
 import com.shashank.sony.fancytoastlib.FancyToast
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.dialog_alert_layout_main.view.*
 import kotlinx.android.synthetic.main.fragment_cart.view.*
 import kotlinx.android.synthetic.main.fragment_cart.view.productsRecyclerView
-import kotlinx.android.synthetic.main.fragment_cart.view.productsTextView
 import kotlinx.android.synthetic.main.fragment_order_new.view.*
 import mumayank.com.airlocationlibrary.AirLocation
 import java.text.SimpleDateFormat
@@ -179,11 +179,9 @@ class CartFragment : Fragment() {
                 }
             }
             if(mainCartCustomObjectHashMap["product_item"]!!.isNotEmpty()){
-                view.productsTextView.visibility = View.VISIBLE
                 view.productsRecyclerView.visibility = View.VISIBLE
                 initiateRestLogicForArrayList(view)
             }else{
-                view.productsTextView.visibility = View.GONE
                 view.productsRecyclerView.visibility = View.GONE
             }
             if(mainCartCustomObjectHashMap["parcel_item"]!!.isNotEmpty()){
@@ -256,7 +254,7 @@ class CartFragment : Fragment() {
     private fun fillUpShopDetailsValueInMainShopItemList(view: View) {
         firebaseFirestore.collection(Constants.FC_SHOPS_MAIN)
                 .document(mainShopItemHashMap[currentCalc].shop_doc_id)
-                .get().addOnSuccessListener {document ->
+                .get(Source.CACHE).addOnSuccessListener { document ->
                     mainShopItemHashMap[currentCalc].shop_details =
                             ShopItem(
                                     key = document.id,

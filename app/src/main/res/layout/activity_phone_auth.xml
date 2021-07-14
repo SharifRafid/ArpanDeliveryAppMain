@@ -17,7 +17,6 @@
         android:layout_marginEnd="15dp"
         android:visibility="visible"
         android:gravity="center">
-
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="160dp"
@@ -85,7 +84,7 @@
     </LinearLayout>
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         app:cardBackgroundColor="@color/blue_normal"
         app:cardElevation="0dp"
         android:layout_marginStart="15dp"
@@ -94,7 +93,7 @@
         <LinearLayout
             android:id="@+id/enterCodeLinear"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="vertical"
             android:padding="18dp"
             android:visibility="gone"
@@ -111,7 +110,7 @@
                 app:tint="@color/white" />
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:gravity="center">
                 <com.mukesh.OtpView
@@ -162,24 +161,28 @@
                     android:visibility="gone"
                     android:gravity="center"
                     android:text="Didn't recieve the code? Please wait 0s before trying again..."/>
+
                 <TextView
                     android:id="@+id/buttonResendOtpFinal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="      পুনরায় কোড পাঠান      "
+                    android:text="পুনরায় কোড পাঠান"
                     android:textSize="15sp"
                     android:textAllCaps="true"
                     android:background="@drawable/bg_btn_home_page"
                     android:paddingStart="15dp"
                     android:paddingTop="10dp"
                     android:paddingBottom="10dp"
+                    android:layout_marginBottom="20dp"
                     android:gravity="center"
-                    android:visibility="gone"
                     android:paddingEnd="15dp"
                     android:textColor="@color/blue_normal"
                     android:backgroundTint="@color/white"
                     android:elevation="8dp"
-                    android:layout_marginTop="8dp"/>
+                    android:layout_marginStart="15dp"
+                    android:visibility="gone"
+                    android:layout_marginEnd="15dp"
+                    android:layout_marginTop="20dp"/>
             </LinearLayout>
         </LinearLayout>
     </androidx.cardview.widget.CardView>

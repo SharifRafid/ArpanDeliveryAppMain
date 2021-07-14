@@ -370,20 +370,17 @@ class CustomOrderNewFragment : Fragment() {
     }
 
     private fun placeOrderFinalUpload(view: View, orderItemMain: OrderItemMain) {
-        FirebaseDatabase.getInstance().reference.child("orderNumber")
-            .child(getDate(System.currentTimeMillis(), "dd-MM-yyyy").toString())
+        FirebaseDatabase.getInstance().reference.child("orderNumberNew")
             .child("ON")
             .get().addOnCompleteListener { task ->
                 if(task.isSuccessful){
                     if(task.result!!.value==null){
                         orderItemMain.orderId = "ARP1001"
-                        FirebaseDatabase.getInstance().reference.child("orderNumber")
-                            .child(getDate(System.currentTimeMillis(), "dd-MM-yyyy").toString())
+                        FirebaseDatabase.getInstance().reference.child("orderNumberNew")
                             .child("ON").setValue("1001")
                     }else{
                         orderItemMain.orderId = "ARP"+(task.result!!.value.toString().toInt()+1)
-                        FirebaseDatabase.getInstance().reference.child("orderNumber")
-                            .child(getDate(System.currentTimeMillis(), "dd-MM-yyyy").toString())
+                        FirebaseDatabase.getInstance().reference.child("orderNumberNew")
                             .child("ON").setValue((task.result!!.value.toString().toInt()+1).toString())
                     }
                     FirebaseFirestore.getInstance().collection("users")

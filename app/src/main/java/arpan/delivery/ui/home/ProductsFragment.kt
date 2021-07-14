@@ -132,30 +132,28 @@ class ProductsFragment : Fragment() {
                 .addSnapshotListener { value, error ->
                     error?.printStackTrace()
                     dismissDialogProgress(context)
-                    val categoryItemsArray = ArrayList<ProductCategoryItem>()
-                    val map = value!!.data as Map<String, Map<String,String>>
-                    for(category_field in map.entries){
-                        categoryItemsArray.add(
-                            ProductCategoryItem(
-                                key = category_field.key,
-                                name = category_field.value[Constants.FIELD_FD_PRODUCTS_MAIN_CATEGORY_NAME].toString(),
-                                category_key = category_field.value[Constants.FIELD_FD_PRODUCTS_MAIN_CATEGORY_KEY].toString(),
-                                order = category_field.value[Constants.FIELD_FD_PRODUCTS_MAIN_CATEGORY_ORDER].toString().toInt(),
+                    if(value!!.data!=null){
+                        val categoryItemsArray = ArrayList<ProductCategoryItem>()
+                        val map = value!!.data as Map<String, Map<String,String>>
+                        for(category_field in map.entries){
+                            categoryItemsArray.add(
+                                ProductCategoryItem(
+                                    key = category_field.key,
+                                    name = category_field.value[Constants.FIELD_FD_PRODUCTS_MAIN_CATEGORY_NAME].toString(),
+                                    category_key = category_field.value[Constants.FIELD_FD_PRODUCTS_MAIN_CATEGORY_KEY].toString(),
+                                    order = category_field.value[Constants.FIELD_FD_PRODUCTS_MAIN_CATEGORY_ORDER].toString().toInt(),
+                                )
                             )
-                        )
-                    }
-                    Collections.sort(categoryItemsArray, kotlin.Comparator { o1, o2 ->
-                        (o1.order).compareTo(o2.order) })
-                    viewPagerMainProducts.adapter =
-                        activity?.let {
-                            ViewPagerAdapterProducts(
-                                it,
-                                categoryItemsArray, shop_key.toString())
                         }
-                    TabLayoutMediator(tabLayout, viewPagerMainProducts
-                    ) { tab, position ->
-                        tab.text = categoryItemsArray[position].name
-                    }.attach()
+                        Collections.sort(categoryItemsArray, kotlin.Comparator { o1, o2 ->
+                            (o1.order).compareTo(o2.order) })
+                        viewPagerMainProducts.adapter = ViewPagerAdapterProducts(context as HomeActivity,
+                            categoryItemsArray, shop_key.toString())
+                        TabLayoutMediator(tabLayout, viewPagerMainProducts
+                        ) { tab, position ->
+                            tab.text = categoryItemsArray[position].name
+                        }.attach()
+                    }
                 }
     }
 

@@ -102,6 +102,70 @@ class HomeActivity : AppCompatActivity() {
         initCartLogic()
         initFabMenu()
         initUserDetailsFetch()
+        initAppUpdateStatusCheck()
+    }
+
+    private fun initAppUpdateStatusCheck() {
+        FirebaseDatabase.getInstance().reference.child("APP_UPDATE_STATUS")
+            .addValueEventListener(object : ValueEventListener{
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val mandatory = snapshot.child("mandatory").getValue(Boolean::class.java) as Boolean
+                    val minVersion = snapshot.child("minVersion").getValue(Long::class.java) as Long
+                    val info = packageManager.getPackageInfo(packageName, PackageManager.GET_ACTIVITIES)
+                    if(if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                            info.longVersionCode < minVersion
+                        } else {
+                            info.versionCode < minVersion
+                        }
+                    ){ if(mandatory){
+                            val view = LayoutInflater.from(this@HomeActivity)
+                                .inflate(R.layout.dialog_alert_layout_main, null)
+                            val dialog = AlertDialog.Builder(this@HomeActivity)
+                                .setView(view).create()
+                            dialog.setCancelable(false)
+                            dialog.setCanceledOnTouchOutside(false)
+                            view.btnNoDialogAlertMain.text = getString(R.string.no)
+                            view.btnYesDialogAlertMain.text = "আপডেট করুন"
+                            view.titleTextView.text = "অ্যাপ টি দ্রুত আপডেট করুন"
+                            view.messageTextView.visibility = View.VISIBLE
+                            view.messageTextView.text = "আপনি অ্যাপটি আপডেট করা ছাড়া ব্যবহার করতে পারবেন না। ধন্যবাদ।"
+                            view.btnNoDialogAlertMain.setOnClickListener {
+                                finish()
+                                dialog.dismiss()
+                            }
+                            view.btnYesDialogAlertMain.setOnClickListener {
+                                val uri: Uri = Uri.parse("market://details?id=$packageName")
+                                val goToMarket = Intent(Intent.ACTION_VIEW, uri)
+                                // To count with Play market backstack, After pressing back button,
+                                // to taken back to our application, we need to add following flags to intent.
+                                goToMarket.addFlags(
+                                    Intent.FLAG_ACTIVITY_NO_HISTORY or
+                                            Intent.FLAG_ACTIVITY_NEW_DOCUMENT or
+                                            Intent.FLAG_ACTIVITY_MULTIPLE_TASK
+                                )
+                                try {
+                                    startActivity(goToMarket)
+                                } catch (e: ActivityNotFoundException) {
+                                    startActivity(
+                                        Intent(
+                                            Intent.ACTION_VIEW,
+                                            Uri.parse("http://play.google.com/store/apps/details?id=$packageName")
+                                        )
+                                    )
+                                }
+                                dialog.dismiss()
+                                finish()
+                            }
+                            dialog.show()
+                        }
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    error.toException().printStackTrace()
+                }
+
+            })
     }
 
     private fun initUserDetailsFetch() {
@@ -350,6 +414,18 @@ class HomeActivity : AppCompatActivity() {
                 }else{
                     showToast("একটু অপেক্ষা করুন", FancyToast.LENGTH_SHORT)
                 }
+            }else if (id == R.id.oldOrderListFragment){
+                if(navController.currentDestination!!.id != R.id.oldOrderListFragment){
+                    if(!completeCountOfListeners.contains(false)){
+                        if(FirebaseAuth.getInstance().currentUser!=null){
+                            navController.navigate(R.id.oldOrderListFragment)
+                        }else{
+                            showToast("পূর্বের অর্ডার দেখার জন্য লগ ইন করতে হবে ।", FancyToast.ERROR)
+                        }
+                    }else{
+                        showToast("একটু অপেক্ষা করুন", FancyToast.LENGTH_SHORT)
+                    }
+                }
             }else{
                 NavigationUI.onNavDestinationSelected(menuItem, navController)
             }
@@ -362,6 +438,7 @@ class HomeActivity : AppCompatActivity() {
 //                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
 //                }
 //            }
+
             drawerMainHome.closeDrawer(GravityCompat.START)
             true
         }
@@ -452,7 +529,15 @@ class HomeActivity : AppCompatActivity() {
     private fun initBottomMenuClicks() {
         img_old_orders.setOnClickListener {
             if(navController.currentDestination!!.id != R.id.oldOrderListFragment){
-                navController.navigate(R.id.oldOrderListFragment)
+                if(!completeCountOfListeners.contains(false)){
+                    if(FirebaseAuth.getInstance().currentUser!=null){
+                        navController.navigate(R.id.oldOrderListFragment)
+                    }else{
+                        showToast("পূর্বের অর্ডার দেখার জন্য লগ ইন করতে হবে ।", FancyToast.ERROR)
+                    }
+                }else{
+                    showToast("একটু অপেক্ষা করুন", FancyToast.LENGTH_SHORT)
+                }
             }
         }
         img_complain.setOnClickListener { view ->

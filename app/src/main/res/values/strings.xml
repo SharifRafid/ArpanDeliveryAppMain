@@ -1,100 +1,265 @@
+<!--<resources>-->
+<!--    <string name="app_name">Arpan</string>-->
+<!--    <string name="register_now_text">Register Now</string>-->
+<!--    <string name="continue_without_registration_text">Continue without registration</string>-->
+<!--    <string name="enter_phone_number_string">Enter your phone number</string>-->
+<!--    <string name="provide_phone_number_error_text">Please enter your phone number</string>-->
+<!--    <string name="enter_verification_code">Enter verification code</string>-->
+<!--    <string name="send_code">Send Code</string>-->
+<!--    <string name="enter_phone_number">Enter your phone number</string>-->
+<!--    <string name="enter_code_send_to_your_phone_number">Enter code that is sent to your phone number</string>-->
+<!--    <string name="verify_code">Verify Code</string>-->
+<!--    <string name="phone_number_verification_failed_toast">Phone number verification failed!</string>-->
+<!--    <string name="we_are_no_longer_accepting_phones_toast">We are no longer accepting phone numbers, please contact us for more.</string>-->
+<!--    <string name="entered_a_wrong_otp_toast">You have entered a wrong otp code!</string>-->
+<!--    <string name="try_again_after">Try again after </string>-->
+<!--    <string name="this_many_seconds"> seconds.</string>-->
+<!--    <string name="failed_to_sign_in_with_phone_number">Failed to sign in with phone number!</string>-->
+<!--    <string name="enter_otp_failed_sent_to_your_device">Please enter OTP code that is sent to your device</string>-->
+<!--    <string name="try_again_to_send_code_error">Try again</string>-->
+<!--    &lt;!&ndash; TODO: Remove or change this placeholder text &ndash;&gt;-->
+<!--    <string name="hello_blank_fragment">Hello blank fragment</string>-->
+<!--    <string name="my_profile">My Profile</string>-->
+<!--    <string name="offers">Offers</string>-->
+<!--    <string name="custom_order">Custom Order</string>-->
+<!--    <string name="medicine">Medicine</string>-->
+<!--    <string name="parcel">Parcel</string>-->
+<!--    <string name="pick_up_and_drop">Pick Up And Drop</string>-->
+<!--    <string name="you_are_about_to_delete_this_product_from_your_cart">You are about to delete this product from your cart!</string>-->
+<!--    <string name="are_you_sure_to_delete">Are you sure to delete?</string>-->
+<!--    <string name="no">No</string>-->
+<!--    <string name="yes">Yes</string>-->
+<!--    <string name="added_to_cart_successfully">Added to cart successfully.</string>-->
+<!--    <string name="you_have_reached_the_maximum_limit_orders">You already have the maximum limit of orders.</string>-->
+<!--    <string name="fill_all_the_fields">Fill all the fields</string>-->
+<!--    <string name="price_will_be_confirmed_via_phone_call">Price : Will be confirmed over phone call.</string>-->
+<!--    <string name="medicine_order">Medicine Order</string>-->
+<!--    <string name="parcel_order">Parcel Order</string>-->
+<!--    <string name="shop_products">Shop Products</string>-->
+<!--    <string name="you_have_no_products_in_your_cart">There is no product in your cart!</string>-->
+<!--    <string name="order_now">Order Now</string>-->
+<!--    <string name="login_to_order">Login to order</string>-->
+<!--    <string name="not_logged_in_login_to_continue">Not logged in. Please login to continue.</string>-->
+<!--    <string name="task_cancelled">Task Cancelled</string>-->
+<!--    <string name="update_success">Updated successfully</string>-->
+<!--    <string name="confirm_order">Confirm Order</string>-->
+<!--    <string name="charge_will_be_added_for_bkash">(‌Charge will be added for bKash payment)</string>-->
+<!--    <string name="enter_promo_code">Please enter promo code</string>-->
+<!--    <string name="confirm_korun">Confirm</string>-->
+<!--    <string name="cash_on_delivery">Cash on delivery</string>-->
+<!--    <string name="enter_notes">Enter notes if any</string>-->
+<!--    <string name="enter_address">Address</string>-->
+<!--    <string name="enter_number">Phone number</string>-->
+<!--    <string name="enter_name_main">Name</string>-->
+<!--    <string name="price_0_taka">0 ৳</string>-->
+<!--    <string name="total">Total : </string>-->
+<!--    <string name="delivery_charge">Delivery : </string>-->
+<!--    <string name="cart_updated_successfully">Cart updated successfully</string>-->
+<!--    <string name="product_added_to_cart">Added to cart</string>-->
+<!--    <string name="reached_max_order_limit">You have reached the max number of orders from each shop!</string>-->
+<!--    <string name="default_notification_channel_id">arpan.delivery</string>-->
+<!--    <string name="ok_text">Ok</string>-->
+<!--    <string name="no_data_fount">No data found</string>-->
+<!--    <string name="promo_code_invalid">Promo code invalid!</string>-->
+<!--    <string name="remove_the_promo_code">Remove the promo code</string>-->
+<!--    <string name="your_promo_code_is_applied_1">Your promo code is applied and you got</string>-->
+<!--    <string name="your_promo_code_is_applied_2">৳ discount.</string>-->
+<!--    <string name="no_products_found">No product found!</string>-->
+<!--    <string name="total_total_text">Total :</string>-->
+<!--    <string name="taka_text">৳</string>-->
+<!--    <string name="no_products">No products found!</string>-->
+<!--    <string name="you_have_no_products">You have no product.</string>-->
+<!--    <string name="are_you_sure">Are you sure you want to place the order?</string>-->
+<!--    <string name="youre_finalizing_the_order">You are about to finalize the order placement, are you sure about it?</string>-->
+<!--    <string name="failed_order">Failed to order!</string>-->
+<!--    <string name="order_placed_successfully">Order placed successfully.</string>-->
+<!--    <string name="arpan">Arpan</string>-->
+<!--    <string name="order_page_title">Order</string>-->
+<!--    <string name="cart_page_title">Cart</string>-->
+<!--    <string name="my_profile_page_title">My Profile</string>-->
+<!--    <string name="custom_order_page_title">Custom Order</string>-->
+<!--    <string name="medicine_page_title">Medicine</string>-->
+<!--    <string name="parcel_page_title">Parcel</string>-->
+<!--    <string name="pick_and_drop_page_title">Pick Up And Drop</string>-->
+<!--    <string name="are_you_sure_to_delete_all_the_products">Are you sure you want to delete all the products?</string>-->
+<!--    <string name="delete">Delete?</string>-->
+<!--    <string name="cart_cleared">Cart cleared</string>-->
+<!--    <string name="phone">Phone</string>-->
+<!--    <string name="name">Name</string>-->
+<!--    <string name="address">Address</string>-->
+<!--    <string name="notes">Notes</string>-->
+<!--    <string name="order_not_found">Order not found</string>-->
+<!--    <string name="you_got_part_1">You got </string>-->
+<!--    <string name="you_got_part_2">৳ discount from promo code.</string>-->
+<!--    <string name="order_details">Order Details</string>-->
+<!--    <string name="my_orders">My Orders</string>-->
+<!--    <string name="you_have_no_orders">You have no order.</string>-->
+<!--    <string name="you_are_not_logged_i">You are not logged in!</string>-->
+<!--    <string name="client_package">-->
+<!--    আপনার কি রয়েছে কোন হোমমেড খাবার, কেক,-->
+<!--        জুয়েলারি কিংবা অন্য কোন পণ্যসামগ্রির অনলাইন ব্যবসা?-->
+<!--        তাহলে আপনার পণ্যগুলো আপনার ক্রেতার কাছে ডেলিভারি-->
+<!--        করবার জন্য রয়েছে অর্পণের ক্লায়েন্ট প্যাকেজ। অর্পণের ক্লায়েন্ট-->
+<!--        প্যাকেজ গ্রহণ করুন আর নিশ্চিন্তে নিজের পণ্যটি নিজের-->
+<!--        ক্রেতার কাছে আস্থার সাথে পৌঁছে দেবার দায়িত্ব অর্পণকে-->
+<!--        প্রদান করুন। অর্পণের ক্লায়েন্ট প্যাকেজ গ্রহণ করার জন্য-->
+<!--        ইনবক্স করুন অর্পণের ফেসবুক পেজে কিংবা কল-->
+<!--        করুন অ্যাপে দেওয়া নম্বরে।-->
+<!--    </string>-->
+<!--    <string name="arpan_ki_and_kno_1">-->
+<!--        অর্পণ মাগুরা শহরের একটি আস্থানির্ভর হোমডেলিভারি সার্ভিস ও কিছু বিশেষ পণ্যের অনলাইন শপ। রোজকার ব্যস্ততম জীবনে প্রয়োজনীয় পণ্যগুলো সংগ্রহ করতে আমাদের প্রত্যেককেই ছুটতে হয় ঘরের বাইরে।  কিন্তু যদি আপনাদের সেই প্রয়োজনগুলোকে অর্পণ পৌঁছে দেয় ঠিক আপনার দরজায়, তাহলে কেমন হয়? একদম ঠিক তাই। আনায়াসে আয়েশ করবার অর্পণের এই প্রয়াস জারি থাকবে আপনাদের জন্য, শুধুমাত্র প্রিয় মাগুরাবাসীর জন্য। আপনাদের প্রয়োজনীয় পণ্যগুলো  নির্ধারণ করে আমাদের অ্যাপে/পেজের ইনবক্সে বা পেজে দেওয়া নম্বরে জানান। আমরা পৌঁছে দেবো সেই পণ্য আপনার ঠিকানায়। শুধু তাই নয়, অর্পণে আপনারা পাবেন বাজার থেকে সুলভ মূল্যে ঘরেই বসেই আপনার চাহিদা মতন কিছু বিশেষ পণ্যের হোম ডেলিভারি। পণ্যগুলো সম্পর্কে জানতে দেখে নিন-->
+<!--অ্যাপের ”অর্পণ শপ” সেকশনটি।</string>-->
+<!--    <string name="arpan_ki_and_kno_2">-->
+<!--       অর্পণের এই ডেলিভারি সেবা চালু থাকবে কেবলমাত্র মাগুরা জেলায় বসবাসকারি নাগরিকদের জন্য। আর অর্পণের নিজস্ব পণ্যগুলোও আপনারা পেয়ে যাবেন মাগুরা শহরে ও মাগুরা জেলার অর্পণের নির্ধারিত ডেলিভারি পয়েন্টগুলোতে।</string>-->
+<!--    <string name="arpan_ki_and_kno_3">-->
+<!--       অর্পণের নিজস্ব পণ্যগুলো অর্ডার করার জন্য চোখ রাখুন অর্পণ অ্যাপের ”অর্পণ শপ” সেকশনে অথবা অফিশিয়াল ফেসবুক পেজে। ”অর্পণ শপ” সেকশন থেকে আপনার পছন্দের পণ্যটি অর্ডার করুন সহজেই। অর্পণের পণ্য ব্যতীত আপনার অন্য প্রয়োজনীয় পণ্যের ডেলিভারি পেতে সেই প্রয়োজনীয় পণ্যের একটি তালিকা তৈরি করে সেই তালিকা আমাদেরকে ইনবক্সে পাঠিয়ে দিন অথবা অ্যাপের ”কাস্টম অর্ডার”  থেকে অর্ডার করুন। যদি আপনার কোন নির্দিষ্ট দোকানের পণ্যের চাহিদা থাকে সেক্ষেত্রে সেটিও উল্লেখ করলে, অর্পণ চেষ্টা করবে আপনার দরকারি পণ্যগুলো আপনার পছন্দের দোকান থেকে সংগ্রহ করে পৌঁছে দেবার জন্য। আর যদি দোকানে নির্বাচনের ক্ষেত্রে আপনার কোন চাহিদা না থাকে সেক্ষেত্রে অর্পণ নিজ দায়িত্বে আপনার পণ্য পৌঁছে দেবে আপনার নিকট।-->
+<!--    </string>-->
+<!--    <string name="arpan_ki_and_kno_4">-->
+<!--        অর্পণ পরিবারের নির্বাচিত ডেলিভারি এজেন্ট (ডিএ) দের মাধ্যমে ডেলিভারি দেওয়া হয়ে থাকে। প্রতিবার অর্ডারে ডেলিভারি বাবদ চার্জ শহরের মধ্যে মাত্র ৪০ টাকা। অর্থাৎ নির্ধারিত পণ্যের মূল্যের সাথে ডেলিভারি চার্জবাবদ আরো ৪০ টাকা প্রদান করতে হবে। এ ছাড়াও শহরের বাইরে মাগুরা জেলার অন্যান্য জায়গায় রয়েছে অর্পণের কিছু ডেলিভারি পয়েন্ট (বিস্তারিত জানতে অনুগ্রহ করে ইনবক্স করুন)।-->
+<!--    </string>-->
+<!--    <string name="arpan_ki_and_kno_5">-->
+<!--        অর্পণের নিজস্ব পণ্যগুলো অর্ডার করবার ক্ষেত্রে অনুগ্রহ করে প্রি-অর্ডারের মাধ্যমে অর্ডারটি কনফার্ম করুন। আপনি অর্ডারটি কনফার্ম করার এক সপ্তাহের মধ্যেই পণ্যটি পৌঁছে যাবে আপনার ঠিকানায়। আর পণ্যটি আমাদের স্টকে থাকলে সঙ্গে সঙ্গেই পেয়ে যাবেন হোমডেলিভারি।-->
+<!--    </string>-->
+<!--    <string name="arpan_ki_and_kno_6">-->
+<!--        ক্যাশ অন ডেলিভারি পদ্ধতিতে অর্পণ পেমেন্ট গ্রহণ করে থাকে। আপনার দেওয়া অর্ডারটি অর্পণের নির্ধারিত ডেলিভারি এজেন্ট (ডিএ) থেকে গ্রহণ করবার পর তার হাতেই পেমেন্টটি করতে হবে। এছাড়াও বিকাশ/রকেট/নগদের মাধ্যমেও আপনারা আপনাদের পণ্যের পেমেন্ট করতে পারবেন একদম নিশ্চিন্তে।-->
+<!--    </string>-->
+<!--    <string name="arpan_niye_nana_kotha">অর্পণ নিয়ে নানা জিজ্ঞাসা আমাদের মনে চলেই আসে। তাই আপনাদের সেসব অজানাকে জানাতে, অর্পণকে আপনাদের সাথে পরিচয় করিয়ে দেবার জন্য অর্পণেরর কিছু কথাঃ</string>-->
+<!--    &lt;!&ndash; TODO: Remove or change this placeholder text &ndash;&gt;-->
+<!--    <string name="give_call_permission">কল পারমিশন প্রদান করুন</string>-->
+<!--    <string name="call_permission_for_first_time">কল করার জন্য প্রথমবারের মতো পারমিশন প্রদান করুন,</string>-->
+<!--    <string name="yes_ok">আচ্ছা</string>-->
+<!--    <string name="no_its_ok">না। থাক।</string>-->
+<!--    <string name="mullo_phone_call_er_maddhome">মূল্য ফোন কলের মাধ্যমে নিশ্চিত করা হবে</string>-->
+<!--    <string name="filll_all_fields">সব তথ্য পূরণ করুন</string>-->
+<!--    <string name="ensure_interne">ইন্টারনেট নিশ্চিত করুন</string>-->
+<!--    <string name="sender">প্রেরকঃ</string>-->
+<!--    <string name="mobile">মোবাইল নম্বর</string>-->
+<!--    <string name="parcel_phooto_ender">পার্সেলের ছবি দিন</string>-->
+<!--    <string name="parcel_details">পার্সেলের বিবরণ লিখুন</string>-->
+<!--    <string name="reciever_text">প্রাপকঃ</string>-->
+<!--    <string name="payment_method">"PAYMENT METHOD : "</string>-->
+<!--    <string name="shgop_order_time_ehon_bodro_ache">আমাদের শপ এর অর্ডার গ্রহণ এখন বন্ধ আছে। শপ ওপেন টাইম এ অর্ডার করুন। ধন্যবাদ</string>-->
+<!--    <string name="become_client">Become Client</string>-->
+<!--    <string name="about_arpan">About Arpan</string>-->
+<!--    <string name="settings">Settings</string>-->
+<!--    <string name="logout">Logout</string>-->
+<!--    <string name="you_are_not_logged_in">You are not logged in....</string>-->
+<!--    <string name="are_you_sure_to_log_out">Are you sure you want to log out???</string>-->
+<!--    <string name="dark_mode">Dark Mode</string>-->
+<!--    <string name="set_theme">থিম চেঞ্জ করুন</string>-->
+<!--    <string name="add_promo_code">Add Promo Code</string>-->
+<!--    <string name="minimum_order_value_text">Minimum Order Value For This Promo Code Is</string>-->
+<!--    <string name="taka">Taka</string>-->
+<!--    <string name="time_of_promo_code">The time of the promo code is now over, try another one.</string>-->
+<!--    <string name="already_used_max">This promo code is already used the maximum time, no more uses remain.</string>-->
+<!--    <string name="not_active_try_another">This promo code is not active, try another one.</string>-->
+<!--    <string name="share_the_app">Share The App</string>-->
+<!--    <string name="rate_the_app">Rate The App</string>-->
+<!--    <string name="client_be_title">ক্লায়েন্ট হতে চাই</string>-->
+<!--    <string name="know_about_arpan_title">অর্পণ সম্পর্কে জানুন</string>-->
+<!--    <string name="no_data_found">No Data Found</string>-->
+<!--    <string name="complete_profile">Complete Profile</string>-->
+<!--    <string name="please_complete_profile">Please complete profile your profile to order faster...</string>-->
+<!--    <string name="location_permission">লোকেশন পারমিশন</string>-->
+<!--    <string name="do_you_want_to_track_location">ডেলিভারি দ্রুততর করার জন্য আপনি কি লোকেশন পারমিশন দিতে চান?</string>-->
+<!--</resources>-->
 <resources>
-    <string name="app_name">Arpan</string>
-    <string name="register_now_text">Register Now</string>
-    <string name="continue_without_registration_text">Continue without registration</string>
-    <string name="enter_phone_number_string">Enter your phone number</string>
-    <string name="provide_phone_number_error_text">Please enter your phone number</string>
-    <string name="enter_verification_code">Enter verification code</string>
-    <string name="send_code">Send Code</string>
-    <string name="enter_phone_number">Enter your phone number</string>
-    <string name="enter_code_send_to_your_phone_number">Enter code that is sent to your phone number</string>
-    <string name="verify_code">Verify Code</string>
-    <string name="phone_number_verification_failed_toast">Phone number verification failed!</string>
-    <string name="we_are_no_longer_accepting_phones_toast">We are no longer accepting phone numbers, please contact us for more.</string>
-    <string name="entered_a_wrong_otp_toast">You have entered a wrong otp code!</string>
-    <string name="try_again_after">Try again after </string>
-    <string name="this_many_seconds"> seconds.</string>
-    <string name="failed_to_sign_in_with_phone_number">Failed to sign in with phone number!</string>
-    <string name="enter_otp_failed_sent_to_your_device">Please enter OTP code that is sent to your device</string>
-    <string name="try_again_to_send_code_error">Try again</string>
+    <string name="app_name">অর্পণ</string>
+    <string name="register_now_text">রেজিস্টার/লগইন করুন</string>
+    <string name="continue_without_registration_text">রেজিস্ট্রেশন ছাড়াই ব্যবহার করুন</string>
+    <string name="enter_phone_number_string">ফোন নম্বর লিখুন</string>
+    <string name="provide_phone_number_error_text">ফোন নম্বর দিন</string>
+    <string name="enter_verification_code">ভেরিফিকেশন কোড দিন</string>
+    <string name="send_code">কোড পাঠান</string>
+    <string name="enter_phone_number">ফোন নম্বর দিন</string>
+    <string name="enter_code_send_to_your_phone_number">আপনার ফোন নম্বরে পাঠানো কোডটি দিন</string>
+    <string name="verify_code">ভেরিফাই করুন</string>
+    <string name="phone_number_verification_failed_toast">ভেরিফিকেশন ব্যর্থ হয়েছে!</string>
+    <string name="we_are_no_longer_accepting_phones_toast">আমাদের ফোন নম্বর রেজিস্ট্রেশন বন্ধ আছে, পুনরায় চেষ্টা করুন</string>
+    <string name="entered_a_wrong_otp_toast">আপনি ভুল কোড দিয়েছেন!</string>
+    <string name="try_again_after">আবার চেষ্টা করুন </string>
+    <string name="this_many_seconds"> সেকেন্ড পর</string>
+    <string name="failed_to_sign_in_with_phone_number">ফোন নম্বর দিয়ে সাইন ইন সফল হয়নি!</string>
+    <string name="enter_otp_failed_sent_to_your_device">আপনার ফোন নম্বরে পাঠানো ওটিপি কোডটি দিন</string>
+    <string name="try_again_to_send_code_error">আবার চেষ্টা করুন</string>
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="my_profile">My Profile</string>
-    <string name="offers">Offers</string>
-    <string name="custom_order">Custom Order</string>
-    <string name="medicine">Medicine</string>
-    <string name="parcel">Parcel</string>
-    <string name="pick_up_and_drop">Pick Up And Drop</string>
-    <string name="you_are_about_to_delete_this_product_from_your_cart">You are about to delete this product from your cart!</string>
-    <string name="are_you_sure_to_delete">Are you sure to delete?</string>
-    <string name="no">No</string>
-    <string name="yes">Yes</string>
-    <string name="added_to_cart_successfully">Added to cart successfully.</string>
-    <string name="you_have_reached_the_maximum_limit_orders">You already have the maximum limit of orders.</string>
-    <string name="fill_all_the_fields">Fill all the fields</string>
-    <string name="price_will_be_confirmed_via_phone_call">Price : Will be confirmed over phone call.</string>
-    <string name="medicine_order">Medicine Order</string>
-    <string name="parcel_order">Parcel Order</string>
-    <string name="shop_products">Shop Products</string>
-    <string name="you_have_no_products_in_your_cart">There is no product in your cart!</string>
-    <string name="order_now">Order Now</string>
-    <string name="login_to_order">Login to order</string>
-    <string name="not_logged_in_login_to_continue">Not logged in. Please login to continue.</string>
-    <string name="task_cancelled">Task Cancelled</string>
-    <string name="update_success">Updated successfully</string>
-    <string name="confirm_order">Confirm Order</string>
-    <string name="charge_will_be_added_for_bkash">(‌Charge will be added for bKash payment)</string>
-    <string name="enter_promo_code">Please enter promo code</string>
-    <string name="confirm_korun">Confirm</string>
-    <string name="cash_on_delivery">Cash on delivery</string>
-    <string name="enter_notes">Enter notes if any</string>
-    <string name="enter_address">Address</string>
-    <string name="enter_number">Phone number</string>
-    <string name="enter_name_main">Name</string>
+    <string name="hello_blank_fragment">হ্যালো খালি ফ্র্যাগমেন্ট</string>
+    <string name="my_profile">আমার প্রোফাইল</string>
+    <string name="offers">অফার</string>
+    <string name="custom_order">কাস্টম অর্ডার</string>
+    <string name="medicine">ঔষধ</string>
+    <string name="parcel">পার্সেল</string>
+    <string name="pick_up_and_drop">পিক আপ এন্ড ড্রপ</string>
+    <string name="you_are_about_to_delete_this_product_from_your_cart">আপনি এই পণ্যটি কার্ট থেকে ডিলিট করতে চলেছেন!</string>
+    <string name="are_you_sure_to_delete">আপনি কি নিশ্চিত?</string>
+    <string name="no">না</string>
+    <string name="yes">হ্যাঁ</string>
+    <string name="added_to_cart_successfully">সফলভাবে কার্টে যোগ করা হয়েছে</string>
+    <string name="you_have_reached_the_maximum_limit_orders">আপনি ইতোমধ্যে সর্বোচ্চ অর্ডার লিমিটে পৌঁছে গেছেন</string>
+    <string name="fill_all_the_fields">দয়া করে সব তথ্য পূরণ করুন</string>
+    <string name="price_will_be_confirmed_via_phone_call">মূল্য ফোন করে নিশ্চিত করা হবে</string>
+    <string name="medicine_order">ঔষধ অর্ডার</string>
+    <string name="parcel_order">পার্সেল অর্ডার</string>
+    <string name="shop_products">শপ পণ্য</string>
+    <string name="you_have_no_products_in_your_cart">আপনার কার্টে কোনো পণ্য নেই!</string>
+    <string name="order_now">অর্ডার করুন</string>
+    <string name="login_to_order">অর্ডার করতে লগইন করুন</string>
+    <string name="not_logged_in_login_to_continue">লগইন করা হয়নি। দয়া করে লগইন করুন</string>
+    <string name="task_cancelled">প্রক্রিয়াটি বাতিল করা হয়েছে!</string>
+    <string name="update_success">সফলভাবে আপডেট করা হয়েছে</string>
+    <string name="confirm_order">কনফার্ম অর্ডার</string>
+    <string name="charge_will_be_added_for_bkash">(‌বিকাশ পেমেন্টে চার্জ যুক্ত হ‌বে)</string>
+    <string name="enter_promo_code">প্রোমো কোড দিন</string>
+    <string name="confirm_korun">কনফার্ম করুন</string>
+    <string name="cash_on_delivery">ক্যাশ অন ডেলিভারি</string>
+    <string name="enter_notes">নোট (যদি থাকে)</string>
+    <string name="enter_address">ঠিকানা</string>
+    <string name="enter_number">মোবাইল নম্বর</string>
+    <string name="enter_name_main">নাম</string>
     <string name="price_0_taka">0 ৳</string>
-    <string name="total">Total : </string>
-    <string name="delivery_charge">Delivery : </string>
-    <string name="cart_updated_successfully">Cart updated successfully</string>
-    <string name="product_added_to_cart">Added to cart</string>
-    <string name="reached_max_order_limit">You have reached the max number of orders from each shop!</string>
+    <string name="total">মোটঃ </string>
+    <string name="delivery_charge">ডেলিভারিঃ </string>
+    <string name="cart_updated_successfully">সফলভাবে কার্ট আপডেট করা হয়েছে</string>
+    <string name="product_added_to_cart">সফলভাবে কার্টে পণ্য যোগ করা হয়েছে</string>
+    <string name="reached_max_order_limit">আপনি ইতোমধ্যে শপের সর্বোচ্চ অর্ডার লিমিটে পৌঁছে গেছেন</string>
     <string name="default_notification_channel_id">arpan.delivery</string>
-    <string name="ok_text">Ok</string>
-    <string name="no_data_fount">No data found</string>
-    <string name="promo_code_invalid">Promo code invalid!</string>
-    <string name="remove_the_promo_code">Remove the promo code</string>
-    <string name="your_promo_code_is_applied_1">Your promo code is applied and you got</string>
-    <string name="your_promo_code_is_applied_2">৳ discount.</string>
-    <string name="no_products_found">No product found!</string>
-    <string name="total_total_text">Total :</string>
-    <string name="taka_text">৳</string>
-    <string name="no_products">No products found!</string>
-    <string name="you_have_no_products">You have no product.</string>
-    <string name="are_you_sure">Are you sure you want to place the order?</string>
-    <string name="youre_finalizing_the_order">You are about to finalize the order placement, are you sure about it?</string>
-    <string name="failed_order">Failed to order!</string>
-    <string name="order_placed_successfully">Order placed successfully.</string>
-    <string name="arpan">Arpan</string>
-    <string name="order_page_title">Order</string>
-    <string name="cart_page_title">Cart</string>
-    <string name="my_profile_page_title">My Profile</string>
-    <string name="custom_order_page_title">Custom Order</string>
-    <string name="medicine_page_title">Medicine</string>
-    <string name="parcel_page_title">Parcel</string>
-    <string name="pick_and_drop_page_title">Pick Up And Drop</string>
-    <string name="are_you_sure_to_delete_all_the_products">Are you sure you want to delete all the products?</string>
-    <string name="delete">Delete?</string>
-    <string name="cart_cleared">Cart cleared</string>
-    <string name="phone">Phone</string>
-    <string name="name">Name</string>
-    <string name="address">Address</string>
-    <string name="notes">Notes</string>
-    <string name="order_not_found">Order not found</string>
-    <string name="you_got_part_1">You got </string>
-    <string name="you_got_part_2">৳ discount from promo code.</string>
-    <string name="order_details">Order Details</string>
-    <string name="my_orders">My Orders</string>
-    <string name="you_have_no_orders">You have no order.</string>
-    <string name="you_are_not_logged_i">You are not logged in!</string>
+    <string name="ok_text">হ‌্যাঁ</string>
+    <string name="no_data_fount">কোন ডেটা পাওয়া যায়নি!</string>
+    <string name="promo_code_invalid">প্রোমো কোডটি ভুল!</string>
+    <string name="remove_the_promo_code">প্রোমো কোড সরিয়ে দিন</string>
+    <string name="your_promo_code_is_applied_1">আপনার প্রোমো কোডটি অ্যাপ্লায় করা হয়েছে এবং আপনি </string>
+    <string name="your_promo_code_is_applied_2">৳ ডিস্কাউন্ট পেয়েছেন।</string>
+    <string name="no_products_found">কোন পণ্য পাওয়া যায়নি!</string>
+    <string name="total_total_text">মোটঃ </string>
+    <string name="taka_text">টাকা</string>
+    <string name="no_products">কোন পণ্য পাওয়া যায়নি!</string>
+    <string name="you_have_no_products">আপনার কার্টে কোন পণ্য নেই!</string>
+    <string name="are_you_sure">আপনি অর্ডারটি প্লেস করতে চলেছেন?</string>
+    <string name="youre_finalizing_the_order">আপনি অর্ডারটি চূড়ান্ত করতে চলেছেন। আপনি কি নিশ্চিত?</string>
+    <string name="failed_order">অর্ডার প্লেস হয়নি!</string>
+    <string name="order_placed_successfully">অর্ডার সফলভাবে প্লেস করা হয়েছে।</string>
+    <string name="arpan">অর্পণ</string>
+    <string name="order_page_title">অর্ডার</string>
+    <string name="cart_page_title">কার্ট</string>
+    <string name="my_profile_page_title">আমার প্রোফাইল</string>
+    <string name="custom_order_page_title">কাস্টম অর্ডার</string>
+    <string name="medicine_page_title">ঔষধ</string>
+    <string name="parcel_page_title">পার্সেল</string>
+    <string name="pick_and_drop_page_title">পিক আপ এন্ড ড্রপ</string>
+    <string name="are_you_sure_to_delete_all_the_products">আপনি সব পণ্য ডিলিট করতে চলেছেন। আপনি কি নিশ্চিত?</string>
+    <string name="delete">ডিলিট করতে চান?</string>
+    <string name="cart_cleared">কার্ট থেকে সব পন্য ডিলিট করা হয়েছে।</string>
+    <string name="phone">মোবাইল নম্বর</string>
+    <string name="name">নাম</string>
+    <string name="address">ঠিকানা</string>
+    <string name="notes">নোট (যদি থাকে)</string>
+    <string name="order_not_found">অর্ডারটি পাওয়া যায়নি!</string>
+    <string name="you_got_part_1">আপনি প্রোমো কোড থেকে </string>
+    <string name="you_got_part_2">৳ ডিস্কাউন্ট পেয়েছেন।</string>
+    <string name="order_details">অর্ডার ডিটেইলস</string>
+    <string name="my_orders">আমার অর্ডার</string>
+    <string name="you_have_no_orders">আপনি এখনো কোন অর্ডার করেননি।</string>
+    <string name="you_are_not_logged_i">দয়া করে লগইন করুন</string>
     <string name="client_package">
     আপনার কি রয়েছে কোন হোমমেড খাবার, কেক,
         জুয়েলারি কিংবা অন্য কোন পণ্যসামগ্রির অনলাইন ব্যবসা?
@@ -103,8 +268,7 @@
         প্যাকেজ গ্রহণ করুন আর নিশ্চিন্তে নিজের পণ্যটি নিজের
         ক্রেতার কাছে আস্থার সাথে পৌঁছে দেবার দায়িত্ব অর্পণকে
         প্রদান করুন। অর্পণের ক্লায়েন্ট প্যাকেজ গ্রহণ করার জন্য
-        ইনবক্স করুন অর্পণের ফেসবুক পেজে কিংবা কল
-        করুন অ্যাপে দেওয়া নম্বরে।
+        ইনবক্স করুন অথবা কল করুন।
     </string>
     <string name="arpan_ki_and_kno_1">
         অর্পণ মাগুরা শহরের একটি আস্থানির্ভর হোমডেলিভারি সার্ভিস ও কিছু বিশেষ পণ্যের অনলাইন শপ। রোজকার ব্যস্ততম জীবনে প্রয়োজনীয় পণ্যগুলো সংগ্রহ করতে আমাদের প্রত্যেককেই ছুটতে হয় ঘরের বাইরে।  কিন্তু যদি আপনাদের সেই প্রয়োজনগুলোকে অর্পণ পৌঁছে দেয় ঠিক আপনার দরজায়, তাহলে কেমন হয়? একদম ঠিক তাই। আনায়াসে আয়েশ করবার অর্পণের এই প্রয়াস জারি থাকবে আপনাদের জন্য, শুধুমাত্র প্রিয় মাগুরাবাসীর জন্য। আপনাদের প্রয়োজনীয় পণ্যগুলো  নির্ধারণ করে আমাদের অ্যাপে/পেজের ইনবক্সে বা পেজে দেওয়া নম্বরে জানান। আমরা পৌঁছে দেবো সেই পণ্য আপনার ঠিকানায়। শুধু তাই নয়, অর্পণে আপনারা পাবেন বাজার থেকে সুলভ মূল্যে ঘরেই বসেই আপনার চাহিদা মতন কিছু বিশেষ পণ্যের হোম ডেলিভারি। পণ্যগুলো সম্পর্কে জানতে দেখে নিন
@@ -137,29 +301,29 @@
     <string name="parcel_phooto_ender">পার্সেলের ছবি দিন</string>
     <string name="parcel_details">পার্সেলের বিবরণ লিখুন</string>
     <string name="reciever_text">প্রাপকঃ</string>
-    <string name="payment_method">"PAYMENT METHOD : "</string>
+    <string name="payment_method">পেমেন্ট মেথড : </string>
     <string name="shgop_order_time_ehon_bodro_ache">আমাদের শপ এর অর্ডার গ্রহণ এখন বন্ধ আছে। শপ ওপেন টাইম এ অর্ডার করুন। ধন্যবাদ</string>
-    <string name="become_client">Become Client</string>
-    <string name="about_arpan">About Arpan</string>
-    <string name="settings">Settings</string>
-    <string name="logout">Logout</string>
-    <string name="you_are_not_logged_in">You are not logged in....</string>
-    <string name="are_you_sure_to_log_out">Are you sure you want to log out???</string>
-    <string name="dark_mode">Dark Mode</string>
+    <string name="become_client">ক্লায়েন্ট হতে চাই</string>
+    <string name="about_arpan">অর্পণ সম্পর্কে জানুন</string>
+    <string name="settings">সেটিংস</string>
+    <string name="logout">লগ আউট</string>
+    <string name="you_are_not_logged_in">আপনার লগ ইন করা নাই....</string>
+    <string name="are_you_sure_to_log_out">আপনি কি নিশ্চিত আপনি লগ আউট করতে চান???</string>
+    <string name="dark_mode">ডার্ক মুড</string>
     <string name="set_theme">থিম চেঞ্জ করুন</string>
-    <string name="add_promo_code">Add Promo Code</string>
-    <string name="minimum_order_value_text">Minimum Order Value For This Promo Code Is</string>
-    <string name="taka">Taka</string>
-    <string name="time_of_promo_code">The time of the promo code is now over, try another one.</string>
-    <string name="already_used_max">This promo code is already used the maximum time, no more uses remain.</string>
-    <string name="not_active_try_another">This promo code is not active, try another one.</string>
-    <string name="share_the_app">Share The App</string>
-    <string name="rate_the_app">Rate The App</string>
+    <string name="add_promo_code">প্রোমো কোড অ্যাড করুন</string>
+    <string name="minimum_order_value_text">এই প্রমো কোডের সর্বনিম্ন </string>
+    <string name="taka">টাকা</string>
+    <string name="time_of_promo_code">এই প্রমোকোড ব্যবহারের সময় শেষ হয়ে গিয়েছে, অন্য একটি চেষ্টা করুন।</string>
+    <string name="already_used_max">এই প্রমোকোডটি সর্বোচ্চ বার ব্যবহৃত হয়ে গিয়েছে, আর ব্যবহার করা যাবে না।</string>
+    <string name="not_active_try_another">এই প্রমো কোডটি অ্যাকটিভ নাই, অন্য সময় চেষ্টা করুন।</string>
+    <string name="share_the_app">অ্যাপটি শেয়ার করুন</string>
+    <string name="rate_the_app">রেটিং দিন</string>
     <string name="client_be_title">ক্লায়েন্ট হতে চাই</string>
     <string name="know_about_arpan_title">অর্পণ সম্পর্কে জানুন</string>
-    <string name="no_data_found">No Data Found</string>
-    <string name="complete_profile">Complete Profile</string>
-    <string name="please_complete_profile">Please complete profile your profile to order faster...</string>
+    <string name="no_data_found">কোনো ডাটা পাওয়া যায় নি</string>
+    <string name="complete_profile">প্রোফাইল সম্পূর্ন করুন</string>
+    <string name="please_complete_profile">দ্রুত অর্ডার কর‌তে আপনার প্রোফাইল সম্পূর্ণ করুন।</string>
     <string name="location_permission">লোকেশন পারমিশন</string>
     <string name="do_you_want_to_track_location">ডেলিভারি দ্রুততর করার জন্য আপনি কি লোকেশন পারমিশন দিতে চান?</string>
 </resources>

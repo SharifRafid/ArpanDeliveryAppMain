@@ -219,11 +219,11 @@ class ParcelNewFragment : Fragment() {
             val someRandomTime = SimpleDateFormat("HH:mm:ss", Locale.ENGLISH).format(Calendar.getInstance().time)
             val date = SimpleDateFormat("HH:mm:ss", Locale.ENGLISH).parse(someRandomTime)
             val calendar3 = Calendar.getInstance()
-            calendar3.time = date
+            calendar3.time = date!!
             calendar3.add(Calendar.DATE, 1)
             Log.e("C3", date.toString())
-            Log.e("C2", time2.toString())
-            Log.e("C1", time1.toString())
+            Log.e("C2", time2!!.toString())
+            Log.e("C1", time1!!.toString())
             val x = calendar3.time
             if(x.after(calendar1.time) && x.before(calendar2.time)) {
                 view.txt_place_order.visibility = View.VISIBLE
@@ -297,20 +297,17 @@ class ParcelNewFragment : Fragment() {
     }
 
     private fun placeOrderFinalUpload(view: View, orderItemMain: OrderItemMain) {
-        FirebaseDatabase.getInstance().reference.child("orderNumber")
-            .child(getDate(System.currentTimeMillis(), "dd-MM-yyyy").toString())
+        FirebaseDatabase.getInstance().reference.child("orderNumberNew")
             .child("ON")
             .get().addOnCompleteListener { task ->
                 if(task.isSuccessful){
                     if(task.result!!.value==null){
                         orderItemMain.orderId = "ARP1001"
-                        FirebaseDatabase.getInstance().reference.child("orderNumber")
-                            .child(getDate(System.currentTimeMillis(), "dd-MM-yyyy").toString())
+                        FirebaseDatabase.getInstance().reference.child("orderNumberNew")
                             .child("ON").setValue("1001")
                     }else{
                         orderItemMain.orderId = "ARP"+(task.result!!.value.toString().toInt()+1)
-                        FirebaseDatabase.getInstance().reference.child("orderNumber")
-                            .child(getDate(System.currentTimeMillis(), "dd-MM-yyyy").toString())
+                        FirebaseDatabase.getInstance().reference.child("orderNumberNew")
                             .child("ON").setValue((task.result!!.value.toString().toInt()+1).toString())
                     }
                     FirebaseFirestore.getInstance().collection("users")

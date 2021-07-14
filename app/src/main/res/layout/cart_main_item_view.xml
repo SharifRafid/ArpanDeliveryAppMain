@@ -15,7 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:padding="4dp"
+        android:padding="2dp"
         android:background="@color/shop_card_bg_color"
         android:orientation="horizontal">
         <LinearLayout
@@ -37,7 +37,7 @@
                 android:gravity="left"
                 android:text="রেড লিকার প্রিমিয়াম ক্লোন টি(ব্ল্যাক টি) ২০০ গ্রাম"
                 android:textColor="@color/shop_card_text_color_1"
-                android:textSize="14sp"
+                android:textSize="12sp"
                 android:textStyle="bold" />
 
 
@@ -51,7 +51,7 @@
                 android:text="রেড লিকার প্রিমিয়াম ক্লোন টি(ব্ল্যাক টি) ২০০ গ্রাম"
                 android:textColor="@color/shop_card_text_color_1"
                 android:textSize="12sp"
-                android:textStyle="bold"/>
+                android:textStyle="normal"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -75,7 +75,7 @@
                         android:paddingStart="2dp"
                         android:text="145"
                         android:textColor="@color/shop_card_text_color_1"
-                        android:textSize="16sp"
+                        android:textSize="12sp"
                         android:textStyle="bold" />
                 </LinearLayout>
                 <ImageView
@@ -97,7 +97,7 @@
                     android:padding="10dp"
                     android:text="0"
                     android:textColor="@color/shop_card_text_color_1"
-                    android:textSize="16sp"
+                    android:textSize="13sp"
                     android:textStyle="bold" />
                 <ImageView
                     android:id="@+id/plus_image"
@@ -137,8 +137,8 @@
             android:orientation="vertical">
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/materialCardView"
-                android:layout_width="wrap_content"
-                android:layout_height="70dp"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 app:cardElevation="0dp"
                 android:layout_margin="5dp"
                 android:visibility="gone"
@@ -146,8 +146,8 @@
 
                 <ImageView
                     android:id="@+id/shopImageItem"
-                    android:layout_width="70dp"
-                    android:layout_height="70dp"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
                     android:layout_centerVertical="true"
                     android:src="@drawable/loading_image_glide"
                     android:scaleType="centerCrop"/>
@@ -167,9 +167,9 @@
                 android:layout_marginBottom="4dp"
                 android:paddingEnd="15dp"
                 android:paddingBottom="8dp"
-                android:text="     Delete     "
+                android:text="   Delete   "
                 android:textColor="@color/white"
-                android:textSize="14sp"
+                android:textSize="12sp"
                 android:textStyle="bold" />
 
         </LinearLayout>

@@ -30,6 +30,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.shashank.sony.fancytoastlib.FancyToast
 import com.smarteist.autoimageslider.IndicatorView.animation.type.IndicatorAnimationType
+import com.smarteist.autoimageslider.SliderAnimations
 import com.smarteist.autoimageslider.SliderView
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.fragment_home.*
@@ -271,6 +272,8 @@ class HomeFragment : Fragment() {
                 val sliderAdapter = SliderAdapterExample(context)
                 sliderAdapter.renewItems(imagesList)
                 viewpagerGalleryImages.setSliderAdapter(sliderAdapter)
+                viewpagerGalleryImages.setSliderTransformAnimation(SliderAnimations.SIMPLETRANSFORMATION)
+                viewpagerGalleryImages.autoCycleDirection = SliderView.AUTO_CYCLE_DIRECTION_LEFT
                 viewpagerGalleryImages.startAutoCycle()
             }
         })
@@ -292,7 +295,7 @@ class HomeFragment : Fragment() {
                 )
             }
             Collections.sort(categoryItemsArray, kotlin.Comparator { o1, o2 -> o1.order.compareTo(o2.order) })
-            tabLayout.addTab(tabLayout.newTab().setText("All"))
+            tabLayout.addTab(tabLayout.newTab().setText("সব"))
             for(item in categoryItemsArray){
                 tabLayout.addTab(tabLayout.newTab().setText(item.name))
             }
@@ -353,7 +356,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun initTopMenuItems(context: Context, topRecyclerView: RecyclerView) {
-        val titlesTop = arrayListOf("কাস্টম অর্ডার", "ঔষধ", "পার্সেল", "পিক-আপ ড্রপ")
+        val titlesTop = arrayListOf("কাস্টম অর্ডার", "ঔষধ", "পার্সেল", "পিক এন্ড ড্রপ")
         val imagesTop = arrayListOf(
                 R.drawable.ic_custom_order_icon,
                 R.drawable.ic_medicine_icon,
@@ -449,7 +452,7 @@ class HomeFragment : Fragment() {
             mainRecyclerViewShopsHomeProgress.visibility = View.GONE
             tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab?) {
-                    if(tab!!.text=="All"){
+                    if(tab!!.text=="সব"){
                         arrayList.clear()
                         arrayList.addAll(mainArrayListWithData)
                         recyclerAdapterMainShops.notifyDataSetChanged()
@@ -470,7 +473,7 @@ class HomeFragment : Fragment() {
                 }
 
                 override fun onTabReselected(tab: TabLayout.Tab?) {
-                    if(tab!!.text=="All"){
+                    if(tab!!.text=="সব"){
                         arrayList.clear()
                         arrayList.addAll(mainArrayListWithData)
                         recyclerAdapterMainShops.notifyDataSetChanged()

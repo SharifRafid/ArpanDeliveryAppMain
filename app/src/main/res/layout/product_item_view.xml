@@ -20,12 +20,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="2dp"
+        android:gravity="center"
         android:background="@color/shop_card_bg_color"
         android:orientation="horizontal">
         <LinearLayout
             android:id="@+id/linearLayout2"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
             android:padding="2dp"
@@ -40,7 +41,7 @@
                 android:gravity="left"
                 android:text="রেড লিকার প্রিমিয়াম ক্লোন টি(ব্ল্যাক টি) ২০০ গ্রাম"
                 android:textColor="@color/shop_card_text_color_1"
-                android:textSize="14sp"
+                android:textSize="13sp"
                 android:textStyle="bold"/>
 
 

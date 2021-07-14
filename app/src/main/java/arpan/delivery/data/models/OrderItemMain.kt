@@ -29,4 +29,17 @@ data class OrderItemMain(
     var longtitude : String = "",
     var orderCompletedStatus : String = "",
     var daCharge : Int = 0,
+    var daDetails : DaAgent = DaAgent(),
+
+    var verifiedTimeStampMillis : Long = 0,
+    var processingTimeStampMillis : Long = 0,
+    var pickedUpTimeStampMillis : Long = 0,
+    var completedTimeStampMillis : Long = 0,
+
+    var cancelledOrderReasonFromAdmin : String = "",
+
+    var adminOrderNote : String = "",
+
+    var paymentRequested : Boolean = false,
+    var paymentCompleted : Boolean = false,
 )

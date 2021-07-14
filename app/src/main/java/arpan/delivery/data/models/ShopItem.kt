@@ -16,4 +16,7 @@ data class ShopItem (
     var shopNotice : String = "",
     var shopNoticeColor : String = "",
     var shopNoticeColorBg : String = "",
+    var status : String = "",
+
+    var shopDiscount : Boolean = false,
 )

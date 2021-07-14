@@ -1,0 +1,499 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
+    android:paddingTop="15dp"
+    android:paddingStart="15dp"
+    android:paddingEnd="15dp"
+    android:paddingBottom="85dp"
+    android:fitsSystemWindows="true"
+    android:background="@color/bg_color"
+    tools:context=".ui.home.HomeActivity">
+    <LinearLayout
+        android:id="@+id/orderHistoryProgressBarContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:visibility="gone"
+        android:gravity="center">
+        <ProgressBar
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:indeterminateTint="@color/blue_normal"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/noDataFoundLinearLayoutContainer"
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:visibility="gone"
+        android:layout_height="match_parent"
+        android:gravity="center">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="150dp"
+            android:adjustViewBounds="true"
+            android:src="@drawable/ic_error_icon" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
+            android:fontFamily="@font/hind_siliguri_font"
+            android:gravity="center"
+            android:padding="10dp"
+            android:text="@string/order_not_found"
+            android:textColor="@color/text_color_edit_custom"
+            android:textColorHint="#6E8697"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:visibility="visible" />
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/mainOrderDetailsDataContainerLinearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="visible"
+        android:gravity="center"
+        android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:background="@drawable/order_background_stroked"
+            android:orientation="horizontal">
+            <TextView
+                android:id="@+id/orderIdTextView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/hind_siliguri_font"
+                android:gravity="start"
+                android:paddingStart="15dp"
+                android:text="Order# ARP1001"
+                android:textColor="@color/grey_normal"
+                android:textColorHint="#6E8697"
+                android:textSize="14sp"
+                android:textStyle="bold"/>
+            <androidx.cardview.widget.CardView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="0dp">
+                <TextView
+                    android:id="@+id/orderStatusTopButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/hind_siliguri_font"
+                    android:gravity="start"
+                    android:paddingStart="15dp"
+                    android:paddingEnd="15dp"
+                    android:paddingTop="6dp"
+                    android:paddingBottom="4dp"
+                    android:background="@drawable/order_background_filled"
+                    android:text="PROCESSING"
+                    android:textColor="@color/white"
+                    android:textColorHint="#6E8697"
+                    android:textSize="14sp"
+                    android:textStyle="bold"/>
+            </androidx.cardview.widget.CardView>
+
+        </LinearLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="1dp"
+            android:layout_marginEnd="8dp"
+            android:enabled="false"
+            android:hint="নাম">
+
+            <EditText
+                android:id="@+id/userNameEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:enabled="false"
+                android:backgroundTint="#fff"
+                android:ems="10"
+                android:fontFamily="@font/hind_siliguri_font"
+                android:inputType="textPersonName"
+                android:padding="2dp"
+                android:textColor="#000"
+                android:textSize="12sp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="1dp"
+            android:enabled="false"
+            android:layout_marginEnd="8dp"
+            android:hint="মোবাইল">
+
+            <EditText
+                android:id="@+id/userMobileEdittext"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:enabled="false"
+                android:backgroundTint="#fff"
+                android:ems="10"
+                android:fontFamily="@font/hind_siliguri_font"
+                android:inputType="phone"
+                android:padding="2dp"
+                android:textColor="#000"
+                android:textSize="12sp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:enabled="false"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:id="@+id/userAddressEdittextContainerLayout"
+            android:layout_marginTop="1dp"
+            android:visibility="gone"
+            android:layout_marginEnd="8dp"
+            android:hint="ঠিকানা">
+
+            <EditText
+                android:id="@+id/userAddressEdittext"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:enabled="false"
+                android:backgroundTint="#fff"
+                android:ems="10"
+                android:fontFamily="@font/hind_siliguri_font"
+                android:inputType="textPersonName"
+                android:padding="2dp"
+                android:textColor="#000"
+                android:textSize="12sp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:enabled="false"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="1dp"
+            android:layout_marginEnd="8dp"
+            android:hint="লোকেশন">
+
+            <EditText
+                android:id="@+id/userLocationEdittext"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="#fff"
+                android:ems="10"
+                android:fontFamily="@font/hind_siliguri_font"
+                android:inputType="textPersonName"
+                android:enabled="false"
+                android:padding="2dp"
+                android:textColor="#000"
+                android:textSize="12sp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.baoyachi.stepview.HorizontalStepView
+            android:id="@+id/step_view_order_progress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/order_history_item_bg_main"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:orientation="vertical"
+                android:layout_height="wrap_content"
+                android:gravity="center">
+                <TextView
+                    android:id="@+id/orderProductsDetailTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/hind_siliguri_font"
+                    android:gravity="center"
+                    android:background="@drawable/cart_item_top_text"
+                    android:text="অর্ডার ডিটেইলস"
+                    android:textColor="@color/divider_text_color_1"
+                    android:textSize="14sp"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    android:paddingTop="4dp"
+                    android:paddingBottom="4dp"
+                    android:textStyle="bold"/>
+
+                <ImageView
+                    android:id="@+id/orderImagePicture"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:visibility="gone"
+                    android:layout_marginTop="5dp"
+                    android:src="@drawable/loading_image_glide"/>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="1dp"
+                    android:id="@+id/orderTitleEdittextContainerLayout"
+                    android:layout_marginEnd="8dp"
+                    android:enabled="false"
+                    android:hint="টাইটেল">
+
+                    <EditText
+                        android:id="@+id/orderTitleEdittext"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:enabled="false"
+                        android:backgroundTint="#fff"
+                        android:ems="10"
+                        android:fontFamily="@font/hind_siliguri_font"
+                        android:inputType="textMultiLine"
+                        android:padding="2dp"
+                        android:textColor="#000"
+                        android:textSize="12sp" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="1dp"
+                    android:layout_marginEnd="8dp"
+                    android:id="@+id/orderNoteEdittextContainerLayout"
+                    android:enabled="false"
+                    android:hint="নোট">
+
+                    <EditText
+                        android:id="@+id/orderNoteEdittext"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:enabled="false"
+                        android:backgroundTint="#fff"
+                        android:ems="10"
+                        android:fontFamily="@font/hind_siliguri_font"
+                        android:inputType="textMultiLine"
+                        android:padding="2dp"
+                        android:textColor="#000"
+                        android:textSize="12sp" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="1dp"
+                    android:layout_marginEnd="8dp"
+                    android:enabled="false"
+                    android:layout_marginBottom="8dp"
+                    android:id="@+id/orderDetailsEdittextContainerLayout"
+                    android:hint="ডিটেইলস">
+
+                    <EditText
+                        android:id="@+id/orderDetailsEdittext"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="top"
+                        android:enabled="false"
+                        android:backgroundTint="#fff"
+                        android:ems="10"
+                        android:fontFamily="@font/hind_siliguri_font"
+                        android:inputType="textMultiLine"
+                        android:padding="2dp"
+                        android:textColor="#000"
+                        android:textSize="12sp" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/orderItemsMainRecyclerView"
+                    android:visibility="gone"
+                    android:layout_width="match_parent"
+                    android:padding="5dp"
+                    android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="false"/>
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
+
+        <LinearLayout
+            android:id="@+id/linearLayoutCancelReasonContainer"
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:layout_height="wrap_content"
+            android:background="@drawable/order_history_item_bg_main"
+            android:gravity="center"
+            android:visibility="gone"
+            android:layout_marginTop="5dp">
+            <TextView
+                android:id="@+id/orderCancellationReason"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/hind_siliguri_font"
+                android:gravity="center"
+                android:background="@drawable/cart_item_top_text"
+                android:backgroundTint="@color/red_normal"
+                android:text="অর্ডার ক্যান্সেল হওয়ার কারণ"
+                android:textColor="@color/divider_text_color_1"
+                android:textSize="14sp"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/orderCancellationReasonDetails"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/hind_siliguri_font"
+                android:gravity="center"
+                android:text="আপনার অর্ডারটি আপনি নিজেই ক্যান্সেল করে দিয়েছেন। ধন্যবাদ।"
+                android:textColor="@color/grey_normal"
+                android:textSize="14sp"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp"
+                android:textStyle="bold"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/orderPaymentCompleteOptionContainer"
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:layout_height="wrap_content"
+            android:background="@drawable/order_history_item_bg_main"
+            android:gravity="center"
+            android:visibility="gone"
+            android:layout_marginTop="5dp">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/hind_siliguri_font"
+                android:gravity="center"
+                android:background="@drawable/cart_item_top_text"
+                android:backgroundTint="@color/green_normal"
+                android:text="পেমেন্ট সম্পন্ন করুন"
+                android:textColor="@color/divider_text_color_1"
+                android:textSize="14sp"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/daPaymentTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:drawableEnd="@drawable/ic_baseline_content_copy_24"
+                android:drawablePadding="8dp"
+                android:gravity="center"
+                style="@style/Widget.AppCompat.ActionButton"
+                android:drawableTint="@color/grey_normal"
+                android:text="বিকাশ নম্বরঃ ০১২৩১২৩১২৩" />
+
+            <TextView
+                android:id="@+id/paymentAmountText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="পেমেন্ট এমাউন্টঃ ১০০ টাকা"
+                android:padding="5dp"
+                android:drawablePadding="8dp"
+                android:drawableTint="@color/grey_normal"/>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/appliedPromoCodeButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:fontFamily="@font/hind_siliguri_font"
+            android:gravity="center"
+            android:paddingStart="15dp"
+            android:visibility="gone"
+            android:paddingEnd="15dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:backgroundTint="@color/grey_normal"
+            android:background="@drawable/price_background_filled"
+            android:text="প্রোমো অ্যাড করা হয়েছেঃ MYARPAN"
+            android:textColor="@color/white"
+            android:textColorHint="#6E8697"
+            android:textSize="14sp"
+            android:textStyle="bold"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/price_background_filled">
+            <TextView
+                android:id="@+id/totalPriceTextViewMain"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/hind_siliguri_font"
+                android:gravity="start"
+                android:text="Total : 500+30 = 530৳"
+                android:textColor="@color/white"
+                android:textColorHint="#6E8697"
+                android:textSize="15sp"
+                android:paddingStart="15dp"
+                android:paddingEnd="15dp"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
+                android:textStyle="bold"/>
+            <TextView
+                android:id="@+id/pricePaymentStatusMain"
+                android:layout_width="100dp"
+                android:layout_height="match_parent"
+                android:fontFamily="@font/hind_siliguri_font"
+                android:gravity="center"
+                android:paddingStart="15dp"
+                android:paddingEnd="15dp"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
+                android:background="@drawable/payment_mode_bg_rounded"
+                android:text="bKash"
+                android:textColor="@color/white"
+                android:textColorHint="#6E8697"
+                android:textSize="14sp"
+                android:textStyle="bold"/>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/cancelOrderButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:fontFamily="@font/hind_siliguri_font"
+            android:gravity="center"
+            android:paddingStart="15dp"
+            android:paddingEnd="15dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:backgroundTint="@color/red_normal"
+            android:background="@drawable/payment_mode_bg_rounded"
+            android:text="ক্যান্সেল করুন"
+            android:textColor="@color/white"
+            android:textColorHint="#6E8697"
+            android:textSize="14sp"
+            android:textStyle="bold"/>
+    </LinearLayout>
+</LinearLayout>

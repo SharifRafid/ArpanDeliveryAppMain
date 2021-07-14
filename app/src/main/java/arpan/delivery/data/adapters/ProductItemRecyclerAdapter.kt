@@ -120,7 +120,7 @@ class ProductItemRecyclerAdapter(
                                     product_item_name = productItems[position].name,
                                     product_item_shop_key= productItems[position].shopKey,
                                     product_item_category_tag = productItems[position].shopCategoryKey,
-                                product_arpan_profit =  productItems[position].arpanCharge,
+                                    product_arpan_profit =  productItems[position].arpanCharge,
                                     product_item_price = productItems[position].offerPrice.toInt()+productItems[position].arpanCharge,
                                     product_item_image = productItems[position].image1,
                                     product_item_desc = productItems[position].shortDescription,
