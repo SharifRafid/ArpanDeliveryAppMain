@@ -19,4 +19,8 @@ data class ShopItem (
     var status : String = "",
 
     var shopDiscount : Boolean = false,
+    var shopCategoryDiscount : Boolean = false,
+    var shopCategoryDiscountName : String = "",
+    var shopDiscountPercentage : Float = 0f,
+    var shopDiscountMinimumPrice : Float = 0f,
 )

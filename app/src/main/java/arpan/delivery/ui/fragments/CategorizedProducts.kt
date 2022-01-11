@@ -1,16 +1,10 @@
 package arpan.delivery.ui.fragments
 
-import android.R.attr.radius
 import android.app.Activity
-import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.OnTouchListener
 import android.view.ViewGroup
-import android.widget.LinearLayout
-import android.widget.PopupWindow
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -25,7 +19,6 @@ import com.google.firebase.firestore.Query
 import kotlinx.android.synthetic.main.fragment_categorized_products.view.*
 import kotlinx.android.synthetic.main.fragment_categorized_shops.view.mainRecyclerView
 import kotlinx.android.synthetic.main.fragment_categorized_shops.view.shopsProgress
-import kotlinx.android.synthetic.main.pop_up_to_take_to_cart.view.*
 
 
 private const val ARG_PARAM1 = "param1"
@@ -41,11 +34,22 @@ class CategorizedProducts : Fragment() {
     private lateinit var adapter : ProductItemRecyclerAdapter
     private var loadingNewData = false
 
+    private var shopDiscount : Boolean = false
+    private var shopCategoryDiscount : Boolean = false
+    private var shopCategoryDiscountName : String = ""
+    private var shopDiscountPercentage : Float = 0f
+    private var shopDiscountMinimumPrice : Float = 0f
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
             filter_cat_word = it.getString(ARG_PARAM1)
             shop_key = it.getString(ARG_PARAM2)
+            shopDiscount = it.getBoolean("shopDiscount")
+            shopCategoryDiscount = it.getBoolean("shopCategoryDiscount")
+            shopCategoryDiscountName = it.getString("shopCategoryDiscountName").toString()
+            shopDiscountPercentage = it.getFloat("shopDiscountPercentage")
+            shopDiscountMinimumPrice = it.getFloat("shopDiscountMinimumPrice")
         }
     }
 
@@ -62,7 +66,9 @@ class CategorizedProducts : Fragment() {
         adapter = ProductItemRecyclerAdapter(this, view.context,
             view.context as Activity,
             productsMainArrayList,shop_key.toString(),filter_cat_word.toString(),shop_key.toString()
-            , (activity as HomeActivity).cartViewModel)
+            , (activity as HomeActivity).cartViewModel,
+            shopDiscount, shopCategoryDiscount, shopCategoryDiscountName,
+            shopDiscountPercentage, shopDiscountMinimumPrice)
         view.mainRecyclerView.adapter = adapter
 
         firebaseQuery = FirebaseFirestore.getInstance().collection(Constants.FC_SHOPS_MAIN)
@@ -181,11 +187,24 @@ class CategorizedProducts : Fragment() {
     }
 
     companion object {
-        fun newInstance(filter_cat_word: String, param2: String) =
+        fun newInstance(
+            filter_cat_word: String,
+            param2: String,
+            shopDiscount: Boolean,
+            shopCategoryDiscount: Boolean,
+            shopCategoryDiscountName: String,
+            shopDiscountPercentage: Float,
+            shopDiscountMinimumPrice: Float
+        ) =
                 CategorizedProducts().apply {
                     arguments = Bundle().apply {
                         putString(ARG_PARAM1, filter_cat_word)
                         putString(ARG_PARAM2, param2)
+                        putBoolean("shopDiscount", shopDiscount)
+                        putBoolean("shopCategoryDiscount", shopCategoryDiscount)
+                        putString("shopCategoryDiscountName", shopCategoryDiscountName)
+                        putFloat("shopDiscountPercentage", shopDiscountPercentage)
+                        putFloat("shopDiscountMinimumPrice", shopDiscountMinimumPrice)
                     }
                 }
     }

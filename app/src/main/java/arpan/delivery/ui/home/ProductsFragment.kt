@@ -47,6 +47,12 @@ class ProductsFragment : Fragment() {
     private var shopNoticeColor : String? = null
     private var shopNoticeColorBg : String? = null
 
+    private var shopDiscount : Boolean = false
+    private var shopCategoryDiscount : Boolean = false
+    private var shopCategoryDiscountName : String = ""
+    private var shopDiscountPercentage : Float = 0f
+    private var shopDiscountMinimumPrice : Float = 0f
+
     private lateinit var firebaseFirestore : FirebaseFirestore
     private lateinit var tabLayout : TabLayout
     private lateinit var viewPagerMainProducts : ViewPager2
@@ -65,6 +71,12 @@ class ProductsFragment : Fragment() {
             shopNotice = it.getString("shopNotice")
             shopNoticeColor = it.getString("shopNoticeColor")
             shopNoticeColorBg = it.getString("shopNoticeColorBg")
+
+            shopDiscount = it.getBoolean("shopDiscount")
+            shopCategoryDiscount = it.getBoolean("shopCategoryDiscount")
+            shopCategoryDiscountName = it.getString("shopCategoryDiscountName").toString()
+            shopDiscountPercentage = it.getFloat("shopDiscountPercentage")
+            shopDiscountMinimumPrice = it.getFloat("shopDiscountMinimumPrice")
         }
     }
 
@@ -129,7 +141,7 @@ class ProductsFragment : Fragment() {
                 .document(Constants.FD_PRODUCTS_MAIN_CATEGORY)
                 .collection(Constants.FD_PRODUCTS_MAIN_CATEGORY)
                 .document(shop_key.toString())
-                .addSnapshotListener { value, error ->
+                .addSnapshotListener{ value, error ->
                     error?.printStackTrace()
                     dismissDialogProgress(context)
                     if(value!!.data!=null){
@@ -148,7 +160,8 @@ class ProductsFragment : Fragment() {
                         Collections.sort(categoryItemsArray, kotlin.Comparator { o1, o2 ->
                             (o1.order).compareTo(o2.order) })
                         viewPagerMainProducts.adapter = ViewPagerAdapterProducts(context as HomeActivity,
-                            categoryItemsArray, shop_key.toString())
+                            categoryItemsArray, shop_key.toString(), shopDiscount, shopCategoryDiscount,
+                            shopCategoryDiscountName, shopDiscountPercentage, shopDiscountMinimumPrice)
                         TabLayoutMediator(tabLayout, viewPagerMainProducts
                         ) { tab, position ->
                             tab.text = categoryItemsArray[position].name

@@ -47,7 +47,6 @@ import kotlin.math.roundToInt
 
 
 class OrderFragmentNew : Fragment() {
-
     private lateinit var firebaseFirestore: FirebaseFirestore
     private lateinit var firebaseDatabase: FirebaseDatabase
     private lateinit var firebaseAuth : FirebaseAuth
@@ -73,10 +72,11 @@ class OrderFragmentNew : Fragment() {
     private var locationStatus = 0
     private var lat = ""
     private var lang = ""
+
+    // DO NOT CHANGE BECAUSE IT HAS REALTIME CALCULATIONS CONNECTED TO IT
     private val BKASH_CHARGE_PERCENTAGE = 0.0185f
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_order_new, container, false)
     }
 
@@ -161,25 +161,25 @@ class OrderFragmentNew : Fragment() {
                     }
                     Log.e("PRICE1",orderItemMain.totalPrice.toString())
                 }
-                promoCode.bothDiscount -> {
-                    if(priceTotal+deliveryCharge<promoCode.discountPrice){
-                        orderItemMain.totalPrice = 0
-                        orderItemMain.deliveryCharge = 0
-                    }else{
-                        if(promoCode.discountPrice>priceTotal){
-                            orderItemMain.totalPrice = 0
-                            if(promoCode.discountPrice-priceTotal>deliveryCharge){
-                                orderItemMain.deliveryCharge = 0
-                            }else{
-                                orderItemMain.deliveryCharge -= promoCode.discountPrice
-                            }
-                        }else{
-                            orderItemMain.totalPrice -= promoCode.discountPrice
-                        }
-                    }
-                    Log.e("PRICE2",orderItemMain.totalPrice.toString())
-                    Log.e("PRICE2",orderItemMain.deliveryCharge.toString())
-                }
+//                promoCode.bothDiscount -> {
+//                    if(priceTotal+deliveryCharge<promoCode.discountPrice){
+//                        orderItemMain.totalPrice = 0
+//                        orderItemMain.deliveryCharge = 0
+//                    }else{
+//                        if(promoCode.discountPrice>priceTotal){
+//                            orderItemMain.totalPrice = 0
+//                            if(promoCode.discountPrice-priceTotal>deliveryCharge){
+//                                orderItemMain.deliveryCharge = 0
+//                            }else{
+//                                orderItemMain.deliveryCharge -= promoCode.discountPrice
+//                            }
+//                        }else{
+//                            orderItemMain.totalPrice -= promoCode.discountPrice
+//                        }
+//                    }
+//                    Log.e("PRICE2",orderItemMain.totalPrice.toString())
+//                    Log.e("PRICE2",orderItemMain.deliveryCharge.toString())
+//                }
                 promoCode.deliveryDiscount -> {
                     if(deliveryCharge<promoCode.discountPrice){
                         orderItemMain.deliveryCharge = 0
@@ -227,11 +227,46 @@ class OrderFragmentNew : Fragment() {
                         if(promoCodeActive){
                             FirebaseDatabase.getInstance().reference
                                     .child("PROMO_CODES")
-                                    .child(promoCode.key)
-                                    .child("remainingUses")
-                                    .setValue(promoCode.remainingUses-1)
-                        }
-                        FirebaseFirestore.getInstance().collection("users")
+                                    .child(promoCode.key).get().addOnCompleteListener { it2 ->
+                                    if(it2.isSuccessful){
+                                            val newPromoCode = it2.result.getValue(PromoCode::class.java)!!
+                                            newPromoCode.remainingUses -= 1
+                                            if(newPromoCode.onceForOneUser){
+                                                newPromoCode.userIds += (","+firebaseAuth.currentUser!!.uid+",")
+                                            }
+                                            FirebaseDatabase.getInstance().reference
+                                                .child("PROMO_CODES")
+                                                .child(promoCode.key)
+                                                .setValue(newPromoCode)
+                                        }
+                                    FirebaseFirestore.getInstance().collection("users")
+                                        .document(FirebaseAuth.getInstance().currentUser!!.uid)
+                                        .collection("users_order_collection")
+                                        .add(orderItemMain)
+                                        .addOnCompleteListener {
+                                            if(it.isSuccessful){
+                                                view.context.showToast(getString(R.string.order_placed_successfully), FancyToast.SUCCESS)
+                                                cartViewModel.deleteAll()
+                                                val bundle = Bundle()
+                                                bundle.putString("orderID",it.result.id)
+                                                (view.context as HomeActivity).navController.navigate(R.id.action_homeFragment_self, bundle)
+                                                (view.context as HomeActivity).navController.navigate(R.id.orderHistoryFragment, bundle)
+                                                sendNotification(
+                                                    FirebaseAuth.getInstance().currentUser!!.uid,
+                                                    "নতুন অর্ডার ${orderItemMain.orderId}",
+                                                    "আপনি একটি নতুন অর্ডার পেয়েছেন দ্রুত অর্ডার টি কনফার্ম করুন। ধন্যবাদ ।",
+                                                    it.result!!.id
+                                                )
+                                                dialog.dismiss()
+                                            }else{
+                                                dialog.dismiss()
+                                                it.exception!!.printStackTrace()
+                                                view.context.showToast(getString(R.string.failed_order), FancyToast.ERROR)
+                                            }
+                                        }
+                                }
+                        }else{
+                            FirebaseFirestore.getInstance().collection("users")
                                 .document(FirebaseAuth.getInstance().currentUser!!.uid)
                                 .collection("users_order_collection")
                                 .add(orderItemMain)
@@ -239,7 +274,10 @@ class OrderFragmentNew : Fragment() {
                                     if(it.isSuccessful){
                                         view.context.showToast(getString(R.string.order_placed_successfully), FancyToast.SUCCESS)
                                         cartViewModel.deleteAll()
-                                        (view.context as HomeActivity).navController.navigate(R.id.action_orderFragment_to_homeFragment)
+                                        val bundle = Bundle()
+                                        bundle.putString("orderID",it.result.id)
+                                        (view.context as HomeActivity).navController.navigate(R.id.action_homeFragment_self, bundle)
+                                        (view.context as HomeActivity).navController.navigate(R.id.orderHistoryFragment, bundle)
                                         sendNotification(
                                             FirebaseAuth.getInstance().currentUser!!.uid,
                                             "নতুন অর্ডার ${orderItemMain.orderId}",
@@ -253,6 +291,7 @@ class OrderFragmentNew : Fragment() {
                                         view.context.showToast(getString(R.string.failed_order), FancyToast.ERROR)
                                     }
                                 }
+                        }
                     }else{
                         dialog.dismiss()
                         task.exception!!.printStackTrace()
@@ -457,6 +496,8 @@ class OrderFragmentNew : Fragment() {
     }
 
     private fun roundNumberPriceTotal(d: Float): Int {
+        //This  is a special round function exclusively for this  page of the app
+        //not usable for general parts and other parts of   the code or apps
         return if(d > d.toInt()){
             d.toInt()+1
         }else{
@@ -603,30 +644,63 @@ class OrderFragmentNew : Fragment() {
                                         promoCodesArray.filter { promoCode2 ->
                                             if(promoCode2.promoCodeName.equals(view.edt_coupon_code.text.toString(), ignoreCase = true)){
                                                 if(promoCode2.active){
-                                                    if(promoCode2.remainingUses!=0){
-                                                        if(promoCode2.validityOfCode>System.currentTimeMillis()){
-                                                            if(promoCode2.minimumPrice <= priceTotal){
-                                                                if(promoCode2.shopBased){
-                                                                    if(mainShopItemHashMap.size == 1 && mainShopItemHashMap[0].key == promoCode2.shopKey){
-                                                                        true
+                                                    if(promoCode2.onceForOneUser){
+                                                        if(!promoCode2.userIds.contains(firebaseAuth.currentUser!!.uid)){
+                                                            if(promoCode2.remainingUses!=0){
+                                                                if(promoCode2.validityOfCode > System.currentTimeMillis()){
+                                                                    if(promoCode2.minimumPrice <= priceTotal){
+                                                                        if(promoCode2.shopBased){
+                                                                            if(mainShopItemHashMap.size == 1 && mainShopItemHashMap[0].key == promoCode2.shopKey){
+                                                                                true
+                                                                            }else{
+                                                                                errorMessage = "এই প্রমো কোডটি শুধু মাত্র ${promoCode2.shopName} শপের অর্ডারের ক্ষেত্রে প্রযোয্য"
+                                                                                false
+                                                                            }
+                                                                        }else{
+                                                                            true
+                                                                        }
                                                                     }else{
-                                                                        errorMessage = "এই প্রমো কোডটি শুধু মাত্র ${promoCode2.shopName} শপের অর্ডারের ক্ষেত্রে প্রযোয্য"
+                                                                        errorMessage = "এই প্রমো কোডের জন্য সর্বনিম্ন ${promoCode2.minimumPrice} টাকার অর্ডার করতে হবে। "
                                                                         false
                                                                     }
                                                                 }else{
-                                                                    true
+                                                                    errorMessage = getString(R.string.time_of_promo_code)
+                                                                    false
                                                                 }
                                                             }else{
-                                                                errorMessage = "এই প্রমো কোডের জন্য সর্বনিম্ন ${promoCode2.minimumPrice} টাকার অর্ডার করতে হবে। "
+                                                                errorMessage = getString(R.string.already_used_max)
                                                                 false
                                                             }
                                                         }else{
-                                                            errorMessage = getString(R.string.time_of_promo_code)
+                                                            errorMessage = "এই প্রমো কোডটি এক জন ইউজার একবার ই মাত্র ব্যবহার করতে পারবে। "
                                                             false
                                                         }
                                                     }else{
-                                                        errorMessage = getString(R.string.already_used_max)
-                                                        false
+                                                        if(promoCode2.remainingUses!=0){
+                                                            if(promoCode2.validityOfCode>System.currentTimeMillis()){
+                                                                if(promoCode2.minimumPrice <= priceTotal){
+                                                                    if(promoCode2.shopBased){
+                                                                        if(mainShopItemHashMap.size == 1 && mainShopItemHashMap[0].key == promoCode2.shopKey){
+                                                                            true
+                                                                        }else{
+                                                                            errorMessage = "এই প্রমো কোডটি শুধু মাত্র ${promoCode2.shopName} শপের অর্ডারের ক্ষেত্রে প্রযোয্য"
+                                                                            false
+                                                                        }
+                                                                    }else{
+                                                                        true
+                                                                    }
+                                                                }else{
+                                                                    errorMessage = "এই প্রমো কোডের জন্য সর্বনিম্ন ${promoCode2.minimumPrice} টাকার অর্ডার করতে হবে। "
+                                                                    false
+                                                                }
+                                                            }else{
+                                                                errorMessage = getString(R.string.time_of_promo_code)
+                                                                false
+                                                            }
+                                                        }else{
+                                                            errorMessage = getString(R.string.already_used_max)
+                                                            false
+                                                        }
                                                     }
                                                 }else{
                                                     errorMessage = getString(R.string.not_active_try_another)
@@ -685,12 +759,7 @@ class OrderFragmentNew : Fragment() {
             OrderProductItemRecyclerAdapter(view.context, mainShopItemHashMap)
     }
 
-    fun sendNotification(
-        userId: String,
-        apititle: String,
-        apibody: String,
-        orderID: String
-    ) {
+    fun sendNotification(userId: String, apititle: String, apibody: String, orderID: String) {
         val mediaType: MediaType =
             MediaType.parse("application/json; charset=utf-8")
         val data: MutableMap<String, String> =

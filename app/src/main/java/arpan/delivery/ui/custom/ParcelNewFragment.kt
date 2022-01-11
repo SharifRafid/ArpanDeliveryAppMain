@@ -310,28 +310,78 @@ class ParcelNewFragment : Fragment() {
                         FirebaseDatabase.getInstance().reference.child("orderNumberNew")
                             .child("ON").setValue((task.result!!.value.toString().toInt()+1).toString())
                     }
-                    FirebaseFirestore.getInstance().collection("users")
-                        .document(FirebaseAuth.getInstance().currentUser!!.uid)
-                        .collection("users_order_collection")
-                        .add(orderItemMain)
-                        .addOnCompleteListener {
-                            if(it.isSuccessful){
-                                view.context.showToast(getString(R.string.order_placed_successfully), FancyToast.SUCCESS)
-                                sendNotification(
-                                    FirebaseAuth.getInstance().currentUser!!.uid,
-                                    "নতুন অর্ডার ${orderItemMain.orderId}",
-                                    "আপনি একটি নতুন অর্ডার পেয়েছেন দ্রুত অর্ডার টি কনফার্ম করুন। ধন্যবাদ ।",
-                                    it.result!!.id
-                                )
-                                dialog.dismiss()
-                                sharedPreferences.edit().clear().apply()
-                                (view.context as HomeActivity).onBackPressed()
-                            }else{
-                                dialog.dismiss()
-                                it.exception!!.printStackTrace()
-                                view.context.showToast(getString(R.string.failed_order), FancyToast.ERROR)
+                    if(promoCodeActive){
+                        FirebaseDatabase.getInstance().reference
+                            .child("PROMO_CODES")
+                            .child(promoCode.key).get().addOnCompleteListener { it2 ->
+                                if(it2.isSuccessful){
+                                    val newPromoCode = it2.result.getValue(PromoCode::class.java)!!
+                                    newPromoCode.remainingUses -= 1
+                                    if(newPromoCode.onceForOneUser){
+                                        newPromoCode.userIds += (","+FirebaseAuth.getInstance().currentUser!!.uid+",")
+                                    }
+                                    FirebaseDatabase.getInstance().reference
+                                        .child("PROMO_CODES")
+                                        .child(promoCode.key)
+                                        .setValue(newPromoCode)
+                                }
+                                // HERE SAME
+                                FirebaseFirestore.getInstance().collection("users")
+                                    .document(FirebaseAuth.getInstance().currentUser!!.uid)
+                                    .collection("users_order_collection")
+                                    .add(orderItemMain)
+                                    .addOnCompleteListener {
+                                        if(it.isSuccessful){
+                                            view.context.showToast(getString(R.string.order_placed_successfully), FancyToast.SUCCESS)
+                                            sendNotification(
+                                                FirebaseAuth.getInstance().currentUser!!.uid,
+                                                "নতুন অর্ডার ${orderItemMain.orderId}",
+                                                "আপনি একটি নতুন অর্ডার পেয়েছেন দ্রুত অর্ডার টি কনফার্ম করুন। ধন্যবাদ ।",
+                                                it.result!!.id
+                                            )
+                                            dialog.dismiss()
+                                            sharedPreferences.edit().clear().apply()
+                                            val bundle = Bundle()
+                                            bundle.putString("orderID",it.result.id)
+                                            (view.context as HomeActivity).navController.navigate(R.id.action_homeFragment_self, bundle)
+                                            (view.context as HomeActivity).navController.navigate(R.id.orderHistoryFragment, bundle)
+                                        }else{
+                                            dialog.dismiss()
+                                            it.exception!!.printStackTrace()
+                                            view.context.showToast(getString(R.string.failed_order), FancyToast.ERROR)
+                                        }
+                                    }
                             }
-                        }
+                    }else{
+                        // HERE SAME
+                        FirebaseFirestore.getInstance().collection("users")
+                            .document(FirebaseAuth.getInstance().currentUser!!.uid)
+                            .collection("users_order_collection")
+                            .add(orderItemMain)
+                            .addOnCompleteListener {
+                                if(it.isSuccessful){
+                                    view.context.showToast(getString(R.string.order_placed_successfully), FancyToast.SUCCESS)
+                                    sendNotification(
+                                        FirebaseAuth.getInstance().currentUser!!.uid,
+                                        "নতুন অর্ডার ${orderItemMain.orderId}",
+                                        "আপনি একটি নতুন অর্ডার পেয়েছেন দ্রুত অর্ডার টি কনফার্ম করুন। ধন্যবাদ ।",
+                                        it.result!!.id
+                                    )
+                                    dialog.dismiss()
+                                    sharedPreferences.edit().clear().apply()
+                                    val bundle = Bundle()
+                                    bundle.putString("orderID",it.result.id)
+                                    (view.context as HomeActivity).navController.navigate(R.id.action_homeFragment_self, bundle)
+                                    (view.context as HomeActivity).navController.navigate(R.id.orderHistoryFragment, bundle)
+                                }else{
+                                    dialog.dismiss()
+                                    it.exception!!.printStackTrace()
+                                    view.context.showToast(getString(R.string.failed_order), FancyToast.ERROR)
+                                }
+                            }
+                    }
+
+
                 }else{
                     dialog.dismiss()
                     task.exception!!.printStackTrace()
@@ -382,7 +432,16 @@ class ParcelNewFragment : Fragment() {
                                             if(promoCode2.remainingUses!=0){
                                                 if(promoCode2.validityOfCode>System.currentTimeMillis()){
                                                     if(promoCode2.deliveryDiscount && !promoCode2.shopBased){
-                                                        true
+                                                        if(promoCode2.onceForOneUser){
+                                                            if(!promoCode2.userIds.contains(FirebaseAuth.getInstance().currentUser!!.uid)){
+                                                                true
+                                                            }else{
+                                                                errorMessage = "এই প্রমো কোডটি এক জন ইউজার একবার ই মাত্র ব্যবহার করতে পারবে। "
+                                                                false
+                                                            }
+                                                        }else{
+                                                            true
+                                                        }
                                                     }else{
                                                         errorMessage = "এই প্রমো কোডটি এই অর্ডারের ক্ষেত্রে প্রযোজ্য নয়। "
                                                         false

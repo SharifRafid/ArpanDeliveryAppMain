@@ -20,4 +20,9 @@ data class PromoCode(
     var deliveryDiscount : Boolean = false,
 
     var bothDiscount : Boolean = false,
+
+    var onceForOneUser : Boolean = false,
+    var userIds : String = "",
+
+
 )

@@ -207,6 +207,9 @@ class HomeFragment : Fragment() {
                             val sliderAdapter = SliderAdapterExampleTB(context)
                             sliderAdapter.renewItems(imagesList)
                             viewpager.setSliderAdapter(sliderAdapter)
+                            if(imagesList.size>1){
+                                viewpager.startAutoCycle()
+                            }
                         }
                     } else {
                         viewpager.visibility = View.GONE
@@ -245,6 +248,9 @@ class HomeFragment : Fragment() {
                             val sliderAdapter = SliderAdapterExampleTB(context)
                             sliderAdapter.renewItems(imagesList)
                             viewpager.setSliderAdapter(sliderAdapter)
+                            if(imagesList.size>1){
+                                viewpager.startAutoCycle()
+                            }
                         }
                     }else{
                         viewpager.visibility = View.GONE
@@ -422,7 +428,7 @@ class HomeFragment : Fragment() {
                     location = document.getString(Constants.FIELD_FD_SM_LOCATION).toString(),
                     username = document.getString(Constants.FIELD_FD_SM_USERNAME).toString(),
                     password = document.getString(Constants.FIELD_FD_SM_PASSWORD).toString(),
-                    order = document.getString(Constants.FIELD_FD_SM_ORDER).toString().toInt()
+                    order = document.getString(Constants.FIELD_FD_SM_ORDER).toString().toInt(),
                 )
                 if(document.contains("shopNotice")){
                     shopItem.shopNotice = document.getString("shopNotice").toString()
@@ -433,6 +439,22 @@ class HomeFragment : Fragment() {
                 if(document.contains("shopNoticeColorBg")){
                     shopItem.shopNoticeColorBg = document.getString("shopNoticeColorBg").toString()
                 }
+                if(document.contains("shopDiscount")){
+                    shopItem.shopDiscount = document.getBoolean("shopDiscount")!!
+                }
+                if(document.contains("shopCategoryDiscount")){
+                    shopItem.shopCategoryDiscount = document.getBoolean("shopCategoryDiscount")!!
+                }
+                if(document.contains("shopCategoryDiscountName")){
+                    shopItem.shopCategoryDiscountName = document.getString("shopCategoryDiscountName")!!
+                }
+                if(document.contains("shopDiscountPercentage")){
+                    shopItem.shopDiscountPercentage = document.getString("shopDiscountPercentage").toString().toFloat()
+                }
+                if(document.contains("shopDiscountMinimumPrice")){
+                    shopItem.shopDiscountMinimumPrice = document.getString("shopDiscountMinimumPrice").toString().toFloat()
+                }
+
                 arrayList.add(shopItem)
                 mainArrayListWithData.add(shopItem)
                 (activity as HomeActivity).mainShopsArrayList.add(shopItem)

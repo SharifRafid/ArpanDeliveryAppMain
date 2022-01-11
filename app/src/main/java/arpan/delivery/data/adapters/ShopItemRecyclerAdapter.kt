@@ -76,6 +76,11 @@ class ShopItemRecyclerAdapter(
             bundle.putString("shopNotice",shopItems[position].shopNotice)
             bundle.putString("shopNoticeColor",shopItems[position].shopNoticeColor)
             bundle.putString("shopNoticeColorBg",shopItems[position].shopNoticeColorBg)
+            bundle.putBoolean("shopDiscount",shopItems[position].shopDiscount)
+            bundle.putBoolean("shopCategoryDiscount",shopItems[position].shopCategoryDiscount)
+            bundle.putString("shopCategoryDiscountName",shopItems[position].shopCategoryDiscountName)
+            bundle.putFloat("shopDiscountPercentage",shopItems[position].shopDiscountPercentage)
+            bundle.putFloat("shopDiscountMinimumPrice",shopItems[position].shopDiscountMinimumPrice)
             (context as HomeActivity).navController.navigate(R.id.productsFragment, bundle)
         }
 

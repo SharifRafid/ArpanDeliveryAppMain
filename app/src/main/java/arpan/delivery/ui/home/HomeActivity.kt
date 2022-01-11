@@ -130,8 +130,8 @@ class HomeActivity : AppCompatActivity() {
                             view.messageTextView.visibility = View.VISIBLE
                             view.messageTextView.text = "আপনি অ্যাপটি আপডেট করা ছাড়া ব্যবহার করতে পারবেন না। ধন্যবাদ।"
                             view.btnNoDialogAlertMain.setOnClickListener {
-                                finish()
                                 dialog.dismiss()
+                                finish()
                             }
                             view.btnYesDialogAlertMain.setOnClickListener {
                                 val uri: Uri = Uri.parse("market://details?id=$packageName")
@@ -1010,7 +1010,7 @@ class HomeActivity : AppCompatActivity() {
         if(intent.hasExtra("orderID")){
             val bundle = Bundle()
             bundle.putString("orderID", intent.getStringExtra("orderID").toString())
-            navController.navigate(R.id.action_homeFragment_to_orderHistoryFragment, bundle)
+            navController.navigate(R.id.orderHistoryFragment, bundle)
         }
     }
 

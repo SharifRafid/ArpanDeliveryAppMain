@@ -15,8 +15,8 @@ android {
         applicationId "arpan.delivery"
         minSdkVersion 19
         targetSdkVersion 30
-        versionCode 6
-        versionName "6.0"
+        versionCode 8
+        versionName "8.0"
         multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

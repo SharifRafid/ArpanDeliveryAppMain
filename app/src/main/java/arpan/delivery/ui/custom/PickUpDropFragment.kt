@@ -127,9 +127,9 @@ class PickUpDropFragment : Fragment() {
 
         adapter.setDropDownViewResource(R.layout.custom_spinner_item_view)
 
-        v.edt_name.setText(sharedPreferences.getString("edt_name",""))
-        v.edt_mobile.setText(sharedPreferences.getString("edt_mobile",""))
-        v.edt_address.setText(sharedPreferences.getString("edt_address",""))
+        v.edt_name.setText((v.context as HomeActivity).userNameFromProfile)
+        v.edt_mobile.setText(FirebaseAuth.getInstance().currentUser!!.phoneNumber!!.toString())
+        v.edt_address.setText((v.context as HomeActivity).userAddressFromProfile)
         v.edt_aboutParcel.setText(sharedPreferences.getString("edt_aboutParcel",""))
         v.edt_name_reciver.setText(sharedPreferences.getString("edt_name_reciver",""))
         v.edt_mobile_reciver.setText(sharedPreferences.getString("edt_mobile_reciver",""))
@@ -151,51 +151,6 @@ class PickUpDropFragment : Fragment() {
                     .start()
         }
 
-        v.edt_name.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable) {
-                sharedPreferences.edit().putString("edt_name",s.toString())
-                        .apply()
-            }
-            override fun beforeTextChanged(
-                    s: CharSequence, start: Int,
-                    count: Int, after: Int
-            ) {}
-            override fun onTextChanged(
-                    s: CharSequence, start: Int,
-                    before: Int, count: Int
-            ) {
-            }
-        })
-        v.edt_mobile.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable) {
-                sharedPreferences.edit().putString("edt_mobile",s.toString())
-                        .apply()
-            }
-            override fun beforeTextChanged(
-                    s: CharSequence, start: Int,
-                    count: Int, after: Int
-            ) {}
-            override fun onTextChanged(
-                    s: CharSequence, start: Int,
-                    before: Int, count: Int
-            ) {
-            }
-        })
-        v.edt_address.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable) {
-                sharedPreferences.edit().putString("edt_address",s.toString())
-                        .apply()
-            }
-            override fun beforeTextChanged(
-                    s: CharSequence, start: Int,
-                    count: Int, after: Int
-            ) {}
-            override fun onTextChanged(
-                    s: CharSequence, start: Int,
-                    before: Int, count: Int
-            ) {
-            }
-        })
         v.edt_aboutParcel.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable) {
                 sharedPreferences.edit().putString("edt_aboutParcel",s.toString())
@@ -395,6 +350,7 @@ class PickUpDropFragment : Fragment() {
         val key = "ORDER"+System.currentTimeMillis()
         val orderItemMain = OrderItemMain()
         orderItemMain.key = key
+        orderItemMain.userPhoneAccount = FirebaseAuth.getInstance().currentUser!!.phoneNumber!!
         orderItemMain.userId = FirebaseAuth.getInstance().currentUser!!.uid
         orderItemMain.userPhoneAccount = FirebaseAuth.getInstance().currentUser!!.phoneNumber!!
         orderItemMain.paymentMethod = if(view.radioGroup.checkedRadioButtonId == R.id.rb1){
@@ -431,20 +387,17 @@ class PickUpDropFragment : Fragment() {
 
 
     private fun placeOrderFinalUpload(view: View, orderItemMain: OrderItemMain) {
-        FirebaseDatabase.getInstance().reference.child("orderNumber")
-                .child(getDate(System.currentTimeMillis(), "dd-MM-yyyy").toString())
+        FirebaseDatabase.getInstance().reference.child("orderNumberNew")
                 .child("ON")
                 .get().addOnCompleteListener { task ->
                     if(task.isSuccessful){
                         if(task.result!!.value==null){
                             orderItemMain.orderId = "ARP1001"
-                            FirebaseDatabase.getInstance().reference.child("orderNumber")
-                                    .child(getDate(System.currentTimeMillis(), "dd-MM-yyyy").toString())
+                            FirebaseDatabase.getInstance().reference.child("orderNumberNew")
                                     .child("ON").setValue("1001")
                         }else{
                             orderItemMain.orderId = "ARP"+(task.result!!.value.toString().toInt()+1)
-                            FirebaseDatabase.getInstance().reference.child("orderNumber")
-                                    .child(getDate(System.currentTimeMillis(), "dd-MM-yyyy").toString())
+                            FirebaseDatabase.getInstance().reference.child("orderNumberNew")
                                     .child("ON").setValue((task.result!!.value.toString().toInt()+1).toString())
                         }
                         dialogViewCustomAnimation.animationView.setAnimation(R.raw.uploading_completed)
@@ -458,6 +411,10 @@ class PickUpDropFragment : Fragment() {
                                         (view.context as HomeActivity).onBackPressed()
                                         contextMain.getSharedPreferences("pick_drop_data",MODE_PRIVATE)
                                                 .edit().clear().apply()
+                                        val bundle = Bundle()
+                                        bundle.putString("orderID",it.result.id)
+                                        (view.context as HomeActivity).navController.navigate(R.id.action_homeFragment_self, bundle)
+                                        (view.context as HomeActivity).navController.navigate(R.id.orderHistoryFragment, bundle)
                                         dialog.dismiss()
                                     }else{
                                         dialog.dismiss()

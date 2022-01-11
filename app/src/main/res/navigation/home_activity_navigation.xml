@@ -158,6 +158,10 @@
             app:launchSingleTop="true"
             app:popUpTo="@+id/home_activity_navigation"
             app:popUpToInclusive="true"/>
+        <action
+            android:id="@+id/action_orderFragment_to_OrderHistoryFragment"
+            app:destination="@id/orderHistoryFragment"
+            app:popUpTo="@+id/home_activity_navigation"/>
     </fragment>
     <fragment
         android:id="@+id/orderHistoryFragment"
@@ -212,15 +216,30 @@
         android:id="@+id/customOrderNewFragment"
         android:name="arpan.delivery.ui.custom.CustomOrderNewFragment"
         android:label="fragment_custom_order_new"
-        tools:layout="@layout/fragment_custom_order_new" />
+        tools:layout="@layout/fragment_custom_order_new">
+        <action
+            android:id="@+id/action_customOrderFragment_to_OrderHistoryFragment"
+            app:destination="@id/orderHistoryFragment"
+            app:popUpTo="@+id/home_activity_navigation"/>
+    </fragment>
     <fragment
         android:id="@+id/medicineNewFragment"
         android:name="arpan.delivery.ui.custom.MedicineNewFragment"
         android:label="fragment_medicine_new"
-        tools:layout="@layout/fragment_medicine_new" />
+        tools:layout="@layout/fragment_medicine_new" >
+        <action
+            android:id="@+id/action_medicineFragment_to_OrderHistoryFragment"
+            app:destination="@id/orderHistoryFragment"
+            app:popUpTo="@+id/home_activity_navigation"/>
+    </fragment>
     <fragment
         android:id="@+id/parcelNewFragment"
         android:name="arpan.delivery.ui.custom.ParcelNewFragment"
         android:label="fragment_parcel_new"
-        tools:layout="@layout/fragment_parcel_new" />
+        tools:layout="@layout/fragment_parcel_new" >
+        <action
+            android:id="@+id/action_parcelFragment_to_OrderHistoryFragment"
+            app:destination="@id/orderHistoryFragment"
+            app:popUpTo="@+id/home_activity_navigation"/>
+    </fragment>
 </navigation>

@@ -3,12 +3,10 @@ package arpan.delivery.data.adapters
 import android.app.Activity
 import android.content.Context
 import android.graphics.Paint
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import androidx.core.view.GravityCompat
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.recyclerview.widget.RecyclerView
 import arpan.delivery.R
@@ -24,6 +22,7 @@ import com.google.firebase.storage.FirebaseStorage
 import com.lid.lib.LabelImageView
 import com.shashank.sony.fancytoastlib.FancyToast
 import kotlinx.android.synthetic.main.product_item_view.view.*
+import kotlin.math.roundToInt
 
 class ProductItemRecyclerAdapter(
     private val viewModelStoreOwner: ViewModelStoreOwner,
@@ -33,7 +32,12 @@ class ProductItemRecyclerAdapter(
     private val shopName: String,
     private val categoryKey: String,
     private val shopKey: String,
-    private val cartViewModel: CartViewModel
+    private val cartViewModel: CartViewModel,
+    private val shopDiscount: Boolean,
+    private val shopCategoryDiscount: Boolean,
+    private val shopCategoryDiscountName: String,
+    private val shopDiscountPercentage: Float,
+    private val shopDiscountMinimumPrice: Float
 ) : RecyclerView.Adapter
     <ProductItemRecyclerAdapter.RecyclerViewHolder>() {
 
@@ -71,8 +75,37 @@ class ProductItemRecyclerAdapter(
             holder.price.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
             holder.offerPrice.text = "${productItems[position].offerPrice.toInt()+productItems[position].arpanCharge}"
         }else{
-            holder.price.visibility = View.GONE
-            holder.offerPrice.text = "${productItems[position].offerPrice.toInt()+productItems[position].arpanCharge}"
+            if(shopDiscount){
+                if(shopCategoryDiscount){
+                    if(shopCategoryDiscountName==categoryKey){
+                        if(productItems[position].price.toFloat()>=shopDiscountMinimumPrice){
+                            holder.price.visibility = View.VISIBLE
+                            holder.price.text = " ${productItems[position].price.toInt()+productItems[position].arpanCharge}"
+                            holder.price.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
+                            holder.offerPrice.text = "${productItems[position].offerPrice.toInt()-roundNumberPriceTotal(productItems[position].offerPrice.toInt()*shopDiscountPercentage)+productItems[position].arpanCharge}"
+                        }else{
+                            holder.price.visibility = View.GONE
+                            holder.offerPrice.text = "${productItems[position].offerPrice.toInt()+productItems[position].arpanCharge}"
+                        }
+                    }else{
+                        holder.price.visibility = View.GONE
+                        holder.offerPrice.text = "${productItems[position].offerPrice.toInt()+productItems[position].arpanCharge}"
+                    }
+                }else{
+                    if(productItems[position].price.toFloat()>=shopDiscountMinimumPrice){
+                        holder.price.visibility = View.VISIBLE
+                        holder.price.text = " ${productItems[position].price.toInt()+productItems[position].arpanCharge}"
+                        holder.price.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
+                        holder.offerPrice.text = "${productItems[position].offerPrice.toInt()-roundNumberPriceTotal(productItems[position].offerPrice.toInt()*shopDiscountPercentage)+productItems[position].arpanCharge}"
+                    }else{
+                        holder.price.visibility = View.GONE
+                        holder.offerPrice.text = "${productItems[position].offerPrice.toInt()+productItems[position].arpanCharge}"
+                    }
+                }
+            }else{
+                holder.price.visibility = View.GONE
+                holder.offerPrice.text = "${productItems[position].offerPrice.toInt()+productItems[position].arpanCharge}"
+            }
         }
 
         holder.imageView.isLabelVisual = productItems[position].offerStatus=="active"
@@ -113,6 +146,31 @@ class ProductItemRecyclerAdapter(
             }
             if(!updateMode){
                 if((context as HomeActivity).sets.contains(productItems[position].shopKey)){
+                    val totalPrice = if(shopDiscount){
+                        if(shopCategoryDiscount){
+                            if(shopCategoryDiscountName==categoryKey){
+                                if(productItems[position].price.toFloat()>=shopDiscountMinimumPrice){
+                                    productItems[position].offerPrice.toInt()-roundNumberPriceTotal(productItems[position].offerPrice.toInt()*shopDiscountPercentage)+productItems[position].arpanCharge
+                                }else{
+                                    //Break and Do as   was
+                                    productItems[position].offerPrice.toInt()+productItems[position].arpanCharge
+                                }
+                            }else{
+                                //Break and Do as   was
+                                productItems[position].offerPrice.toInt()+productItems[position].arpanCharge
+                            }
+                        }else{
+                            if(productItems[position].price.toFloat()>=shopDiscountMinimumPrice){
+                                productItems[position].offerPrice.toInt()-roundNumberPriceTotal(productItems[position].offerPrice.toInt()*shopDiscountPercentage)+productItems[position].arpanCharge
+                            }else{
+                                //Break and Do as   was
+                                productItems[position].offerPrice.toInt()+productItems[position].arpanCharge
+                            }
+                        }
+                    }else{
+                        //Break and Do as   was
+                        productItems[position].offerPrice.toInt()+productItems[position].arpanCharge
+                    }
                     cartViewModel.insertItemToCart(context,
                             CartProductEntity(
                                     product_item = true,
@@ -121,7 +179,7 @@ class ProductItemRecyclerAdapter(
                                     product_item_shop_key= productItems[position].shopKey,
                                     product_item_category_tag = productItems[position].shopCategoryKey,
                                     product_arpan_profit =  productItems[position].arpanCharge,
-                                    product_item_price = productItems[position].offerPrice.toInt()+productItems[position].arpanCharge,
+                                    product_item_price = totalPrice,
                                     product_item_image = productItems[position].image1,
                                     product_item_desc = productItems[position].shortDescription,
                                     product_item_amount = 1
@@ -133,6 +191,31 @@ class ProductItemRecyclerAdapter(
                     }
                 }else{
                     if((context as HomeActivity).sets.size < (context as HomeActivity).homeViewModel.getMaxShops().value!!.toInt()){
+                        val totalPrice = if(shopDiscount){
+                            if(shopCategoryDiscount){
+                                if(shopCategoryDiscountName==categoryKey){
+                                    if(productItems[position].price.toFloat()>=shopDiscountMinimumPrice){
+                                        productItems[position].offerPrice.toInt()-roundNumberPriceTotal(productItems[position].offerPrice.toInt()*shopDiscountPercentage)+productItems[position].arpanCharge
+                                    }else{
+                                        //Break and Do as   was
+                                        productItems[position].offerPrice.toInt()+productItems[position].arpanCharge
+                                    }
+                                }else{
+                                    //Break and Do as   was
+                                    productItems[position].offerPrice.toInt()+productItems[position].arpanCharge
+                                }
+                            }else{
+                                if(productItems[position].price.toFloat()>=shopDiscountMinimumPrice){
+                                    productItems[position].offerPrice.toInt()-roundNumberPriceTotal(productItems[position].offerPrice.toInt()*shopDiscountPercentage)+productItems[position].arpanCharge
+                                }else{
+                                    //Break and Do as   was
+                                    productItems[position].offerPrice.toInt()+productItems[position].arpanCharge
+                                }
+                            }
+                        }else{
+                            //Break and Do as   was
+                            productItems[position].offerPrice.toInt()+productItems[position].arpanCharge
+                        }
                         cartViewModel.insertItemToCart(context,
                                 CartProductEntity(
                                         product_item = true,
@@ -140,8 +223,8 @@ class ProductItemRecyclerAdapter(
                                         product_item_name = productItems[position].name,
                                         product_item_shop_key= productItems[position].shopKey,
                                         product_item_category_tag = productItems[position].shopCategoryKey,
-                                    product_arpan_profit =  productItems[position].arpanCharge,
-                                        product_item_price = productItems[position].offerPrice.toInt()+productItems[position].arpanCharge,
+                                        product_arpan_profit =  productItems[position].arpanCharge,
+                                        product_item_price = totalPrice,
                                         product_item_image = productItems[position].image1,
                                         product_item_desc = productItems[position].shortDescription,
                                         product_item_amount = 1
@@ -153,6 +236,31 @@ class ProductItemRecyclerAdapter(
                         }
                     }else{
                         if((context as HomeActivity).homeViewModel.getAllowMoreShops().value!!){
+                            val totalPrice = if(shopDiscount){
+                                if(shopCategoryDiscount){
+                                    if(shopCategoryDiscountName==categoryKey){
+                                        if(productItems[position].price.toFloat()>=shopDiscountMinimumPrice){
+                                            productItems[position].offerPrice.toInt()-roundNumberPriceTotal(productItems[position].offerPrice.toInt()*shopDiscountPercentage)+productItems[position].arpanCharge
+                                        }else{
+                                            //Break and Do as   was
+                                            productItems[position].offerPrice.toInt()+productItems[position].arpanCharge
+                                        }
+                                    }else{
+                                        //Break and Do as   was
+                                        productItems[position].offerPrice.toInt()+productItems[position].arpanCharge
+                                    }
+                                }else{
+                                    if(productItems[position].price.toFloat()>=shopDiscountMinimumPrice){
+                                        productItems[position].offerPrice.toInt()-roundNumberPriceTotal(productItems[position].offerPrice.toInt()*shopDiscountPercentage)+productItems[position].arpanCharge
+                                    }else{
+                                        //Break and Do as   was
+                                        productItems[position].offerPrice.toInt()+productItems[position].arpanCharge
+                                    }
+                                }
+                            }else{
+                                //Break and Do as   was
+                                productItems[position].offerPrice.toInt()+productItems[position].arpanCharge
+                            }
                             cartViewModel.insertItemToCart(context,
                                     CartProductEntity(
                                             product_item = true,
@@ -160,8 +268,8 @@ class ProductItemRecyclerAdapter(
                                             product_item_name = productItems[position].name,
                                             product_item_shop_key= productItems[position].shopKey,
                                             product_item_category_tag = productItems[position].shopCategoryKey,
-                                            product_item_price = productItems[position].offerPrice.toInt()+productItems[position].arpanCharge,
-                                        product_arpan_profit =  productItems[position].arpanCharge,
+                                            product_item_price = totalPrice,
+                                            product_arpan_profit =  productItems[position].arpanCharge,
                                             product_item_image = productItems[position].image1,
                                             product_item_desc = productItems[position].shortDescription,
                                             product_item_amount = 1
@@ -177,6 +285,31 @@ class ProductItemRecyclerAdapter(
                     }
                 }
             }else{
+                val totalPrice = if(shopDiscount){
+                    if(shopCategoryDiscount){
+                        if(shopCategoryDiscountName==categoryKey){
+                            if(productItems[position].price.toFloat()>=shopDiscountMinimumPrice){
+                                productItems[position].offerPrice.toInt()-roundNumberPriceTotal(productItems[position].offerPrice.toInt()*shopDiscountPercentage)+productItems[position].arpanCharge
+                            }else{
+                                //Break and Do as   was
+                                productItems[position].offerPrice.toInt()+productItems[position].arpanCharge
+                            }
+                        }else{
+                            //Break and Do as   was
+                            productItems[position].offerPrice.toInt()+productItems[position].arpanCharge
+                        }
+                    }else{
+                        if(productItems[position].price.toFloat()>=shopDiscountMinimumPrice){
+                            productItems[position].offerPrice.toInt()-roundNumberPriceTotal(productItems[position].offerPrice.toInt()*shopDiscountPercentage)+productItems[position].arpanCharge
+                        }else{
+                            //Break and Do as   was
+                            productItems[position].offerPrice.toInt()+productItems[position].arpanCharge
+                        }
+                    }
+                }else{
+                    //Break and Do as   was
+                    productItems[position].offerPrice.toInt()+productItems[position].arpanCharge
+                }
                 cartViewModel.updateItemToCart(context,
                         CartProductEntity(
                                 id = updateIndex,
@@ -185,7 +318,7 @@ class ProductItemRecyclerAdapter(
                                 product_item_name = productItems[position].name,
                                 product_item_shop_key= productItems[position].shopKey,
                                 product_item_category_tag = productItems[position].shopCategoryKey,
-                                product_item_price = productItems[position].offerPrice.toInt()+productItems[position].arpanCharge,
+                                product_item_price = totalPrice,
                                 product_arpan_profit =  productItems[position].arpanCharge,
                                 product_item_image = productItems[position].image1,
                                 product_item_desc = productItems[position].shortDescription,
@@ -198,5 +331,11 @@ class ProductItemRecyclerAdapter(
                 }
             }
         }
+    }
+
+    private fun roundNumberPriceTotal(d: Float): Int {
+        //This  is a special round function exclusively for this  page of the app
+        //not usable for general parts and other parts of   the code or apps
+        return d.toInt()
     }
 }

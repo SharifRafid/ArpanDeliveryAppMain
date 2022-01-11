@@ -24,7 +24,8 @@ fun Context.showToast(message: String, status: Int){
 
 fun Context.createProgressDialog() : Dialog {
     val dialog = AlertDialog.Builder(this)
-        .setView(LayoutInflater.from(this).inflate(R.layout.dialog_progress_layout_main, null))
+        .setView(LayoutInflater.from(this)
+            .inflate(R.layout.dialog_progress_layout_main, null))
         .create()
     dialog.setCancelable(false)
     dialog.setCanceledOnTouchOutside(false)
